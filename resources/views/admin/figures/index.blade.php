@@ -132,6 +132,12 @@
                         </td>
                         <td class="px-5 py-3.5 text-right">
                             <div class="inline-flex items-center gap-2">
+                                <a href="{{ route('client.figures.show', $figure->slug) }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="px-2.5 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded transition-colors duration-150">
+                                    Preview
+                                </a>
                                 <a href="{{ route('admin.figures.edit', $figure->id) }}"
                                    class="px-2.5 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded transition-colors duration-150">
                                     Sửa

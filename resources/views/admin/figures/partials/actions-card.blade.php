@@ -8,6 +8,15 @@
     </h2>
 
     <div class="space-y-3">
+        @if(isset($figure))
+            <a href="{{ route('client.figures.show', $figure->slug) }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="block w-full text-center px-5 py-2.5 text-sm font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded transition-colors duration-150">
+                Mở preview client
+            </a>
+        @endif
+
         <button type="submit"
                 class="w-full px-5 py-2.5 text-sm font-semibold text-white rounded transition-colors duration-200"
                 style="background:#A31D1D;"
