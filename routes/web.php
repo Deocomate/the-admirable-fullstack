@@ -14,6 +14,7 @@ use App\Http\Controllers\Client\FigureController as ClientFigureController;
 use App\Http\Controllers\Client\StorySnippetController as ClientStorySnippetController;
 use App\Http\Controllers\Client\SearchController as ClientSearchController;
 use App\Http\Controllers\Client\AboutUsController as ClientAboutUsController;
+use App\Http\Controllers\Client\ContactController as ClientContactController;
 use Illuminate\Support\Facades\Route;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -27,6 +28,7 @@ Route::name('client.')->group(function () {
     Route::get('/cau-chuyen/{id}', [ClientStorySnippetController::class, 'show'])->name('stories.show');
     Route::get('/tim-kiem', [ClientSearchController::class, 'index'])->name('search');
     Route::get('/ve-chung-toi', [ClientAboutUsController::class, 'index'])->name('about-us');
+    Route::get('/lien-he', [ClientContactController::class, 'index'])->name('contact');
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

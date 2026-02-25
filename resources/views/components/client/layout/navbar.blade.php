@@ -15,6 +15,7 @@
                     ['route' => 'client.categories.index', 'label' => 'Lĩnh vực', 'key' => 'category'],
                     ['route' => 'client.search', 'label' => 'Tìm kiếm', 'key' => 'search'],
                     ['route' => 'client.about-us', 'label' => 'Về chúng tôi', 'key' => 'about-us'],
+                    ['route' => 'client.contact', 'label' => 'Liên hệ', 'key' => 'contact'],
                 ]; @endphp
                 @foreach($navItems as $item)
                     <a href="{{ route($item['route']) }}"

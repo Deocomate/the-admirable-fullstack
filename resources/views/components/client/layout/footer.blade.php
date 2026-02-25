@@ -24,6 +24,7 @@
                         <li><a href="{{ route('client.categories.index') }}" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Lĩnh vực</a></li>
                         <li><a href="{{ route('client.search') }}" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Tìm kiếm</a></li>
                         <li><a href="{{ route('client.about-us') }}" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Giới thiệu</a></li>
+                        <li><a href="{{ route('client.contact') }}" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Liên hệ</a></li>
                     </ul>
                 </div>
                 <div>
