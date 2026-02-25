@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\Admin\FeaturedFigureController;
 use App\Http\Controllers\Admin\FigureController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StorySnippetController;
@@ -69,6 +70,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // ── Content management ───────────────────────────────────────────
         Route::resource('categories', CategoryController::class)->except(['show']);
         Route::resource('figures', FigureController::class)->except(['show']);
+        Route::get('featured-figures', [FeaturedFigureController::class, 'index'])->name('featured-figures.index');
+        Route::post('featured-figures', [FeaturedFigureController::class, 'store'])->name('featured-figures.store');
+        Route::post('featured-figures/reorder', [FeaturedFigureController::class, 'reorder'])->name('featured-figures.reorder');
+        Route::delete('featured-figures/{id}', [FeaturedFigureController::class, 'destroy'])->name('featured-figures.destroy');
         Route::resource('stories', StorySnippetController::class)->except(['show']);
         Route::resource('contacts', ContactController::class)->except(['show']);
 

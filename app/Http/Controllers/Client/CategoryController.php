@@ -15,13 +15,30 @@ class CategoryController extends Controller
     {
         $categories = Category::orderBy('name')->get();
 
-        $featuredFigure = Figure::with('categories')
-            ->latest()
+        $baseQuery = Figure::with(['categories', 'featuredFigure'])
+            ->leftJoin('featured_figures', 'featured_figures.figure_id', '=', 'figures.id')
+            ->select('figures.*');
+
+        $featuredFigure = (clone $baseQuery)
+            ->whereNotNull('featured_figures.id')
+            ->orderBy('featured_figures.priority')
             ->first();
 
-        $figures = Figure::with('categories')
-            ->latest()
+        $figures = $baseQuery
+            ->orderByRaw('CASE WHEN featured_figures.id IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('featured_figures.priority')
+            ->orderByDesc('figures.created_at')
             ->paginate(12);
+
+        $figures->getCollection()->transform(function (Figure $figure) {
+            $figure->setAttribute('is_featured', (bool) $figure->featuredFigure);
+
+            return $figure;
+        });
+
+        if ($featuredFigure instanceof Figure) {
+            $featuredFigure->setAttribute('is_featured', true);
+        }
 
         return view('client.category.index', compact(
             'categories',
@@ -38,15 +55,31 @@ class CategoryController extends Controller
         $category = Category::where('slug', $slug)->firstOrFail();
         $categories = Category::orderBy('name')->get();
 
-        $featuredFigure = $category->figures()
-            ->with('categories')
-            ->latest()
+        $baseQuery = $category->figures()
+            ->with(['categories', 'featuredFigure'])
+            ->leftJoin('featured_figures', 'featured_figures.figure_id', '=', 'figures.id')
+            ->select('figures.*');
+
+        $featuredFigure = (clone $baseQuery)
+            ->whereNotNull('featured_figures.id')
+            ->orderBy('featured_figures.priority')
             ->first();
 
-        $figures = $category->figures()
-            ->with('categories')
-            ->latest()
+        $figures = $baseQuery
+            ->orderByRaw('CASE WHEN featured_figures.id IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('featured_figures.priority')
+            ->orderByDesc('figures.created_at')
             ->paginate(12);
+
+        $figures->getCollection()->transform(function (Figure $figure) {
+            $figure->setAttribute('is_featured', (bool) $figure->featuredFigure);
+
+            return $figure;
+        });
+
+        if ($featuredFigure instanceof Figure) {
+            $featuredFigure->setAttribute('is_featured', true);
+        }
 
         return view('client.category.index', compact(
             'categories',

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Figure extends Model
@@ -42,5 +43,13 @@ class Figure extends Model
     public function storySnippets(): HasMany
     {
         return $this->hasMany(StorySnippet::class);
+    }
+
+    /**
+     * Featured figure metadata (priority/order).
+     */
+    public function featuredFigure(): HasOne
+    {
+        return $this->hasOne(FeaturedFigure::class);
     }
 }
