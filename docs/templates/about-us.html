@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Về chúng tôi — The Admirable</title>
+  <meta name="description"
+    content="The Admirable là nền tảng học tiếng Anh truyền cảm hứng qua những câu chuyện về các nhân vật vĩ đại. Biến việc học IELTS trở nên thú vị và sâu sắc hơn." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            apple: {
+              black: '#1D1D1F',
+              gray: '#86868B',
+              'gray-light': '#D2D2D7',
+              bg: '#F5F5F7',
+              white: '#FBFBFD',
+              blue: '#0071E3',
+              'blue-hover': '#0077ED',
+            },
+          },
+          letterSpacing: {
+            'apple-tight': '-0.003em',
+            'apple-headline': '-.015em',
+            'apple-display': '-0.04em',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D2D2D7;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #86868B;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #1D1D1F 0%, #515154 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  </style>
+</head>
+<body class="bg-apple-white font-sans text-apple-black antialiased">
+  <header class="fixed top-0 left-0 right-0 z-50 bg-apple-white/80 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+    <nav class="max-w-[980px] mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-12">
+        <a href="index.html" class="flex items-center gap-1.5 cursor-pointer group" aria-label="Trang chủ The Admirable">
+          <span class="text-[21px] font-semibold text-apple-black tracking-apple-tight">The Admirable</span>
+        </a>
+        <div class="hidden md:flex items-center gap-7">
+          <a href="index.html" class="text-xs font-normal text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Trang chủ</a>
+          <a href="category.html" class="text-xs font-normal text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Lĩnh vực</a>
+          <a href="search.html" class="text-xs font-normal text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Tìm kiếm</a>
+          <a href="about-us.html" class="text-xs font-normal text-apple-black cursor-pointer">Về chúng tôi</a>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="search.html" class="hidden md:flex p-1 cursor-pointer text-apple-gray hover:text-apple-black transition-colors duration-300" aria-label="Tìm kiếm">
+            <svg class="w-[15px] h-[15px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </a>
+          <button id="mobile-menu-btn" type="button" class="md:hidden p-1 text-apple-black cursor-pointer" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div id="mobile-menu" class="hidden md:hidden pb-5 pt-2">
+        <div class="flex flex-col gap-0 border-t border-black/5 pt-3">
+          <a href="index.html" class="py-2.5 text-sm text-apple-gray hover:text-apple-black cursor-pointer transition-colors duration-300">Trang chủ</a>
+          <a href="category.html" class="py-2.5 text-sm text-apple-gray hover:text-apple-black cursor-pointer transition-colors duration-300">Lĩnh vực</a>
+          <a href="search.html" class="py-2.5 text-sm text-apple-gray hover:text-apple-black cursor-pointer transition-colors duration-300">Tìm kiếm</a>
+          <a href="about-us.html" class="py-2.5 text-sm font-medium text-apple-black cursor-pointer">Về chúng tôi</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="h-12"></div>
+
+  <section class="bg-apple-white overflow-hidden border-b border-apple-gray-light/30">
+    <div class="max-w-[980px] mx-auto px-4 sm:px-6 pt-16 pb-12 sm:pt-20 sm:pb-16 lg:pt-28 lg:pb-20 text-center">
+      <p class="text-apple-blue text-sm sm:text-base font-semibold tracking-wide mb-3">
+        Câu chuyện của chúng tôi
+      </p>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-apple-display text-apple-black leading-[1.05] mb-6">
+        Học ngôn ngữ qua <br class="hidden sm:block" />
+        <span class="gradient-text">những tầm cao nhân loại.</span>
+      </h1>
+      <p class="text-apple-gray text-lg sm:text-[19px] leading-relaxed max-w-2xl mx-auto tracking-apple-tight">
+        "The Admirable" ra đời mang theo một sứ mệnh: Biến quá trình học tiếng Anh đầy gian nan trở thành một hành trình tận hưởng những giá trị tốt đẹp nhất của tri thức.
+      </p>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="bg-apple-white border-b border-apple-gray-light/30">
+    <div class="max-w-[980px] mx-auto px-4 sm:px-6 py-10">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+        <div>
+          <p class="text-3xl sm:text-4xl font-bold text-apple-black tracking-apple-display">50+</p>
+          <p class="text-xs text-apple-gray mt-1">Nhân vật vĩ đại</p>
+        </div>
+        <div>
+          <p class="text-3xl sm:text-4xl font-bold text-apple-black tracking-apple-display">8</p>
+          <p class="text-xs text-apple-gray mt-1">Lĩnh vực đa dạng</p>
+        </div>
+        <div>
+          <p class="text-3xl sm:text-4xl font-bold text-apple-black tracking-apple-display">200+</p>
+          <p class="text-xs text-apple-gray mt-1">Bài đọc song ngữ</p>
+        </div>
+        <div>
+          <p class="text-3xl sm:text-4xl font-bold text-apple-black tracking-apple-display">100%</p>
+          <p class="text-xs text-apple-gray mt-1">Miễn phí, mãi mãi</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-apple-bg py-16 sm:py-24">
+    <div class="max-w-[980px] mx-auto px-4 sm:px-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div class="bg-white p-8 sm:p-10 rounded-[24px] lg:rounded-[32px] shadow-sm">
+          <div class="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center mb-6">
+            <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold text-apple-black tracking-apple-headline mb-4">Nỗi trăn trở của người học</h2>
+          <p class="text-apple-gray text-[17px] leading-relaxed">
+            Chúng tôi thấu hiểu rằng việc học IELTS hay nâng cao vốn tiếng Anh thường đi kèm với những bài báo học thuật khô khan, phức tạp. Người học rất dễ cảm thấy chán nản, buồn ngủ và gặp khó khăn trong việc ghi nhớ từ vựng cũng như duy trì động lực mỗi ngày.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-3xl font-bold text-apple-black tracking-apple-headline mb-6">Giải pháp mang tên <br/>"The Admirable"</h2>
+          <p class="text-apple-gray text-[17px] leading-relaxed mb-6">
+            Thay vì ép bản thân đọc những nội dung vô hồn, chúng tôi cung cấp các bài viết song ngữ chất lượng cao kể về những tấm gương vĩ đại trên toàn thế giới—từ văn hóa, kinh tế, khoa học đến chính trị.
+          </p>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-apple-blue flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span class="text-apple-black text-[17px]">Nội dung truyền cảm hứng, tích cực và sâu sắc.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-apple-blue flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span class="text-apple-black text-[17px]">Hệ sinh thái đa phương tiện: Text, Audio, Video YouTube.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-apple-blue flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span class="text-apple-black text-[17px]">Ghi nhớ từ vựng tự nhiên thông qua bối cảnh câu chuyện.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-16 sm:py-24">
+    <div class="max-w-[980px] mx-auto px-4 sm:px-6 text-center">
+      <p class="text-apple-blue text-sm font-semibold tracking-wide mb-3">Giá trị cốt lõi</p>
+      <h2 class="text-3xl sm:text-4xl font-bold text-apple-black tracking-apple-headline mb-12">Những gì chúng tôi tin tưởng</h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="p-6 bg-apple-bg rounded-[24px] text-left">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-apple-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+          </div>
+          <h3 class="text-base font-semibold text-apple-black mb-2">Tri thức mở</h3>
+          <p class="text-sm text-apple-gray leading-relaxed">Mọi nội dung đều miễn phí, không cần đăng ký, không paywall. Kiến thức là quyền của tất cả.</p>
+        </div>
+        <div class="p-6 bg-apple-bg rounded-[24px] text-left">
+          <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </div>
+          <h3 class="text-base font-semibold text-apple-black mb-2">Chất lượng cao</h3>
+          <p class="text-sm text-apple-gray leading-relaxed">Bài viết được biên soạn kỹ lưỡng, song ngữ chuẩn xác, đúng ngữ pháp và phù hợp IELTS.</p>
+        </div>
+        <div class="p-6 bg-apple-bg rounded-[24px] text-left">
+          <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
+          </div>
+          <h3 class="text-base font-semibold text-apple-black mb-2">Truyền cảm hứng</h3>
+          <p class="text-sm text-apple-gray leading-relaxed">Nội dung tích cực, khơi dậy động lực học tập và tinh thần vươn lên từ các tấm gương.</p>
+        </div>
+        <div class="p-6 bg-apple-bg rounded-[24px] text-left">
+          <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </div>
+          <h3 class="text-base font-semibold text-apple-black mb-2">Đa dạng lĩnh vực</h3>
+          <p class="text-sm text-apple-gray leading-relaxed">Từ khoa học, chính trị, nghệ thuật đến thể thao — phủ sóng mọi góc nhìn về nhân loại.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-16 sm:py-24">
+    <div class="max-w-[980px] mx-auto px-4 sm:px-6 text-center">
+      <h2 class="text-3xl sm:text-4xl font-bold text-apple-black tracking-apple-headline mb-4">Nền tảng này dành cho ai?</h2>
+      <p class="text-apple-gray text-lg sm:text-[19px] leading-relaxed max-w-2xl mx-auto mb-12">
+        Không cần tạo tài khoản rườm rà. Hệ thống được mở hoàn toàn công khai để mang tri thức đến với tất cả mọi người.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8">
+        <div class="p-6 bg-apple-bg rounded-[24px]">
+          <h3 class="text-lg font-semibold text-apple-black mb-2">Người học IELTS</h3>
+          <p class="text-apple-gray text-sm leading-relaxed">Đắm chìm trong từ vựng cao cấp (Advanced Vocabulary) và cấu trúc câu phức tạp một cách tự nhiên qua các bài viết học thuật mang tính tiểu sử.</p>
+        </div>
+        <div class="p-6 bg-apple-bg rounded-[24px]">
+          <h3 class="text-lg font-semibold text-apple-black mb-2">Người yêu tiếng Anh</h3>
+          <p class="text-apple-gray text-sm leading-relaxed">Cải thiện cả hai kỹ năng Reading và Listening đồng thời thông qua các bài đọc song ngữ kèm giọng đọc audio chuẩn xác.</p>
+        </div>
+        <div class="p-6 bg-apple-bg rounded-[24px]">
+          <h3 class="text-lg font-semibold text-apple-black mb-2">Người tìm cảm hứng</h3>
+          <p class="text-apple-gray text-sm leading-relaxed">Dành cho bất cứ ai muốn tìm kiếm năng lượng tích cực, sự kiên cường và động lực từ những con người đã làm thay đổi thế giới.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-apple-black py-16 sm:py-20 text-center">
+    <div class="max-w-[980px] mx-auto px-4 sm:px-6">
+      <p class="text-apple-gray text-sm font-medium mb-4">"Đọc là để sống nhiều hơn một lần."</p>
+      <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-apple-headline mb-6">Sẵn sàng để bắt đầu?</h2>
+      <p class="text-apple-gray text-base sm:text-lg leading-relaxed max-w-xl mx-auto mb-8">
+        Hãy khám phá những câu chuyện đã truyền cảm hứng cho hàng triệu người trên thế giới — hoàn toàn miễn phí.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="index.html" class="inline-flex items-center justify-center px-7 py-3 bg-apple-blue hover:bg-apple-blue-hover text-white text-sm font-normal rounded-full transition-colors duration-300 cursor-pointer">
+          Khám phá các nhân vật ngay
+        </a>
+        <a href="search.html" class="inline-flex items-center justify-center px-7 py-3 bg-white/10 hover:bg-white/20 text-white text-sm font-normal rounded-full transition-colors duration-300 cursor-pointer border border-white/20">
+          Tìm kiếm chủ đề
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-apple-bg border-t border-apple-gray-light/50">
+    <div class="max-w-[980px] mx-auto px-4 sm:px-6 py-8">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 pb-8 border-b border-apple-gray-light/50">
+        <div>
+          <h3 class="text-xs font-semibold text-apple-black mb-3">Khám phá</h3>
+          <ul class="space-y-2">
+            <li><a href="index.html" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Trang chủ</a></li>
+            <li><a href="category.html" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Lĩnh vực</a></li>
+            <li><a href="search.html" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Tìm kiếm</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xs font-semibold text-apple-black mb-3">Lĩnh vực</h3>
+          <ul class="space-y-2">
+            <li><a href="category.html?id=politics" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Chính trị</a></li>
+            <li><a href="category.html?id=science" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Khoa học</a></li>
+            <li><a href="category.html?id=art" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Nghệ thuật</a></li>
+            <li><a href="category.html?id=economy" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Kinh tế</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xs font-semibold text-apple-black mb-3">Thêm nữa</h3>
+          <ul class="space-y-2">
+            <li><a href="category.html?id=culture" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Văn hóa</a></li>
+            <li><a href="category.html?id=sports" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Thể thao</a></li>
+            <li><a href="category.html?id=technology" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Công nghệ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xs font-semibold text-apple-black mb-3">Về chúng tôi</h3>
+          <ul class="space-y-2">
+            <li><a href="about-us.html" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Giới thiệu</a></li>
+            <li class="text-xs text-apple-gray">contact@theadmirable.com</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <p class="text-apple-gray text-[11px]">
+          Copyright &copy; 2026 The Admirable. All rights reserved.
+        </p>
+        <p class="text-apple-gray/60 text-[11px]">
+          Được xây dựng với mục đích giáo dục và truyền cảm hứng.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to top -->
+  <button id="back-to-top" aria-label="Về đầu trang" class="fixed bottom-6 right-6 z-50 w-11 h-11 rounded-full bg-apple-black/80 text-white shadow-lg flex items-center justify-center opacity-0 invisible translate-y-3 transition-all duration-300 hover:bg-apple-black cursor-pointer">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" /></svg>
+  </button>
+
+  <script>
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    mobileMenuBtn.addEventListener('click', () => {
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      if (isOpen) {
+        mobileMenu.classList.add('hidden');
+        menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        mobileMenuBtn.setAttribute('aria-label', 'Mở menu');
+      } else {
+        mobileMenu.classList.remove('hidden');
+        menuIcon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+        mobileMenuBtn.setAttribute('aria-expanded', 'true');
+        mobileMenuBtn.setAttribute('aria-label', 'Đóng menu');
+      }
+    });
+    // Close on resize
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) {
+        mobileMenu.classList.add('hidden');
+        menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Back to top
+    const backToTopBtn = document.getElementById('back-to-top');
+    if (backToTopBtn) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 400) {
+          backToTopBtn.classList.remove('opacity-0', 'invisible', 'translate-y-3');
+          backToTopBtn.classList.add('opacity-100', 'visible', 'translate-y-0');
+        } else {
+          backToTopBtn.classList.add('opacity-0', 'invisible', 'translate-y-3');
+          backToTopBtn.classList.remove('opacity-100', 'visible', 'translate-y-0');
+        }
+      }, { passive: true });
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+  </script>
+</body>
+</html>

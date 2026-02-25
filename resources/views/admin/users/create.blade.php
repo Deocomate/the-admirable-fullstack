@@ -1,0 +1,123 @@
+<x-admin.layout.app title="Thêm tài khoản Admin" breadcrumb="Admin › Tài khoản › Thêm mới">
+
+    <div class="max-w-lg">
+
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+
+            <h2 class="text-sm font-semibold text-gray-700 mb-5">Thông tin tài khoản</h2>
+
+            <form method="POST" action="{{ route('admin.users.store') }}" class="space-y-4">
+                @csrf
+
+                {{-- Name --}}
+                <div>
+                    <label for="name" class="block text-xs font-medium text-gray-600 mb-1.5">
+                        Tên hiển thị <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="{{ old('name') }}"
+                        required
+                        autofocus
+                        placeholder="Nguyễn Văn A"
+                        class="w-full px-3 py-2.5 text-sm border rounded outline-none transition-colors duration-150
+                               bg-white text-gray-800 placeholder-gray-400
+                               {{ $errors->has('name') ? 'border-red-400' : 'border-gray-300' }}"
+                        onfocus="this.style.borderColor='#A31D1D'"
+                        onblur="this.style.borderColor='{{ $errors->has('name') ? '#f87171' : '#D1D5DB' }}'"
+                    >
+                    @error('name')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Email --}}
+                <div>
+                    <label for="email" class="block text-xs font-medium text-gray-600 mb-1.5">
+                        Email <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ old('email') }}"
+                        required
+                        placeholder="admin@thceramics.vn"
+                        class="w-full px-3 py-2.5 text-sm border rounded outline-none transition-colors duration-150
+                               bg-white text-gray-800 placeholder-gray-400
+                               {{ $errors->has('email') ? 'border-red-400' : 'border-gray-300' }}"
+                        onfocus="this.style.borderColor='#A31D1D'"
+                        onblur="this.style.borderColor='{{ $errors->has('email') ? '#f87171' : '#D1D5DB' }}'"
+                    >
+                    @error('email')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Password --}}
+                <div>
+                    <label for="password" class="block text-xs font-medium text-gray-600 mb-1.5">
+                        Mật khẩu <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                        placeholder="Tối thiểu 8 ký tự"
+                        class="w-full px-3 py-2.5 text-sm border rounded outline-none transition-colors duration-150
+                               bg-white text-gray-800 placeholder-gray-400
+                               {{ $errors->has('password') ? 'border-red-400' : 'border-gray-300' }}"
+                        onfocus="this.style.borderColor='#A31D1D'"
+                        onblur="this.style.borderColor='{{ $errors->has('password') ? '#f87171' : '#D1D5DB' }}'"
+                    >
+                    @error('password')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Confirm Password --}}
+                <div>
+                    <label for="password_confirmation" class="block text-xs font-medium text-gray-600 mb-1.5">
+                        Xác nhận mật khẩu <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="password"
+                        id="password_confirmation"
+                        name="password_confirmation"
+                        required
+                        placeholder="Nhập lại mật khẩu"
+                        class="w-full px-3 py-2.5 text-sm border rounded outline-none transition-colors duration-150
+                               bg-white text-gray-800 placeholder-gray-400 border-gray-300"
+                        onfocus="this.style.borderColor='#A31D1D'"
+                        onblur="this.style.borderColor='#D1D5DB'"
+                    >
+                </div>
+
+                {{-- Info note --}}
+                <p class="text-xs text-gray-400 bg-gray-50 border border-gray-200 rounded px-3 py-2">
+                    Tài khoản sẽ được tạo với quyền <strong class="text-gray-600">Admin</strong>. Chỉ có thể có một Superadmin trong hệ thống.
+                </p>
+
+                {{-- Actions --}}
+                <div class="flex items-center gap-3 pt-1">
+                    <button
+                        type="submit"
+                        class="px-5 py-2.5 text-sm font-semibold text-white rounded transition-colors duration-200"
+                        style="background:#A31D1D;"
+                        onmouseover="this.style.background='#8A1818'"
+                        onmouseout="this.style.background='#A31D1D'">
+                        Lưu tài khoản
+                    </button>
+                    <a href="{{ route('admin.users.index') }}"
+                       class="px-5 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded transition-colors duration-150">
+                        Hủy
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</x-admin.layout.app>

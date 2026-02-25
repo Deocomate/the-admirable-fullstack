@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lĩnh vực — The Admirable</title>
+  <meta name="description"
+    content="Khám phá các nhân vật truyền cảm hứng theo từng lĩnh vực: Khoa học, Chính trị, Nghệ thuật, Kinh tế..." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            apple: {
+              black: '#1D1D1F',
+              gray: '#86868B',
+              'gray-light': '#D2D2D7',
+              bg: '#F5F5F7',
+              white: '#FBFBFD',
+              blue: '#0071E3',
+              'blue-hover': '#0077ED',
+            },
+          },
+          letterSpacing: {
+            'apple-tight': '-0.003em',
+            'apple-headline': '-.015em',
+            'apple-display': '-0.04em',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    /* Apple-style subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D2D2D7;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #86868B;
+    }
+    /* Card hover lift effect */
+    .card-hover {
+      transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+    .card-hover:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    }
+    /* Image zoom */
+    .img-zoom {
+      transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+    .group:hover .img-zoom {
+      transform: scale(1.06);
+    }
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .card-hover:hover {
+        transform: none;
+      }
+      .group:hover .img-zoom {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body class="bg-apple-white font-sans text-apple-black antialiased">
+
+  <header class="fixed top-0 left-0 right-0 z-50 bg-apple-white/80 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+    <nav class="max-w-[980px] mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-12">
+        <a href="index.html" class="flex items-center gap-1.5 cursor-pointer group" aria-label="Trang chủ The Admirable">
+          <span class="text-[21px] font-semibold text-apple-black tracking-apple-tight">The Admirable</span>
+        </a>
+        
+        <div class="hidden md:flex items-center gap-7">
+          <a href="index.html" class="text-xs font-normal text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Trang chủ</a>
+          <a href="category.html" class="text-xs font-normal text-apple-black cursor-pointer">Lĩnh vực</a>
+          <a href="search.html" class="text-xs font-normal text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Tìm kiếm</a>
+          <a href="about-us.html" class="text-xs font-normal text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Về chúng tôi</a>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a href="search.html" class="hidden md:flex p-1 cursor-pointer text-apple-gray hover:text-apple-black transition-colors duration-300" aria-label="Tìm kiếm">
+            <svg class="w-[15px] h-[15px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </a>
+          <button id="mobile-menu-btn" type="button" class="md:hidden p-1 text-apple-black cursor-pointer" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="mobile-menu" class="hidden md:hidden pb-5 pt-2">
+        <div class="flex flex-col gap-0 border-t border-black/5 pt-3">
+          <a href="index.html" class="py-2.5 text-sm text-apple-gray hover:text-apple-black cursor-pointer transition-colors duration-300">Trang chủ</a>
+          <a href="category.html" class="py-2.5 text-sm font-medium text-apple-black cursor-pointer">Lĩnh vực</a>
+          <a href="search.html" class="py-2.5 text-sm text-apple-gray hover:text-apple-black cursor-pointer transition-colors duration-300">Tìm kiếm</a>
+          <a href="about-us.html" class="py-2.5 text-sm text-apple-gray hover:text-apple-black cursor-pointer transition-colors duration-300">Về chúng tôi</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="h-12"></div>
+
+  <section class="bg-apple-white overflow-hidden border-b border-apple-gray-light/30">
+    <div class="max-w-[980px] mx-auto px-4 sm:px-6 pt-12 pb-8 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12 text-center">
+      <h1 class="text-3xl sm:text-4xl lg:text-[48px] font-bold tracking-apple-headline text-apple-black leading-[1.05] mb-4">
+        Lĩnh vực.
+      </h1>
+      <p class="text-apple-gray text-lg sm:text-[19px] leading-relaxed max-w-2xl mx-auto mb-8 tracking-apple-tight">
+        Khám phá cuộc đời và di sản của những nhân vật vĩ đại theo từng nhóm ngành cụ thể.
+      </p>
+      
+      <div class="flex flex-wrap justify-center gap-2" role="list" aria-label="Lĩnh vực">
+        <a href="category.html?id=all" role="listitem"
+          class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium bg-apple-bg text-apple-gray hover:bg-apple-gray-light hover:text-apple-black cursor-pointer transition-all duration-300">
+          Tất cả
+        </a>
+        <a href="category.html?id=politics" role="listitem"
+          class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium bg-apple-bg text-apple-gray hover:bg-apple-gray-light hover:text-apple-black cursor-pointer transition-all duration-300">
+          Chính trị
+        </a>
+        <a href="category.html?id=science" role="listitem"
+          class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium bg-apple-black text-white cursor-pointer transition-all duration-300 shadow-sm">
+          Khoa học
+        </a>
+        <a href="category.html?id=art" role="listitem"
+          class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium bg-apple-bg text-apple-gray hover:bg-apple-gray-light hover:text-apple-black cursor-pointer transition-all duration-300">
+          Nghệ thuật
+        </a>
+        <a href="category.html?id=economy" role="listitem"
+          class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium bg-apple-bg text-apple-gray hover:bg-apple-gray-light hover:text-apple-black cursor-pointer transition-all duration-300">
+          Kinh tế
+        </a>
+        <a href="category.html?id=culture" role="listitem"
+          class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium bg-apple-bg text-apple-gray hover:bg-apple-gray-light hover:text-apple-black cursor-pointer transition-all duration-300">
+          Văn hóa
+        </a>
+        <a href="category.html?id=sports" role="listitem"
+          class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium bg-apple-bg text-apple-gray hover:bg-apple-gray-light hover:text-apple-black cursor-pointer transition-all duration-300">
+          Thể thao
+        </a>
+        <a href="category.html?id=technology" role="listitem"
+          class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium bg-apple-bg text-apple-gray hover:bg-apple-gray-light hover:text-apple-black cursor-pointer transition-all duration-300">
+          Công nghệ
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured category hero card -->
+  <section class="bg-apple-white border-b border-apple-gray-light/30">
+    <div class="max-w-[980px] mx-auto px-4 sm:px-6 py-8 sm:py-10">
+      <a href="figure-detail.html?id=1" class="group block bg-apple-bg rounded-2xl lg:rounded-[28px] overflow-hidden card-hover cursor-pointer">
+        <div class="grid grid-cols-1 sm:grid-cols-2">
+          <div class="relative aspect-[4/3] sm:aspect-auto overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1589998059171-988d887df646?w=800&h=600&fit=crop" alt="Marie Curie" class="img-zoom w-full h-full object-cover" loading="lazy" />
+            <div class="absolute top-4 left-4">
+              <span class="inline-flex items-center px-3 py-1 bg-apple-blue text-white rounded-full text-[11px] font-semibold uppercase tracking-wider shadow-sm">Nổi bật</span>
+            </div>
+          </div>
+          <div class="p-6 sm:p-8 lg:p-10 flex flex-col justify-center">
+            <p class="text-apple-gray text-[11px] font-semibold uppercase tracking-wider mb-2">Khoa học</p>
+            <h2 class="text-xl sm:text-2xl lg:text-[28px] font-bold text-apple-black tracking-apple-headline leading-tight mb-3">
+              Marie Curie — Người phụ nữ thay đổi nền khoa học
+            </h2>
+            <p class="text-apple-gray text-[15px] leading-relaxed mb-5 line-clamp-3">
+              Người phụ nữ đầu tiên giành giải Nobel và là người duy nhất giành giải Nobel trong hai lĩnh vực khoa học khác nhau.
+            </p>
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-apple-white rounded-full text-[11px] text-apple-gray">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                Bài đọc
+              </span>
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-apple-white rounded-full text-[11px] text-apple-gray">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 010-7.072m-2.828 9.9a9 9 0 010-12.728" /></svg>
+                Audio
+              </span>
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-apple-white rounded-full text-[11px] text-apple-gray">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                Video
+              </span>
+            </div>
+            <span class="text-apple-blue text-sm font-normal inline-flex items-center group-hover:underline">
+              Đọc hồ sơ
+              <svg class="w-3.5 h-3.5 ml-1 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+            </span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="bg-apple-bg py-10 sm:py-14 min-h-[50vh]">
+    <div class="max-w-[980px] mx-auto px-4 sm:px-6">
+      
+      <div class="mb-6 flex items-end justify-between">
+        <h2 class="text-[21px] font-semibold text-apple-black tracking-apple-tight">
+          Nhân vật Khoa học <span class="text-apple-gray font-normal text-lg ml-1">(6)</span>
+        </h2>
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-apple-gray">Sắp xếp:</span>
+          <select class="bg-white border border-apple-gray-light/50 text-apple-black text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-apple-blue cursor-pointer font-medium">
+            <option selected>Mới nhất</option>
+            <option>A → Z</option>
+            <option>Phổ biến</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
+        
+        <a href="figure-detail.html?id=1"
+          class="group block bg-white rounded-2xl overflow-hidden card-hover cursor-pointer">
+          <div class="relative aspect-[3/2] overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1589998059171-988d887df646?w=600&h=400&fit=crop"
+              alt="Marie Curie — Người phụ nữ thay đổi nền khoa học thế giới"
+              class="img-zoom w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="p-5">
+            <p class="text-apple-gray text-[11px] font-semibold uppercase tracking-wider mb-1.5">Khoa học</p>
+            <h3 class="text-[17px] font-semibold text-apple-black tracking-apple-tight leading-snug mb-2 line-clamp-2">
+              Marie Curie — Người phụ nữ thay đổi nền khoa học
+            </h3>
+            <p class="text-apple-gray text-sm leading-relaxed line-clamp-2 mb-3">
+              Người phụ nữ đầu tiên giành giải Nobel và là người duy nhất giành giải Nobel trong hai lĩnh vực.
+            </p>
+            <span class="text-apple-blue text-xs font-normal inline-flex items-center group-hover:underline">
+              Đọc thêm
+              <svg class="w-3 h-3 ml-0.5 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+              </svg>
+            </span>
+          </div>
+        </a>
+
+        <a href="figure-detail.html?id=6"
+          class="group block bg-white rounded-2xl overflow-hidden card-hover cursor-pointer">
+          <div class="relative aspect-[3/2] overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&h=400&fit=crop"
+              alt="Albert Einstein — Cha đẻ của thuyết tương đối"
+              class="img-zoom w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="p-5">
+            <p class="text-apple-gray text-[11px] font-semibold uppercase tracking-wider mb-1.5">Khoa học</p>
+            <h3 class="text-[17px] font-semibold text-apple-black tracking-apple-tight leading-snug mb-2 line-clamp-2">
+              Albert Einstein — Cha đẻ của thuyết tương đối
+            </h3>
+            <p class="text-apple-gray text-sm leading-relaxed line-clamp-2 mb-3">
+              Từ nhân viên bưu điện bình thường đến nhà vật lý vĩ đại nhất thế kỷ 20.
+            </p>
+            <span class="text-apple-blue text-xs font-normal inline-flex items-center group-hover:underline">
+              Đọc thêm
+              <svg class="w-3 h-3 ml-0.5 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+              </svg>
+            </span>
+          </div>
+        </a>
+
+        <!-- Card 3 -->
+        <a href="figure-detail.html?id=3"
+          class="group block bg-white rounded-2xl overflow-hidden card-hover cursor-pointer">
+          <div class="relative aspect-[3/2] overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&h=400&fit=crop"
+              alt="Nikola Tesla — Thiên tài của dòng điện" class="img-zoom w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="p-5">
+            <p class="text-apple-gray text-[11px] font-semibold uppercase tracking-wider mb-1.5">Khoa học</p>
+            <h3 class="text-[17px] font-semibold text-apple-black tracking-apple-tight leading-snug mb-2 line-clamp-2">Nikola Tesla — Thiên tài của dòng điện</h3>
+            <p class="text-apple-gray text-sm leading-relaxed line-clamp-2 mb-3">Nhà phát minh vĩ đại với hơn 300 bằng sáng chế, người thay đổi thế giới bằng dòng điện xoay chiều.</p>
+            <span class="text-apple-blue text-xs font-normal inline-flex items-center group-hover:underline">Đọc thêm <svg class="w-3 h-3 ml-0.5 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg></span>
+          </div>
+        </a>
+
+        <!-- Card 4 -->
+        <a href="figure-detail.html?id=4"
+          class="group block bg-white rounded-2xl overflow-hidden card-hover cursor-pointer">
+          <div class="relative aspect-[3/2] overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=400&fit=crop"
+              alt="Ada Lovelace — Nữ lập trình viên đầu tiên" class="img-zoom w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="p-5">
+            <p class="text-apple-gray text-[11px] font-semibold uppercase tracking-wider mb-1.5">Khoa học</p>
+            <h3 class="text-[17px] font-semibold text-apple-black tracking-apple-tight leading-snug mb-2 line-clamp-2">Ada Lovelace — Nữ lập trình viên đầu tiên</h3>
+            <p class="text-apple-gray text-sm leading-relaxed line-clamp-2 mb-3">Người viết thuật toán máy tính đầu tiên trong lịch sử, mở đường cho kỷ nguyên số.</p>
+            <span class="text-apple-blue text-xs font-normal inline-flex items-center group-hover:underline">Đọc thêm <svg class="w-3 h-3 ml-0.5 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg></span>
+          </div>
+        </a>
+
+        <!-- Card 5 -->
+        <a href="figure-detail.html?id=5"
+          class="group block bg-white rounded-2xl overflow-hidden card-hover cursor-pointer">
+          <div class="relative aspect-[3/2] overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&h=400&fit=crop"
+              alt="Isaac Newton — Cha đẻ của cơ học cổ điển" class="img-zoom w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="p-5">
+            <p class="text-apple-gray text-[11px] font-semibold uppercase tracking-wider mb-1.5">Khoa học</p>
+            <h3 class="text-[17px] font-semibold text-apple-black tracking-apple-tight leading-snug mb-2 line-clamp-2">Isaac Newton — Cha đẻ của cơ học cổ điển</h3>
+            <p class="text-apple-gray text-sm leading-relaxed line-clamp-2 mb-3">Từ quả táo rơi đến ba định luật thay đổi cách nhân loại hiểu vũ trụ mãi mãi.</p>
+            <span class="text-apple-blue text-xs font-normal inline-flex items-center group-hover:underline">Đọc thêm <svg class="w-3 h-3 ml-0.5 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg></span>
+          </div>
+        </a>
+
+        <!-- Card 6 -->
+        <a href="figure-detail.html?id=7"
+          class="group block bg-white rounded-2xl overflow-hidden card-hover cursor-pointer">
+          <div class="relative aspect-[3/2] overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&h=400&fit=crop"
+              alt="Stephen Hawking — Bộ óc vĩ đại" class="img-zoom w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="p-5">
+            <p class="text-apple-gray text-[11px] font-semibold uppercase tracking-wider mb-1.5">Khoa học</p>
+            <h3 class="text-[17px] font-semibold text-apple-black tracking-apple-tight leading-snug mb-2 line-clamp-2">Stephen Hawking — Bộ óc vĩ đại nhất thời đại</h3>
+            <p class="text-apple-gray text-sm leading-relaxed line-clamp-2 mb-3">Vượt qua bệnh tật, ông viết nên "Lược sử thời gian" và thay đổi vũ trụ học mãi mãi.</p>
+            <span class="text-apple-blue text-xs font-normal inline-flex items-center group-hover:underline">Đọc thêm <svg class="w-3 h-3 ml-0.5 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg></span>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- Pagination -->
+      <div class="mt-10 flex items-center justify-center gap-1">
+        <button class="w-9 h-9 rounded-full flex items-center justify-center text-apple-gray hover:bg-apple-gray-light/50 transition-colors cursor-pointer" aria-label="Trang trước">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+        </button>
+        <button class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium bg-apple-black text-white cursor-pointer">1</button>
+        <button class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium text-apple-gray hover:bg-apple-gray-light/50 transition-colors cursor-pointer">2</button>
+        <button class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium text-apple-gray hover:bg-apple-gray-light/50 transition-colors cursor-pointer">3</button>
+        <span class="w-9 h-9 flex items-center justify-center text-apple-gray text-sm">...</span>
+        <button class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium text-apple-gray hover:bg-apple-gray-light/50 transition-colors cursor-pointer">8</button>
+        <button class="w-9 h-9 rounded-full flex items-center justify-center text-apple-gray hover:bg-apple-gray-light/50 transition-colors cursor-pointer" aria-label="Trang sau">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Back to top button -->
+  <button id="back-to-top" 
+    class="fixed bottom-6 right-6 z-40 w-10 h-10 rounded-full bg-apple-black/80 backdrop-blur-md text-white flex items-center justify-center shadow-lg opacity-0 pointer-events-none transition-all duration-300 hover:bg-apple-black cursor-pointer"
+    aria-label="Cuộn lên đầu trang">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7" />
+    </svg>
+  </button>
+
+  <footer class="bg-apple-white border-t border-apple-gray-light/50">
+    <div class="max-w-[980px] mx-auto px-4 sm:px-6 py-8">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 pb-8 border-b border-apple-gray-light/50">
+        <div>
+          <h3 class="text-xs font-semibold text-apple-black mb-3">Khám phá</h3>
+          <ul class="space-y-2">
+            <li><a href="index.html" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Trang chủ</a></li>
+            <li><a href="category.html" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Lĩnh vực</a></li>
+            <li><a href="search.html" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Tìm kiếm</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xs font-semibold text-apple-black mb-3">Lĩnh vực</h3>
+          <ul class="space-y-2">
+            <li><a href="category.html?id=politics" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Chính trị</a></li>
+            <li><a href="category.html?id=science" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Khoa học</a></li>
+            <li><a href="category.html?id=art" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Nghệ thuật</a></li>
+            <li><a href="category.html?id=economy" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Kinh tế</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xs font-semibold text-apple-black mb-3">Thêm nữa</h3>
+          <ul class="space-y-2">
+            <li><a href="category.html?id=culture" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Văn hóa</a></li>
+            <li><a href="category.html?id=sports" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Thể thao</a></li>
+            <li><a href="category.html?id=technology" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Công nghệ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xs font-semibold text-apple-black mb-3">Về chúng tôi</h3>
+          <ul class="space-y-2">
+            <li><a href="about-us.html" class="text-xs text-apple-gray hover:text-apple-black transition-colors duration-300 cursor-pointer">Giới thiệu</a></li>
+            <li class="text-xs text-apple-gray">contact@theadmirable.com</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <p class="text-apple-gray text-[11px]">
+          Copyright &copy; 2026 The Admirable. All rights reserved.
+        </p>
+        <p class="text-apple-gray/60 text-[11px]">
+          Được xây dựng với mục đích giáo dục và truyền cảm hứng.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+
+    mobileMenuBtn.addEventListener('click', () => {
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      if (isOpen) {
+        mobileMenu.classList.add('hidden');
+        menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        mobileMenuBtn.setAttribute('aria-label', 'Mở menu');
+      } else {
+        mobileMenu.classList.remove('hidden');
+        menuIcon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+        mobileMenuBtn.setAttribute('aria-expanded', 'true');
+        mobileMenuBtn.setAttribute('aria-label', 'Đóng menu');
+      }
+    });
+
+    // Close on resize
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) {
+        mobileMenu.classList.add('hidden');
+        menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Back to top
+    const backToTopBtn = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 600) {
+        backToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
+        backToTopBtn.classList.add('opacity-100', 'pointer-events-auto');
+      } else {
+        backToTopBtn.classList.add('opacity-0', 'pointer-events-none');
+        backToTopBtn.classList.remove('opacity-100', 'pointer-events-auto');
+      }
+    });
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
