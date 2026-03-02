@@ -27,6 +27,7 @@
             {{-- ═══════════════════════════════════════════════════════════ --}}
             <div class="space-y-6">
 
+                @include('admin.figures.partials.copy-prompt-card')
                 @include('admin.figures.partials.media-card')
                 @include('admin.figures.partials.categories-card')
                 @include('admin.figures.partials.actions-card')
