@@ -319,15 +319,29 @@
         // ─── Scroll-reveal observer ───
         const reveals = document.querySelectorAll('.reveal');
         if (reveals.length && 'IntersectionObserver' in window) {
-            const revealObserver = new IntersectionObserver(function (entries) {
-                entries.forEach(function (entry) {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('revealed');
-                        revealObserver.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-            reveals.forEach(function (el) { revealObserver.observe(el); });
+            // Use a small threshold for tall elements (e.g. long articles)
+            // so the observer fires as soon as any part enters viewport
+            var defaultOpts = { threshold: 0.12, rootMargin: '0px 0px -40px 0px' };
+            var tallOpts    = { threshold: 0.01, rootMargin: '0px 0px -40px 0px' };
+            function makeObserver(opts) {
+                return new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('revealed');
+                            entry.target._revealObs.unobserve(entry.target);
+                        }
+                    });
+                }, opts);
+            }
+            var defaultObserver = makeObserver(defaultOpts);
+            var tallObserver    = makeObserver(tallOpts);
+            reveals.forEach(function (el) {
+                // If element is taller than 2x viewport, use low threshold
+                var isTall = el.scrollHeight > window.innerHeight * 2;
+                var obs = isTall ? tallObserver : defaultObserver;
+                el._revealObs = obs;
+                obs.observe(el);
+            });
         }
 
         // ─── Counter animation (stats numbers) ───
