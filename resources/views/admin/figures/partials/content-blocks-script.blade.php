@@ -68,59 +68,118 @@ document.addEventListener('DOMContentLoaded', function () {
         emptyState.classList.toggle('hidden', hasBlocks);
     }
 
+    /**
+     * Get a short preview text for collapsed block view
+     */
+    function getBlockPreview(type, data) {
+        if (type === 'heading') return data.text_en || 'Tiêu đề trống';
+        if (type === 'quote') return (data.text_en || 'Trích dẫn trống').substring(0, 80) + (data.text_en?.length > 80 ? '…' : '');
+        if (type === 'paragraph') return (data.text_en || 'Đoạn văn trống').substring(0, 80) + (data.text_en?.length > 80 ? '…' : '');
+        return '';
+    }
+
+    /**
+     * Toggle collapse state of a single block
+     */
+    window.toggleBlockCollapse = function (btn) {
+        const block = btn.closest('[data-block-index]');
+        const content = block.querySelector('.block-content');
+        const preview = block.querySelector('.block-preview');
+        const chevron = btn.querySelector('.chevron-icon');
+
+        if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            preview.classList.add('hidden');
+            chevron.style.transform = 'rotate(0deg)';
+        } else {
+            // Update preview text from current field values
+            const textEn = block.querySelector('textarea[name*="[text_en]"]')?.value
+                        || block.querySelector('input[name*="[text_en]"]')?.value || '';
+            preview.textContent = (textEn || 'Nội dung trống').substring(0, 80) + (textEn.length > 80 ? '…' : '');
+            content.classList.add('hidden');
+            preview.classList.remove('hidden');
+            chevron.style.transform = 'rotate(-90deg)';
+        }
+    };
+
+    /**
+     * Toggle all blocks collapse/expand
+     */
+    window.toggleAllBlocks = function (collapse) {
+        const blocks = blocksContainer.querySelectorAll('[data-block-index]');
+        blocks.forEach(block => {
+            const content = block.querySelector('.block-content');
+            const preview = block.querySelector('.block-preview');
+            const chevron = block.querySelector('.chevron-icon');
+            if (!content || !preview || !chevron) return;
+
+            if (collapse) {
+                const textEn = block.querySelector('textarea[name*="[text_en]"]')?.value
+                            || block.querySelector('input[name*="[text_en]"]')?.value || '';
+                preview.textContent = (textEn || 'Nội dung trống').substring(0, 80) + (textEn.length > 80 ? '…' : '');
+                content.classList.add('hidden');
+                preview.classList.remove('hidden');
+                chevron.style.transform = 'rotate(-90deg)';
+            } else {
+                content.classList.remove('hidden');
+                preview.classList.add('hidden');
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        });
+    };
+
     function createParagraphBlock(data = {}) {
         const idx = blockCounter++;
+        const preview = getBlockPreview('paragraph', data);
         const div = document.createElement('div');
-        div.className = 'border border-blue-200 bg-blue-50/30 rounded-lg p-4 relative group';
+        div.className = 'border border-blue-200 bg-blue-50/30 rounded-lg relative group';
         div.setAttribute('data-block-index', idx);
         div.setAttribute('data-block-type', 'paragraph');
         div.innerHTML = `
             <input type="hidden" name="content_blocks[${idx}][type]" value="paragraph">
 
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-2">
-                    <button type="button" class="cursor-grab active:cursor-grabbing text-gray-300 hover:text-gray-500 drag-handle-block" title="Kéo để sắp xếp">
+            <div class="flex items-center justify-between px-4 py-2.5 cursor-pointer select-none" onclick="toggleBlockCollapse(this)">
+                <div class="flex items-center gap-2 min-w-0">
+                    <button type="button" class="cursor-grab active:cursor-grabbing text-gray-300 hover:text-gray-500 drag-handle-block flex-shrink-0" title="Kéo để sắp xếp" onclick="event.stopPropagation()">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
                         </svg>
                     </button>
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-blue-100 text-blue-700 rounded">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-blue-100 text-blue-700 rounded flex-shrink-0">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
                         Đoạn văn
                     </span>
+                    <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0 chevron-icon transition-transform duration-150" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </div>
-                <button type="button" onclick="removeBlock(this)"
-                        class="p-1 text-gray-300 hover:text-red-500 transition-colors" title="Xóa block">
+                <button type="button" onclick="event.stopPropagation(); removeBlock(this)"
+                        class="p-1 text-gray-300 hover:text-red-500 transition-colors flex-shrink-0" title="Xóa block">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
 
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-[11px] font-medium text-gray-500 mb-1 uppercase tracking-wider">Tiêu đề phần (EN, tùy chọn)</label>
-                    <input type="text" name="content_blocks[${idx}][heading_en]" value="${escapeHtml(data.heading_en || '')}"
-                           placeholder="VD: Early Life and Education"
-                           class="w-full px-3 py-2 text-sm border border-gray-200 rounded outline-none bg-white text-gray-800 placeholder-gray-400 focus:border-blue-400">
-                </div>
+            <p class="block-preview hidden px-4 pb-2.5 text-xs text-gray-500 italic truncate">${escapeHtml(preview)}</p>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] font-medium text-blue-600 mb-1 uppercase tracking-wider">
-                            🇬🇧 Tiếng Anh <span class="text-red-400">*</span>
-                        </label>
-                        <textarea name="content_blocks[${idx}][text_en]" rows="5"
-                                  placeholder="English paragraph content..."
-                                  class="w-full px-3 py-2 text-sm border border-gray-200 rounded outline-none bg-white text-gray-800 placeholder-gray-400 focus:border-blue-400 resize-y">${escapeHtml(data.text_en || '')}</textarea>
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-medium text-green-600 mb-1 uppercase tracking-wider">
-                            🇻🇳 Tiếng Việt
-                        </label>
-                        <textarea name="content_blocks[${idx}][text_vi]" rows="5"
-                                  placeholder="Nội dung đoạn văn bằng tiếng Việt..."
-                                  class="w-full px-3 py-2 text-sm border border-gray-200 rounded outline-none bg-white text-gray-800 placeholder-gray-400 focus:border-green-400 resize-y">${escapeHtml(data.text_vi || '')}</textarea>
+            <div class="block-content px-4 pb-4">
+                <div class="space-y-3">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-medium text-blue-600 mb-1 uppercase tracking-wider">
+                                🇬🇧 Tiếng Anh <span class="text-red-400">*</span>
+                            </label>
+                            <textarea name="content_blocks[${idx}][text_en]" rows="5"
+                                      placeholder="English paragraph content..."
+                                      class="w-full px-3 py-2 text-sm border border-gray-200 rounded outline-none bg-white text-gray-800 placeholder-gray-400 focus:border-blue-400 resize-y">${escapeHtml(data.text_en || '')}</textarea>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-green-600 mb-1 uppercase tracking-wider">
+                                🇻🇳 Tiếng Việt
+                            </label>
+                            <textarea name="content_blocks[${idx}][text_vi]" rows="5"
+                                      placeholder="Nội dung đoạn văn bằng tiếng Việt..."
+                                      class="w-full px-3 py-2 text-sm border border-gray-200 rounded outline-none bg-white text-gray-800 placeholder-gray-400 focus:border-green-400 resize-y">${escapeHtml(data.text_vi || '')}</textarea>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -131,45 +190,51 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function createQuoteBlock(data = {}) {
         const idx = blockCounter++;
+        const preview = getBlockPreview('quote', data);
         const div = document.createElement('div');
-        div.className = 'border border-amber-200 bg-amber-50/30 rounded-lg p-4 relative group';
+        div.className = 'border border-amber-200 bg-amber-50/30 rounded-lg relative group';
         div.setAttribute('data-block-index', idx);
         div.setAttribute('data-block-type', 'quote');
         div.innerHTML = `
             <input type="hidden" name="content_blocks[${idx}][type]" value="quote">
 
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-2">
-                    <button type="button" class="cursor-grab active:cursor-grabbing text-gray-300 hover:text-gray-500 drag-handle-block" title="Kéo để sắp xếp">
+            <div class="flex items-center justify-between px-4 py-2.5 cursor-pointer select-none" onclick="toggleBlockCollapse(this)">
+                <div class="flex items-center gap-2 min-w-0">
+                    <button type="button" class="cursor-grab active:cursor-grabbing text-gray-300 hover:text-gray-500 drag-handle-block flex-shrink-0" title="Kéo để sắp xếp" onclick="event.stopPropagation()">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
                         </svg>
                     </button>
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-amber-100 text-amber-700 rounded">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-amber-100 text-amber-700 rounded flex-shrink-0">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
                         Trích dẫn
                     </span>
+                    <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0 chevron-icon transition-transform duration-150" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </div>
-                <button type="button" onclick="removeBlock(this)"
-                        class="p-1 text-gray-300 hover:text-red-500 transition-colors" title="Xóa block">
+                <button type="button" onclick="event.stopPropagation(); removeBlock(this)"
+                        class="p-1 text-gray-300 hover:text-red-500 transition-colors flex-shrink-0" title="Xóa block">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
 
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-[11px] font-medium text-amber-600 mb-1 uppercase tracking-wider">Câu trích dẫn (EN) <span class="text-red-400">*</span></label>
-                    <textarea name="content_blocks[${idx}][text_en]" rows="3"
-                              placeholder='"Nothing in life is to be feared, it is only to be understood."'
-                              class="w-full px-3 py-2 text-sm border border-gray-200 rounded outline-none bg-white text-gray-800 placeholder-gray-400 focus:border-amber-400 resize-y italic">${escapeHtml(data.text_en || '')}</textarea>
-                </div>
-                <div>
-                    <label class="block text-[11px] font-medium text-gray-500 mb-1 uppercase tracking-wider">Tác giả</label>
-                    <input type="text" name="content_blocks[${idx}][author]" value="${escapeHtml(data.author || '')}"
-                           placeholder="VD: Marie Curie"
-                           class="w-full px-3 py-2 text-sm border border-gray-200 rounded outline-none bg-white text-gray-700 placeholder-gray-400 focus:border-amber-400">
+            <p class="block-preview hidden px-4 pb-2.5 text-xs text-gray-500 italic truncate">${escapeHtml(preview)}</p>
+
+            <div class="block-content px-4 pb-4">
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-[11px] font-medium text-amber-600 mb-1 uppercase tracking-wider">Câu trích dẫn (EN) <span class="text-red-400">*</span></label>
+                        <textarea name="content_blocks[${idx}][text_en]" rows="3"
+                                  placeholder='"Nothing in life is to be feared, it is only to be understood."'
+                                  class="w-full px-3 py-2 text-sm border border-gray-200 rounded outline-none bg-white text-gray-800 placeholder-gray-400 focus:border-amber-400 resize-y italic">${escapeHtml(data.text_en || '')}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-gray-500 mb-1 uppercase tracking-wider">Tác giả</label>
+                        <input type="text" name="content_blocks[${idx}][author]" value="${escapeHtml(data.author || '')}"
+                               placeholder="VD: Marie Curie"
+                               class="w-full px-3 py-2 text-sm border border-gray-200 rounded outline-none bg-white text-gray-700 placeholder-gray-400 focus:border-amber-400">
+                    </div>
                 </div>
             </div>
         `;
@@ -179,38 +244,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function createHeadingBlock(data = {}) {
         const idx = blockCounter++;
+        const preview = getBlockPreview('heading', data);
         const div = document.createElement('div');
-        div.className = 'border border-purple-200 bg-purple-50/30 rounded-lg p-4 relative group';
+        div.className = 'border border-purple-200 bg-purple-50/30 rounded-lg relative group';
         div.setAttribute('data-block-index', idx);
         div.setAttribute('data-block-type', 'heading');
         div.innerHTML = `
             <input type="hidden" name="content_blocks[${idx}][type]" value="heading">
 
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-2">
-                    <button type="button" class="cursor-grab active:cursor-grabbing text-gray-300 hover:text-gray-500 drag-handle-block" title="Kéo để sắp xếp">
+            <div class="flex items-center justify-between px-4 py-2.5 cursor-pointer select-none" onclick="toggleBlockCollapse(this)">
+                <div class="flex items-center gap-2 min-w-0">
+                    <button type="button" class="cursor-grab active:cursor-grabbing text-gray-300 hover:text-gray-500 drag-handle-block flex-shrink-0" title="Kéo để sắp xếp" onclick="event.stopPropagation()">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
                         </svg>
                     </button>
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-purple-100 text-purple-700 rounded">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-purple-100 text-purple-700 rounded flex-shrink-0">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h10M7 12h10M7 17h4"/></svg>
                         Tiêu đề
                     </span>
+                    <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0 chevron-icon transition-transform duration-150" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </div>
-                <button type="button" onclick="removeBlock(this)"
-                        class="p-1 text-gray-300 hover:text-red-500 transition-colors" title="Xóa block">
+                <button type="button" onclick="event.stopPropagation(); removeBlock(this)"
+                        class="p-1 text-gray-300 hover:text-red-500 transition-colors flex-shrink-0" title="Xóa block">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
 
-            <div>
-                <label class="block text-[11px] font-medium text-purple-600 mb-1 uppercase tracking-wider">Tiêu đề (EN) <span class="text-red-400">*</span></label>
-                <input type="text" name="content_blocks[${idx}][text_en]" value="${escapeHtml(data.text_en || '')}"
-                       placeholder="VD: The Discovery of Radioactivity"
-                       class="w-full px-3 py-2.5 text-sm font-semibold border border-gray-200 rounded outline-none bg-white text-gray-800 placeholder-gray-400 focus:border-purple-400">
+            <p class="block-preview hidden px-4 pb-2.5 text-xs text-gray-500 italic truncate">${escapeHtml(preview)}</p>
+
+            <div class="block-content px-4 pb-4">
+                <div>
+                    <label class="block text-[11px] font-medium text-purple-600 mb-1 uppercase tracking-wider">Tiêu đề (EN) <span class="text-red-400">*</span></label>
+                    <input type="text" name="content_blocks[${idx}][text_en]" value="${escapeHtml(data.text_en || '')}"
+                           placeholder="VD: The Discovery of Radioactivity"
+                           class="w-full px-3 py-2.5 text-sm font-semibold border border-gray-200 rounded outline-none bg-white text-gray-800 placeholder-gray-400 focus:border-purple-400">
+                </div>
             </div>
         `;
         blocksContainer.appendChild(div);
@@ -267,6 +338,86 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Drag-and-drop for content blocks
     initDragDrop(blocksContainer, '.drag-handle-block', '[data-block-index]', reindexBlocks);
+
+
+    // ═════════════════════════════════════════════════════════════════════
+    // JSON IMPORT – auto-fill form from AI JSON output
+    // ═════════════════════════════════════════════════════════════════════
+    window.importJsonData = function () {
+        const textarea = document.getElementById('json-import-textarea');
+        const rawJson = textarea.value.trim();
+        if (!rawJson) {
+            alert('Vui lòng dán dữ liệu JSON vào ô bên trên.');
+            return;
+        }
+
+        let data;
+        try {
+            data = JSON.parse(rawJson);
+        } catch (e) {
+            alert('Dữ liệu JSON không hợp lệ. Vui lòng kiểm tra lại.\n\nLỗi: ' + e.message);
+            return;
+        }
+
+        if (!confirm('Import sẽ ghi đè toàn bộ dữ liệu hiện tại. Bạn có chắc chắn?')) return;
+
+        // Fill basic info
+        if (data.name) {
+            const nameEl = document.getElementById('name');
+            if (nameEl) nameEl.value = data.name;
+        }
+        if (data.short_description) {
+            const descEl = document.getElementById('short_description');
+            if (descEl) descEl.value = data.short_description;
+        }
+
+        // Fill YouTube URL
+        if (data.youtube_url && data.youtube_url !== 'Không có') {
+            const ytEl = document.getElementById('youtube_url');
+            if (ytEl) ytEl.value = data.youtube_url;
+        }
+
+        // Fill categories
+        if (data.categories && Array.isArray(data.categories)) {
+            document.querySelectorAll('input[name="category_ids[]"]').forEach(cb => {
+                const label = cb.closest('label')?.querySelector('span')?.textContent?.trim()?.toLowerCase();
+                cb.checked = data.categories.some(c => c.toLowerCase() === label);
+            });
+        }
+
+        // Fill key facts
+        if (data.key_facts && Array.isArray(data.key_facts)) {
+            factsContainer.innerHTML = '';
+            data.key_facts.forEach((fact, i) => {
+                renderKeyFact({ label: fact.label || '', value: fact.value || '' }, i);
+            });
+        }
+
+        // Fill content blocks
+        if (data.content_blocks && Array.isArray(data.content_blocks)) {
+            blocksContainer.innerHTML = '';
+            blockCounter = 0;
+            data.content_blocks.forEach(block => {
+                switch (block.type) {
+                    case 'paragraph': createParagraphBlock(block); break;
+                    case 'quote':     createQuoteBlock(block);     break;
+                    case 'heading':   createHeadingBlock(block);   break;
+                }
+            });
+            updateEmptyState();
+        }
+
+        // Clear the textarea and show success
+        textarea.value = '';
+        const statusEl = document.getElementById('json-import-status');
+        statusEl.textContent = '✓ Import thành công!';
+        statusEl.classList.remove('hidden', 'text-red-600');
+        statusEl.classList.add('text-green-600');
+        setTimeout(() => statusEl.classList.add('hidden'), 3000);
+
+        // Scroll to top of form
+        document.getElementById('figure-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
 
 
     // ═════════════════════════════════════════════════════════════════════
