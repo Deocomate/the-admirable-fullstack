@@ -23,6 +23,13 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 
-# Added by CodebaseTracker
+# AI Agent files
 .agent/
+.agents/
+.gemini/
+AGENTS.md
+GEMINI.md
+CLAUDE.md
+.repomixignore
+opencode.json
 _codebase/
