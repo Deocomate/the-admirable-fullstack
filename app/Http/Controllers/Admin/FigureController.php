@@ -49,7 +49,7 @@ class FigureController extends Controller
     {
         $data = $request->validated();
 
-        $this->figureService->create(
+        $figure = $this->figureService->create(
             data: array_merge($data, [
                 'avatar'         => $request->file('avatar'),
                 'audio'          => $request->file('audio'),
@@ -59,7 +59,7 @@ class FigureController extends Controller
             categoryIds: $data['category_ids'] ?? [],
         );
 
-        return redirect()->route('admin.figures.index')
+        return redirect()->route('admin.figures.edit', $figure->id)
             ->with('success', 'Nhân vật đã được tạo thành công.');
     }
 
@@ -92,7 +92,7 @@ class FigureController extends Controller
             categoryIds: $data['category_ids'] ?? [],
         );
 
-        return redirect()->route('admin.figures.index')
+        return redirect()->route('admin.figures.edit', $figure)
             ->with('success', 'Nhân vật đã được cập nhật thành công.');
     }
 

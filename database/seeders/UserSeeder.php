@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
     {
         // Create default superadmin — only if it doesn't already exist
         User::firstOrCreate(
-            ['email' => 'superadmin@thceramics.vn'],
+            ['email' => 'admin@gmail.com'],
             [
                 'name'     => 'Super Admin',
                 'role'     => 'superadmin',

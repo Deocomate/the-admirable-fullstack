@@ -421,6 +421,92 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // ═════════════════════════════════════════════════════════════════════
+    // COPY ENGLISH CONTENT
+    // ═════════════════════════════════════════════════════════════════════
+    window.copyEnglishContent = function () {
+        const blocks = blocksContainer.querySelectorAll('[data-block-index]');
+        const parts = [];
+
+        blocks.forEach(block => {
+            const type = block.getAttribute('data-block-type');
+            const textEnEl = block.querySelector('textarea[name*="[text_en]"]')
+                          || block.querySelector('input[name*="[text_en]"]');
+            const textEn = textEnEl?.value?.trim() || '';
+
+            if (!textEn) return;
+
+            if (type === 'heading') {
+                parts.push(textEn);
+                parts.push(''); // blank line after heading
+            } else if (type === 'paragraph') {
+                parts.push(textEn);
+                parts.push(''); // blank line after paragraph
+            } else if (type === 'quote') {
+                const authorEl = block.querySelector('input[name*="[author]"]');
+                const author = authorEl?.value?.trim() || '';
+                parts.push(`"${textEn}"${author ? ` — ${author}` : ''}`);
+                parts.push(''); // blank line after quote
+            }
+        });
+
+        const content = parts.join('\n').trim();
+
+        if (!content) {
+            alert('Chưa có nội dung tiếng Anh nào để copy.');
+            return;
+        }
+
+        const btn = document.getElementById('copy-en-content-btn');
+        const iconDefault = document.getElementById('copy-en-icon');
+        const iconSuccess = document.getElementById('copy-en-icon-success');
+        const textEl = document.getElementById('copy-en-text');
+
+        navigator.clipboard.writeText(content).then(() => {
+            iconDefault.classList.add('hidden');
+            iconSuccess.classList.remove('hidden');
+            textEl.textContent = 'Đã copy!';
+            btn.classList.remove('text-indigo-600', 'border-indigo-200');
+            btn.classList.add('text-green-600', 'border-green-200', 'bg-green-50');
+
+            setTimeout(() => {
+                iconDefault.classList.remove('hidden');
+                iconSuccess.classList.add('hidden');
+                textEl.textContent = 'Copy nội dung EN';
+                btn.classList.add('text-indigo-600', 'border-indigo-200');
+                btn.classList.remove('text-green-600', 'border-green-200', 'bg-green-50');
+            }, 2500);
+        }).catch(() => {
+            // Fallback for older browsers
+            const textarea = document.createElement('textarea');
+            textarea.value = content;
+            textarea.style.cssText = 'position:fixed;left:-9999px;';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                iconDefault.classList.add('hidden');
+                iconSuccess.classList.remove('hidden');
+                textEl.textContent = 'Đã copy!';
+                btn.classList.remove('text-indigo-600', 'border-indigo-200');
+                btn.classList.add('text-green-600', 'border-green-200', 'bg-green-50');
+
+                setTimeout(() => {
+                    iconDefault.classList.remove('hidden');
+                    iconSuccess.classList.add('hidden');
+                    textEl.textContent = 'Copy nội dung EN';
+                    btn.classList.add('text-indigo-600', 'border-indigo-200');
+                    btn.classList.remove('text-green-600', 'border-green-200', 'bg-green-50');
+                }, 2500);
+            } catch (e) {
+                textEl.textContent = 'Lỗi, thử lại!';
+                setTimeout(() => { textEl.textContent = 'Copy nội dung EN'; }, 2000);
+            }
+            document.body.removeChild(textarea);
+        });
+    };
+
+
+    // ═════════════════════════════════════════════════════════════════════
     // UTILITIES
     // ═════════════════════════════════════════════════════════════════════
 
