@@ -28,7 +28,7 @@
                 value="{{ old('email') }}"
                 required
                 autofocus
-                placeholder="admin@thceramics.vn"
+                placeholder="admin@gmail.colm"
                 class="w-full px-3 py-2.5 text-sm border rounded outline-none transition-colors duration-150
                        bg-white text-gray-800 placeholder-gray-400
                        {{ $errors->has('email') ? 'border-red-400' : 'border-gray-300' }}"
