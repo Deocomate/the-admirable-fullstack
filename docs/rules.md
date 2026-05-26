@@ -1,40 +1,22 @@
-# Coding Rules
+# Quy chuẩn & Kiến trúc dự án (Rules)
 
-## Code Flow (Bắt buộc)
-Luồng code phải tuân thủ chặt chẽ theo thứ tự sau:
+## 1. Cấu trúc thư mục Backend (Service Pattern)
+Dự án áp dụng Service Pattern để giảm tải logic cho Controller.
+- **Controller** (`app/Http/Controllers`): Chỉ làm nhiệm vụ nhận Request, Validate (thông qua FormRequest) và trả về View/Response.
+- **Service** (`app/Services`): Nơi xử lý Business Logic (Ví dụ: Upload file, format data, thao tác với Model).
+- **Helper** (`app/Helpers/FileUploadHelper.php`): Xử lý chung các tác vụ xóa/upload file vật lý.
 
-`/routes/web.php` → `/app/Models` → `/app/Services` → `/app/Http/Controllers` → `/resources/views`
+## 2. Xử lý Dữ liệu Nội dung (Content Blocks)
+Để hỗ trợ nội dung song ngữ linh hoạt, bảng `figures` và `story_snippets` không dùng cột `text` lưu HTML thông thường mà dùng **cột kiểu JSON (`content_blocks`)**.
 
-## Helpers
-- Tạo helper khi cần thiết.
-- Vị trí helper: `/app/Helpers`.
+Cấu trúc JSON quy định gồm 3 type chính:
+- `paragraph`: Gồm `text_en`, `text_vi`, `heading_en` (Tùy chọn).
+- `heading`: Gồm `text_en`.
+- `quote`: Gồm `text_en`, `author`.
 
-## Quy tắc phân tách component tái sử dụng
-- Component tái sử dụng phải tách rõ theo ngữ cảnh `admin` và `client`.
-- Không dùng chung lẫn lộn giữa hai khu vực nếu không có lý do rõ ràng.
+*(Lưu ý: Có hàm fallback build lại cột `content` dạng text thuần để dễ search trong database).*
 
-## Quy tắc đặt tên View
-Khi tạo view, bắt buộc tuân thủ pattern:
-
-- `admin.{module_name}.{action}.blade.php`
-- `client.{module_name}.{action}.blade.php`
-
-## Quy tắc đặt tên Component
-Khi tạo component, bắt buộc tuân thủ pattern:
-
-- `components.admin.{component_group_name}.{component_name}.blade.php`
-- `components.client.{component_group_name}.{component_name}.blade.php`
-
-## Quy tắc Layout
-- Layout của `admin` và `client` phải được tách thành các component tái sử dụng.
-- Vị trí lưu:
-	- `/resources/views/components/admin`
-	- `/resources/views/components/client`
-
-## Tiêu chuẩn chất lượng code
-- Code sạch, chuẩn, dễ đọc, dễ bảo trì, dễ tái sử dụng.
-- Tuân thủ đúng quy tắc và cú pháp của PHP/Laravel.
-
-## TailwindCSS
-- Luôn luôn sử dụng cdn.
-- Không sử dụng vite, npm, ... các tiện ích mà chỉ sử dụng thư viện từ link cdn.
+## 3. Quy chuẩn Frontend
+- **TailwindCSS:** KHÔNG dùng build step phức tạp (Node.js/NPM), Tailwind được load qua script cdn tĩnh trong layout với custom config ở tag `<script>`.
+- **UI/UX Design System:** Lấy cảm hứng từ thiết kế của Apple. Sử dụng các biến màu tự định nghĩa: `apple-black`, `apple-gray`, `apple-blue`, `apple-bg`.
+- **JavaScript:** Chỉ dùng **Vanilla JS**. Không dùng framework. Các script (Scroll reveal, Audio Player, Drag & Drop) được quản lý ngay trong các file `.blade.php`.

@@ -1,27 +1,25 @@
-# Page Sitemap
+# Cấu trúc Sitemap (Route Map)
 
-## 1. Phân hệ Giao diện Người đọc (Thư mục: `/client` hoặc root `/`)
+Dự án được chia thành 2 không gian chính: Client (Public) và Admin (Quản trị).
 
-Đây là khu vực public, nơi người dùng cuối sẽ truy cập. Cấu trúc này được thiết kế để dễ dàng chuyển đổi thành các route (tuyến đường) tĩnh hoặc động trong tương lai.
+## 🌍 Khách hàng (Client)
+- `/` - Trang chủ (Featured, Latest, Danh mục, Stat)
+- `/linh-vuc` - Danh sách tất cả nhân vật theo lĩnh vực
+- `/linh-vuc/{slug}` - Lọc nhân vật theo 1 lĩnh vực cụ thể
+- `/tim-kiem?q={key}&category={slug}` - Tìm kiếm nhân vật
+- `/nhan-vat/{slug}` - Chi tiết nhân vật (Nội dung song ngữ, Media, Fact, Story Snippets liên quan)
+- `/cau-chuyen/{id}` - Chi tiết mẩu chuyện
+- `/ve-chung-toi` - Trang giới thiệu nền tảng
+- `/lien-he` - Thông tin liên hệ và CTA hợp tác
 
-- `index.html` — Màn hình Trang chủ (Homepage).
-- `search.html` — Màn hình Kết quả Tìm kiếm (Search Results).
-- `category.html` — Màn hình Danh sách theo Lĩnh vực.  
-	Lưu ý: Khi ghép code thực tế, trang này thường sẽ nhận tham số ID hoặc slug của lĩnh vực.
-- `figure-detail.html` — Màn hình Chi tiết Hồ sơ Nhân vật. Nơi chứa audio bài đọc chính và video YouTube tổng quan.
-- `story-detail.html` — Màn hình Chi tiết Mẩu chuyện. Dành riêng cho từng giai thoại nhỏ với audio/video riêng lẻ.
-- `about-us.html` — Giới thiệu về project này, mục đích hướng tới.
-
-## 2. Phân hệ Hệ thống Quản trị (Thư mục: `/admin`)
-
-Khu vực này dành riêng cho quản trị viên, cần một bố cục (layout) riêng biệt, thường bao gồm một Sidebar (thanh bên) bên trái và Topbar (thanh trên) cố định.
-
-- `login.html` — Màn hình Đăng nhập (Admin Login). Layout độc lập, không chứa sidebar.
-- `index.html` (hoặc `dashboard.html`) — Màn hình Bảng điều khiển trung tâm (Dashboard).
-- `categories.html` — Màn hình Quản lý Danh mục/Lĩnh vực (Bảng danh sách).
-- `figures.html` — Màn hình Quản lý Hồ sơ Nhân vật (Bảng danh sách).
-- `figure-form.html` — Màn hình Thêm mới hoặc Chỉnh sửa Nhân vật.  
-	Gộp chung giao diện Add/Edit vào một form, chỉ khác trạng thái nút Lưu.
-- `stories.html` — Màn hình Quản lý Mẩu chuyện (Bảng danh sách).
-- `story-form.html` — Màn hình Thêm mới hoặc Chỉnh sửa Mẩu chuyện.
-- `about-us-form.html` — Quản lý phần About Us.
+## 🔒 Quản trị (Admin)
+- `/admin/login` - Đăng nhập
+- `/admin/forgot-password` & `/admin/reset-password` - Quên mật khẩu
+- `/admin/dashboard` - Bảng điều khiển, thống kê số liệu
+- `/admin/categories` - CRUD Lĩnh vực
+- `/admin/figures` - CRUD Nhân vật (Form hỗ trợ tạo AI Prompt & Import JSON)
+- `/admin/featured-figures` - Quản lý danh sách nhân vật ghim lên Trang chủ (Hỗ trợ kéo thả)
+- `/admin/stories` - CRUD Mẩu chuyện ngắn (Snippet)
+- `/admin/contacts` - Quản lý kênh liên hệ
+- `/admin/settings/about-us` - Chỉnh sửa nội dung động của trang "Về chúng tôi"
+- `/admin/users` - Quản lý tài khoản Admin (Chỉ Superadmin mới truy cập được)
