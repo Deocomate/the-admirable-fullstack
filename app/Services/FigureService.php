@@ -13,8 +13,8 @@ class FigureService
     /**
      * Get paginated list of figures with eager-loaded categories.
      *
-     * @param string|null $search      Search query.
-     * @param int|null    $categoryId  Filter by category.
+     * @param  string|null  $search  Search query.
+     * @param  int|null  $categoryId  Filter by category.
      */
     public function getAll(?string $search = null, ?int $categoryId = null, int $perPage = 15): LengthAwarePaginator
     {
@@ -44,23 +44,25 @@ class FigureService
     /**
      * Create a new figure.
      *
-     * @param array  $data          Form data.
-     * @param array  $categoryIds   Array of category IDs.
+     * @param  array  $data  Form data.
+     * @param  array  $categoryIds  Array of category IDs.
      */
     public function create(array $data, array $categoryIds = []): Figure
     {
         $slug = Str::slug($data['name']);
 
         $figureData = [
-            'name'              => $data['name'],
-            'slug'              => $this->uniqueSlug($slug),
+            'name' => $data['name'],
+            'slug' => $this->uniqueSlug($slug),
             'short_description' => $data['short_description'] ?? null,
-            'key_facts'         => $this->normalizeKeyFacts($data['key_facts'] ?? []),
-            'content_blocks'    => $this->normalizeContentBlocks($data['content_blocks'] ?? []),
-            'content'           => $this->buildPlainContent($data['content_blocks'] ?? []),
-            'youtube_url'       => $data['youtube_url'] ?? null,
-            'avatar_path'       => null,
-            'audio_path'        => null,
+            'key_facts' => $this->normalizeKeyFacts($data['key_facts'] ?? []),
+            'content_blocks' => $this->normalizeContentBlocks($data['content_blocks'] ?? []),
+            'content' => $this->buildPlainContent($data['content_blocks'] ?? []),
+            'youtube_url' => $data['youtube_url'] ?? null,
+            'avatar_path' => null,
+            'audio_path' => null,
+            'audio_status' => 'idle',
+            'audio_error' => null,
         ];
 
         // Handle avatar upload
@@ -75,12 +77,14 @@ class FigureService
             $figureData['audio_path'] = FileUploadHelper::upload(
                 $data['audio'], 'uploads/audio', $slug
             );
+            $figureData['audio_status'] = 'completed';
+            $figureData['audio_error'] = null;
         }
 
         $figure = Figure::create($figureData);
 
         // Sync categories
-        if (!empty($categoryIds)) {
+        if (! empty($categoryIds)) {
             $figure->categories()->sync($categoryIds);
         }
 
@@ -90,22 +94,22 @@ class FigureService
     /**
      * Update an existing figure.
      *
-     * @param array  $data          Form data.
-     * @param array  $categoryIds   Array of category IDs.
+     * @param  array  $data  Form data.
+     * @param  array  $categoryIds  Array of category IDs.
      */
     public function update(int $id, array $data, array $categoryIds = []): Figure
     {
         $figure = $this->findById($id);
-        $slug   = Str::slug($data['name']);
+        $slug = Str::slug($data['name']);
 
         $figureData = [
-            'name'              => $data['name'],
-            'slug'              => $figure->slug !== $slug ? $this->uniqueSlug($slug, $id) : $figure->slug,
+            'name' => $data['name'],
+            'slug' => $figure->slug !== $slug ? $this->uniqueSlug($slug, $id) : $figure->slug,
             'short_description' => $data['short_description'] ?? null,
-            'key_facts'         => $this->normalizeKeyFacts($data['key_facts'] ?? []),
-            'content_blocks'    => $this->normalizeContentBlocks($data['content_blocks'] ?? []),
-            'content'           => $this->buildPlainContent($data['content_blocks'] ?? []),
-            'youtube_url'       => $data['youtube_url'] ?? null,
+            'key_facts' => $this->normalizeKeyFacts($data['key_facts'] ?? []),
+            'content_blocks' => $this->normalizeContentBlocks($data['content_blocks'] ?? []),
+            'content' => $this->buildPlainContent($data['content_blocks'] ?? []),
+            'youtube_url' => $data['youtube_url'] ?? null,
         ];
 
         // Handle avatar upload (replace old)
@@ -120,6 +124,8 @@ class FigureService
             $figureData['audio_path'] = FileUploadHelper::replace(
                 $data['audio'], $figure->audio_path, 'uploads/audio', $slug
             );
+            $figureData['audio_status'] = 'completed';
+            $figureData['audio_error'] = null;
         }
 
         $figure->update($figureData);
@@ -158,10 +164,10 @@ class FigureService
     private function uniqueSlug(string $slug, ?int $excludeId = null): string
     {
         $original = $slug;
-        $counter  = 1;
+        $counter = 1;
 
         while (Figure::where('slug', $slug)->when($excludeId, fn ($q) => $q->where('id', '!=', $excludeId))->exists()) {
-            $slug = $original . '-' . $counter++;
+            $slug = $original.'-'.$counter++;
         }
 
         return $slug;
@@ -173,7 +179,7 @@ class FigureService
     private function normalizeKeyFacts(array $facts): array
     {
         return array_values(
-            array_filter($facts, fn ($f) => !empty(trim($f['label'] ?? '')) && !empty(trim($f['value'] ?? '')))
+            array_filter($facts, fn ($f) => ! empty(trim($f['label'] ?? '')) && ! empty(trim($f['value'] ?? '')))
         );
     }
 
@@ -187,10 +193,10 @@ class FigureService
                 $type = $block['type'] ?? '';
 
                 return match ($type) {
-                    'paragraph' => !empty(trim($block['text_en'] ?? '')),
-                    'quote'     => !empty(trim($block['text_en'] ?? '')),
-                    'heading'   => !empty(trim($block['text_en'] ?? '')),
-                    default     => false,
+                    'paragraph' => ! empty(trim($block['text_en'] ?? '')),
+                    'quote' => ! empty(trim($block['text_en'] ?? '')),
+                    'heading' => ! empty(trim($block['text_en'] ?? '')),
+                    default => false,
                 };
             })
         );
@@ -206,25 +212,25 @@ class FigureService
         foreach ($blocks as $block) {
             $type = $block['type'] ?? '';
 
-            if ($type === 'heading' && !empty($block['text_en'])) {
+            if ($type === 'heading' && ! empty($block['text_en'])) {
                 $parts[] = $block['text_en'];
             }
 
             if ($type === 'paragraph') {
-                if (!empty($block['heading_en'])) {
+                if (! empty($block['heading_en'])) {
                     $parts[] = $block['heading_en'];
                 }
-                if (!empty($block['text_en'])) {
+                if (! empty($block['text_en'])) {
                     $parts[] = $block['text_en'];
                 }
-                if (!empty($block['text_vi'])) {
+                if (! empty($block['text_vi'])) {
                     $parts[] = $block['text_vi'];
                 }
             }
 
-            if ($type === 'quote' && !empty($block['text_en'])) {
+            if ($type === 'quote' && ! empty($block['text_en'])) {
                 $author = $block['author'] ?? '';
-                $parts[] = '"' . $block['text_en'] . '"' . ($author ? " — {$author}" : '');
+                $parts[] = '"'.$block['text_en'].'"'.($author ? " — {$author}" : '');
             }
         }
 

@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Figure extends Model
 {
@@ -21,11 +21,13 @@ class Figure extends Model
         'content_blocks',
         'content',
         'audio_path',
+        'audio_status',
+        'audio_error',
         'youtube_url',
     ];
 
     protected $casts = [
-        'key_facts'      => 'array',
+        'key_facts' => 'array',
         'content_blocks' => 'array',
     ];
 

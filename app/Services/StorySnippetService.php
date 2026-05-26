@@ -12,8 +12,8 @@ class StorySnippetService
     /**
      * Get paginated list of story snippets with eager-loaded figure.
      *
-     * @param int|null    $figureId  Filter by figure.
-     * @param string|null $search    Search query.
+     * @param  int|null  $figureId  Filter by figure.
+     * @param  string|null  $search  Search query.
      */
     public function getAll(?int $figureId = null, ?string $search = null, int $perPage = 15): LengthAwarePaginator
     {
@@ -41,21 +41,23 @@ class StorySnippetService
     /**
      * Create a new story snippet.
      *
-     * @param array $data  Form data including figure_id.
+     * @param  array  $data  Form data including figure_id.
      */
     public function create(array $data): StorySnippet
     {
         $contentBlocks = $this->normalizeContentBlocks($data['content_blocks'] ?? []);
 
         $snippetData = [
-            'figure_id'      => $data['figure_id'],
-            'title'          => $data['title'],
-            'subtitle'       => $data['subtitle'] ?? null,
+            'figure_id' => $data['figure_id'],
+            'title' => $data['title'],
+            'subtitle' => $data['subtitle'] ?? null,
             'content_blocks' => $contentBlocks,
-            'content'        => $this->buildPlainContent($contentBlocks),
-            'youtube_url'    => $data['youtube_url'] ?? null,
-            'image_path'     => null,
-            'audio_path'     => null,
+            'content' => $this->buildPlainContent($contentBlocks),
+            'youtube_url' => $data['youtube_url'] ?? null,
+            'image_path' => null,
+            'audio_path' => null,
+            'audio_status' => 'idle',
+            'audio_error' => null,
         ];
 
         // Handle image upload
@@ -70,6 +72,8 @@ class StorySnippetService
             $snippetData['audio_path'] = FileUploadHelper::upload(
                 $data['audio'], 'uploads/stories/audio'
             );
+            $snippetData['audio_status'] = 'completed';
+            $snippetData['audio_error'] = null;
         }
 
         return StorySnippet::create($snippetData);
@@ -78,7 +82,7 @@ class StorySnippetService
     /**
      * Update an existing story snippet.
      *
-     * @param array $data  Form data.
+     * @param  array  $data  Form data.
      */
     public function update(int $id, array $data): StorySnippet
     {
@@ -86,12 +90,12 @@ class StorySnippetService
         $contentBlocks = $this->normalizeContentBlocks($data['content_blocks'] ?? []);
 
         $snippetData = [
-            'figure_id'      => $data['figure_id'],
-            'title'          => $data['title'],
-            'subtitle'       => $data['subtitle'] ?? null,
+            'figure_id' => $data['figure_id'],
+            'title' => $data['title'],
+            'subtitle' => $data['subtitle'] ?? null,
             'content_blocks' => $contentBlocks,
-            'content'        => $this->buildPlainContent($contentBlocks),
-            'youtube_url'    => $data['youtube_url'] ?? null,
+            'content' => $this->buildPlainContent($contentBlocks),
+            'youtube_url' => $data['youtube_url'] ?? null,
         ];
 
         // Handle image upload (replace old)
@@ -106,6 +110,8 @@ class StorySnippetService
             $snippetData['audio_path'] = FileUploadHelper::replace(
                 $data['audio'], $snippet->audio_path, 'uploads/stories/audio'
             );
+            $snippetData['audio_status'] = 'completed';
+            $snippetData['audio_error'] = null;
         }
 
         $snippet->update($snippetData);
@@ -136,10 +142,10 @@ class StorySnippetService
                 $type = $block['type'] ?? '';
 
                 return match ($type) {
-                    'paragraph' => !empty(trim($block['text_en'] ?? '')),
-                    'heading'   => !empty(trim($block['text_en'] ?? '')),
-                    'quote'     => !empty(trim($block['text_en'] ?? '')),
-                    default     => false,
+                    'paragraph' => ! empty(trim($block['text_en'] ?? '')),
+                    'heading' => ! empty(trim($block['text_en'] ?? '')),
+                    'quote' => ! empty(trim($block['text_en'] ?? '')),
+                    default => false,
                 };
             })
         );
@@ -156,25 +162,25 @@ class StorySnippetService
             $type = $block['type'] ?? '';
 
             if ($type === 'paragraph') {
-                if (!empty($block['heading_en'])) {
+                if (! empty($block['heading_en'])) {
                     $parts[] = $block['heading_en'];
                 }
-                if (!empty($block['text_en'])) {
+                if (! empty($block['text_en'])) {
                     $parts[] = $block['text_en'];
                 }
-                if (!empty($block['text_vi'])) {
+                if (! empty($block['text_vi'])) {
                     $parts[] = $block['text_vi'];
                 }
             } elseif ($type === 'heading') {
-                if (!empty($block['text_en'])) {
+                if (! empty($block['text_en'])) {
                     $parts[] = $block['text_en'];
                 }
             } elseif ($type === 'quote') {
-                if (!empty($block['text_en'])) {
+                if (! empty($block['text_en'])) {
                     $parts[] = $block['text_en'];
                 }
-                if (!empty($block['author'])) {
-                    $parts[] = '— ' . $block['author'];
+                if (! empty($block['author'])) {
+                    $parts[] = '— '.$block['author'];
                 }
             }
         }

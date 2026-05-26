@@ -1,4 +1,4 @@
-{{-- ── Media Card ─────────────────────────────────────────────────────── --}}
+{{-- Media Card --}}
 <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
     <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2 mb-4">
         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -21,7 +21,7 @@
         <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/webp"
                class="w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded file:border-0
                       file:text-xs file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200">
-        <p class="mt-1 text-xs text-gray-400">JPG, PNG, WEBP. Tối đa 5MB.</p>
+        <p class="mt-1 text-xs text-gray-400">JPG, PNG, WEBP. Max 5MB.</p>
         @error('image')
             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
         @enderror
@@ -29,22 +29,10 @@
 
     {{-- Audio upload --}}
     <div class="mb-5">
-        <label for="audio" class="block text-xs font-medium text-gray-600 mb-1.5">File Audio</label>
-        @if(isset($story) && $story->audio_path)
-            <div class="mb-2">
-                <audio controls class="w-full h-10">
-                    <source src="{{ asset('storage/' . $story->audio_path) }}" type="audio/mpeg">
-                </audio>
-                <span class="text-xs text-gray-400">Audio hiện tại. Chọn file mới để thay thế.</span>
-            </div>
-        @endif
-        <input type="file" id="audio" name="audio" accept="audio/mpeg,audio/wav"
-               class="w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded file:border-0
-                      file:text-xs file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200">
-        <p class="mt-1 text-xs text-gray-400">MP3, WAV. Tối đa 20MB.</p>
-        @error('audio')
-            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-        @enderror
+        @include('admin.partials.audio-generator', [
+            'audioModel' => $story ?? null,
+            'audioType' => 'story',
+        ])
     </div>
 
     {{-- YouTube URL --}}

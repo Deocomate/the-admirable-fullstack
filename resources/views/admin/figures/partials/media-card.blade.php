@@ -1,4 +1,4 @@
-{{-- ── Media Card (Avatar, Audio, YouTube) ────────────────────────────── --}}
+{{-- Media Card (Avatar, Audio, YouTube) --}}
 <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
     <h2 class="text-sm font-semibold text-gray-700 mb-5 flex items-center gap-2">
         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,24 +34,10 @@
 
         {{-- Audio upload --}}
         <div>
-            <label for="audio" class="block text-xs font-medium text-gray-600 mb-1.5">
-                File Audio (Bài đọc)
-            </label>
-            @if(isset($figure) && $figure->audio_path)
-                <div class="mb-2">
-                    <audio controls class="w-full h-9" style="border-radius:6px;">
-                        <source src="{{ asset('storage/' . $figure->audio_path) }}" type="audio/mpeg">
-                    </audio>
-                    <span class="text-xs text-gray-400 mt-1 block">Chọn file mới để thay thế.</span>
-                </div>
-            @endif
-            <input type="file" id="audio" name="audio" accept="audio/mpeg,audio/wav"
-                   class="w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-3 file:rounded file:border-0
-                          file:text-xs file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200">
-            <p class="mt-1 text-xs text-gray-400">MP3, WAV. Max 20MB.</p>
-            @error('audio')
-                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-            @enderror
+            @include('admin.partials.audio-generator', [
+                'audioModel' => $figure ?? null,
+                'audioType' => 'figure',
+            ])
         </div>
 
         <hr class="border-gray-100">

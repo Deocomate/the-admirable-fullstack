@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AudioController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ContactController;
@@ -8,13 +9,13 @@ use App\Http\Controllers\Admin\FigureController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StorySnippetController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Client\HomeController as ClientHomeController;
-use App\Http\Controllers\Client\CategoryController as ClientCategoryController;
-use App\Http\Controllers\Client\FigureController as ClientFigureController;
-use App\Http\Controllers\Client\StorySnippetController as ClientStorySnippetController;
-use App\Http\Controllers\Client\SearchController as ClientSearchController;
 use App\Http\Controllers\Client\AboutUsController as ClientAboutUsController;
+use App\Http\Controllers\Client\CategoryController as ClientCategoryController;
 use App\Http\Controllers\Client\ContactController as ClientContactController;
+use App\Http\Controllers\Client\FigureController as ClientFigureController;
+use App\Http\Controllers\Client\HomeController as ClientHomeController;
+use App\Http\Controllers\Client\SearchController as ClientSearchController;
+use App\Http\Controllers\Client\StorySnippetController as ClientStorySnippetController;
 use Illuminate\Support\Facades\Route;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -71,6 +72,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
         // ── Content management ───────────────────────────────────────────
         Route::resource('categories', CategoryController::class)->except(['show']);
+        Route::post('audio/generate/{type}/{id}', [AudioController::class, 'generate'])->name('audio.generate');
+        Route::post('audio/cancel/{type}/{id}', [AudioController::class, 'cancel'])->name('audio.cancel');
+        Route::get('audio/status/{type}/{id}', [AudioController::class, 'status'])->name('audio.status');
         Route::resource('figures', FigureController::class)->except(['show']);
         Route::get('featured-figures', [FeaturedFigureController::class, 'index'])->name('featured-figures.index');
         Route::post('featured-figures', [FeaturedFigureController::class, 'store'])->name('featured-figures.store');
@@ -81,5 +85,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // ── Settings ─────────────────────────────────────────────────────
         Route::get('settings/about-us', [SettingController::class, 'editAboutUs'])->name('settings.about-us');
-        Route::post('settings/about-us', [SettingController::class, 'updateAboutUs'])->name('settings.about-us.submit');    });
+        Route::post('settings/about-us', [SettingController::class, 'updateAboutUs'])->name('settings.about-us.submit');
+    });
 });

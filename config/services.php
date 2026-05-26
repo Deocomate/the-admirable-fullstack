@@ -28,6 +28,13 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'azure_tts' => [
+        'key' => env('AZURE_TTS_KEY'),
+        'region' => env('AZURE_TTS_REGION', 'eastus'),
+        'voice' => env('AZURE_TTS_VOICE', 'en-US-AriaNeural'),
+        'output_format' => env('AZURE_TTS_OUTPUT_FORMAT', 'audio-24khz-48kbitrate-mono-mp3'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

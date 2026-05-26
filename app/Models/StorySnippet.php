@@ -18,6 +18,8 @@ class StorySnippet extends Model
         'content_blocks',
         'image_path',
         'audio_path',
+        'audio_status',
+        'audio_error',
         'youtube_url',
     ];
 
