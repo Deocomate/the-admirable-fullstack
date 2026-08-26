@@ -38,3 +38,12 @@ storage.rar
 
 storage.zip
 storage.rar
+
+# Python / FastAPI
+.venv/
+__pycache__/
+*.pyc
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+media/
