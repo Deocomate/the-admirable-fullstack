@@ -1,0 +1,26 @@
+from typing import Protocol
+
+from admirable.domain.entities.featured_figure import FeaturedFigure
+from admirable.domain.entities.figure import Figure
+
+
+class FeaturedFigureRepository(Protocol):
+    async def list_ordered_with_figure(
+        self, limit: int | None = None
+    ) -> list[tuple[FeaturedFigure, Figure]]: ...
+
+    async def get_by_id(self, featured_figure_id: int) -> FeaturedFigure | None: ...
+
+    async def get_by_figure_id(self, figure_id: int) -> FeaturedFigure | None: ...
+
+    async def max_priority(self) -> int: ...
+
+    async def list_available_figures(self, search: str | None, limit: int) -> list[Figure]:
+        """Figures not yet featured, for the admin select box."""
+        ...
+
+    async def add(self, featured_figure: FeaturedFigure) -> FeaturedFigure: ...
+
+    async def remove(self, featured_figure_id: int) -> None: ...
+
+    async def reorder(self, figure_ids_in_order: list[int]) -> None: ...

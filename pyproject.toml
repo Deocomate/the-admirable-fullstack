@@ -35,6 +35,7 @@ dev = [
     "mypy>=1.13",
     "types-aiofiles",
     "beautifulsoup4>=4.12",
+    "pytest-cov>=7.1.0",
 ]
 
 [build-system]
@@ -66,3 +67,8 @@ strict = true
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+
+[tool.coverage.run]
+# Protocol interfaces carry no executable logic — they are contracts
+# validated structurally by mypy, not by tests.
+omit = ["*/domain/repositories/*"]
