@@ -28,6 +28,9 @@ class GetFigureDetail:
 
         names = await category_name_map(self._categories)
         category_names = [names[cid] for cid in figure.category_ids if cid in names]
+        all_categories = await self._categories.list_all()
+        slugs_by_id = {c.id: c.slug for c in all_categories}
+        category_slugs = [slugs_by_id[cid] for cid in figure.category_ids if cid in slugs_by_id]
 
         snippets_page = await self._story_snippets.list_paginated(
             figure_id=figure.id, search=None, page=1, per_page=1_000_000
@@ -51,6 +54,9 @@ class GetFigureDetail:
             audio_path=figure.audio_path,
             youtube_url=figure.youtube_url,
             category_names=category_names,
+            category_slugs=category_slugs,
+            created_at=figure.created_at,
+            updated_at=figure.updated_at,
             story_snippets=snippets,
             related_figures=related_dtos,
         )

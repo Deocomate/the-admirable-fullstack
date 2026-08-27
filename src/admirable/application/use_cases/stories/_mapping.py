@@ -2,7 +2,14 @@ from admirable.application.dto.story_dto import StoryDetailDTO
 from admirable.domain.entities.story_snippet import StorySnippet
 
 
-def to_story_detail_dto(snippet: StorySnippet, figure_name: str) -> StoryDetailDTO:
+def to_story_detail_dto(
+    snippet: StorySnippet,
+    figure_name: str,
+    figure_slug: str = "",
+    figure_avatar_path: str | None = None,
+    category_name: str | None = None,
+    category_slug: str | None = None,
+) -> StoryDetailDTO:
     from admirable.application.use_cases.figures._mapping import to_dto_blocks
 
     assert snippet.id is not None
@@ -10,6 +17,8 @@ def to_story_detail_dto(snippet: StorySnippet, figure_name: str) -> StoryDetailD
         id=snippet.id,
         figure_id=snippet.figure_id,
         figure_name=figure_name,
+        figure_slug=figure_slug,
+        figure_avatar_path=figure_avatar_path,
         title=snippet.title,
         subtitle=snippet.subtitle,
         content_blocks=to_dto_blocks(snippet.content_blocks),
@@ -18,4 +27,8 @@ def to_story_detail_dto(snippet: StorySnippet, figure_name: str) -> StoryDetailD
         audio_status=snippet.audio_status,
         audio_error=snippet.audio_error,
         youtube_url=snippet.youtube_url,
+        category_name=category_name,
+        category_slug=category_slug,
+        created_at=snippet.created_at,
+        updated_at=snippet.updated_at,
     )

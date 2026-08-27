@@ -138,3 +138,9 @@ Có thể chạy song song với Phase 9.
 - Phản ứng đã chốt: đặt `client_max_body_size 32M` trong nginx và kiểm tra kích thước trong `LocalFileStorage`. Ghi vào `docs/rules.md` ở Phase 12.
 
 **Rủi ro: khối lượng phase quá lớn, dễ bỏ sót template.** Mitigation: `docs/template-conversion-map.md` là checklist bắt buộc; PR không được merge khi còn dòng chưa đánh dấu.
+
+<!-- Phát hiện ở Phase 9, cần xử lý ở Phase 10 -->
+**Rủi ro: `created_at`/`updated_at` không được set khi tạo/sửa bản ghi qua ứng dụng.** Phát hiện khi viết functional test SEO cho Phase 9 (`tests/functional/client/test_seo.py`): cả 7 model SQLAlchemy (`figures`, `story_snippets`, `users`, `categories`, `contacts`, `featured_figures`, `settings`) khai `created_at`/`updated_at` không có `server_default`/Python `default`, và mapper `apply_to_model` của ít nhất `figure_mapper.py`/`story_snippet_mapper.py`/`user_mapper.py` không copy hai trường này khi ghi (chỉ đọc ở `to_entity`). Dữ liệu migrate thật (Phase 3) không bị ảnh hưởng vì được set trực tiếp lúc migrate; nhưng bất kỳ `create_figure`/`create_story`/`update_*` nào gọi qua route admin thật của Phase 10 sẽ để `NULL` vĩnh viễn.
+- Ảnh hưởng: `article:published_time`/`modified_time` (SEO figure/story) sẽ bị bỏ qua cho nội dung tạo mới; `list_latest()`/`ORDER BY created_at DESC` sắp xếp không ổn định cho các bản ghi cùng `NULL`.
+- Mitigation: khi viết `add()`/`update()` cho từng repository ở Phase 10 (hoặc sớm hơn nếu chạm trước), set `model.created_at`/`model.updated_at` tường minh (ví dụ qua `infrastructure/clock.py`'s `SystemClock` đã có sẵn) thay vì dựa vào default ẩn.
+- Tín hiệu: figure/story tạo mới qua admin panel không có `<meta property="article:published_time">`, hoặc xuất hiện ở cuối danh sách "mới nhất" thay vì đầu.

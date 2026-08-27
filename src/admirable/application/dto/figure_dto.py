@@ -53,6 +53,8 @@ class FigureSummaryDTO(BaseModel):
     category_names: list[str]
     story_snippets_count: int
     is_featured: bool = False
+    audio_path: str | None = None
+    youtube_url: str | None = None
 
 
 class FigureDetailDTO(BaseModel):

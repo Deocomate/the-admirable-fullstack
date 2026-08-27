@@ -19,7 +19,9 @@ def test_figure_card_renders(
         "name": "Marie Curie",
         "short_description": "Physicist and chemist.",
         "avatar_path": None,
-        "categories": [{"name": "Khoa học", "slug": "khoa-hoc"}],
+        # `FigureSummaryDTO.category_names` is a flat list[str], not ORM
+        # relation objects — matches the real Phase 9 DTO shape.
+        "category_names": ["Khoa học"],
     }
     html = _render(
         templates,
@@ -29,6 +31,7 @@ def test_figure_card_renders(
         figure=figure,
     )
     assert "Marie Curie" in html
+    assert "Khoa học" in html
     assert "card-hover" in html
     assert "Nổi bật" in html
 
@@ -36,7 +39,11 @@ def test_figure_card_renders(
 def test_story_card_renders_without_subtitle(
     templates: Jinja2Templates, make_request: Callable[..., Request]
 ) -> None:
-    story = {"id": 7, "title": "A Story", "subtitle": None, "content": "<p>Hello world</p>"}
+    # `story` is always a lite DTO (id/title/subtitle/image_path) — no plain
+    # `content` field exists post-DB-cleanup (Phase 3 dropped `content` for
+    # `search_text`), so a missing subtitle renders no second line, not a
+    # stripped-content fallback.
+    story = {"id": 7, "title": "A Story", "subtitle": None}
     html = _render(
         templates,
         make_request("/"),
@@ -45,8 +52,7 @@ def test_story_card_renders_without_subtitle(
         story=story,
     )
     assert "A Story" in html
-    assert "Hello world" in html
-    assert "<p>" not in html.split("A Story")[1]  # strip_tags applied to fallback subtitle
+    assert "Đọc mẩu chuyện" in html
 
 
 def test_content_blocks_renders_heading_paragraph_quote(

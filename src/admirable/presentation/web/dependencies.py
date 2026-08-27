@@ -18,6 +18,14 @@ from admirable.application.dto.auth_dto import AuthenticatedUserDTO
 from admirable.application.use_cases.auth.login import Login
 from admirable.application.use_cases.auth.request_password_reset import RequestPasswordReset
 from admirable.application.use_cases.auth.reset_password import ResetPassword
+from admirable.application.use_cases.public.get_about_us_page import GetAboutUsPage
+from admirable.application.use_cases.public.get_category_page import GetCategoryPage
+from admirable.application.use_cases.public.get_contact_page import GetContactPage
+from admirable.application.use_cases.public.get_figure_detail import GetFigureDetail
+from admirable.application.use_cases.public.get_home_page import GetHomePage
+from admirable.application.use_cases.public.get_story_detail import GetStoryDetail
+from admirable.application.use_cases.public.list_categories import ListCategories
+from admirable.application.use_cases.public.search_figures import SearchFigures
 from admirable.config import Settings, get_settings
 from admirable.domain.value_objects.role import Role
 from admirable.infrastructure.container import Container, build_request_scope
@@ -117,3 +125,51 @@ async def get_reset_password_use_case(
     container: Annotated[Container, Depends(get_container)],
 ) -> ResetPassword:
     return ResetPassword(container.users, container.tokens, container.hasher)
+
+
+async def get_home_page_uc(container: Annotated[Container, Depends(get_container)]) -> GetHomePage:
+    return GetHomePage(
+        container.figures, container.categories, container.story_snippets, container.featured
+    )
+
+
+async def get_list_categories_uc(
+    container: Annotated[Container, Depends(get_container)],
+) -> ListCategories:
+    return ListCategories(container.categories)
+
+
+async def get_category_page_uc(
+    container: Annotated[Container, Depends(get_container)],
+) -> GetCategoryPage:
+    return GetCategoryPage(container.figures, container.categories, container.story_snippets)
+
+
+async def get_figure_detail_uc(
+    container: Annotated[Container, Depends(get_container)],
+) -> GetFigureDetail:
+    return GetFigureDetail(container.figures, container.categories, container.story_snippets)
+
+
+async def get_story_detail_uc(
+    container: Annotated[Container, Depends(get_container)],
+) -> GetStoryDetail:
+    return GetStoryDetail(container.story_snippets, container.figures, container.categories)
+
+
+async def get_search_figures_uc(
+    container: Annotated[Container, Depends(get_container)],
+) -> SearchFigures:
+    return SearchFigures(container.figures, container.categories, container.story_snippets)
+
+
+async def get_about_us_page_uc(
+    container: Annotated[Container, Depends(get_container)],
+) -> GetAboutUsPage:
+    return GetAboutUsPage(container.settings_repo)
+
+
+async def get_contact_page_uc(
+    container: Annotated[Container, Depends(get_container)],
+) -> GetContactPage:
+    return GetContactPage(container.contacts)

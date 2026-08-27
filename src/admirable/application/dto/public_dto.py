@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 from admirable.application.dto.category_dto import CategoryDTO
@@ -41,6 +43,9 @@ class FigureDetailPageDTO(BaseModel):
     audio_path: str | None
     youtube_url: str | None
     category_names: list[str]
+    category_slugs: list[str]
+    created_at: datetime | None
+    updated_at: datetime | None
     story_snippets: list[StorySummaryLite]
     related_figures: list[FigureSummaryDTO]
 

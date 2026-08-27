@@ -45,7 +45,7 @@ _ROUTE_NAMES = [
 _PARAM_ROUTE_NAMES = {
     "client.categories.show": "/categories/{slug}",
     "client.figures.show": "/figures/{slug}",
-    "client.stories.show": "/stories/{id}",
+    "client.stories.show": "/stories/{story_id}",
 }
 
 

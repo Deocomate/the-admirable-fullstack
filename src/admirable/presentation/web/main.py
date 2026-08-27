@@ -17,6 +17,15 @@ from admirable.presentation.web.middleware.error_handler import register_excepti
 from admirable.presentation.web.middleware.method_override import MethodOverrideMiddleware
 from admirable.presentation.web.middleware.session import RedisSessionMiddleware
 from admirable.presentation.web.routers.admin.auth import auth_router, guest_router
+from admirable.presentation.web.routers.client import (
+    about_us,
+    categories,
+    contact,
+    figures,
+    home,
+    search,
+    stories,
+)
 from admirable.presentation.web.templating import build_templates
 
 _STATIC_DIR = Path(__file__).parent / "static"
@@ -82,6 +91,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app.include_router(guest_router)
     app.include_router(auth_router)
+
+    # Client (public) routers registered after admin routers so no admin
+    # dynamic segment (e.g. /{slug}) can shadow /admin/... paths.
+    app.include_router(home.router)
+    app.include_router(categories.router)
+    app.include_router(figures.router)
+    app.include_router(stories.router)
+    app.include_router(search.router)
+    app.include_router(about_us.router)
+    app.include_router(contact.router)
 
     @app.get("/healthz")
     async def healthz() -> dict[str, str]:

@@ -1,0 +1,13 @@
+{# Search Category Pills #}
+<div class="flex flex-wrap justify-center gap-2" role="list" aria-label="Lọc theo lĩnh vực">
+    <a href="{{ with_query(route('client.search'), q=query) }}" role="listitem"
+       class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium {{ 'bg-apple-black text-white' if not category_slug else 'bg-apple-bg text-apple-gray hover:bg-apple-gray-light hover:text-apple-black' }} cursor-pointer transition-all duration-300">
+        Tất cả
+    </a>
+    {% for category in categories %}
+        <a href="{{ with_query(route('client.search'), category=category.slug, q=query) }}" role="listitem"
+           class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium {{ 'bg-apple-black text-white shadow-sm' if category_slug == category.slug else 'bg-apple-bg text-apple-gray hover:bg-apple-gray-light hover:text-apple-black' }} cursor-pointer transition-all duration-300">
+            {{ category.name }}
+        </a>
+    {% endfor %}
+</div>

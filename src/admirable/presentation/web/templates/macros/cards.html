@@ -14,9 +14,9 @@
     </div>
     <div class="p-5 flex flex-col flex-1">
         <div class="flex items-center gap-2 mb-1.5">
-            {% if figure.categories %}
+            {% if figure.category_names %}
                 <p class="text-apple-gray text-[11px] font-semibold uppercase tracking-wider">
-                    {{ figure.categories[0].name }}
+                    {{ figure.category_names[0] }}
                 </p>
             {% endif %}
             {% if featured %}
@@ -47,7 +47,7 @@
    the JSON-LD block in seo-head.html the template tree's only such usage. #}
 {% macro story_card(story) %}
 {% set icon_index = story.id % 4 %}
-<a href="{{ route('client.stories.show', id=story.id) }}" class="group block bg-white rounded-[24px] p-6 card-hover h-full flex flex-col">
+<a href="{{ route('client.stories.show', story_id=story.id) }}" class="group block bg-white rounded-[24px] p-6 card-hover h-full flex flex-col">
     <div class="w-10 h-10 rounded-full bg-apple-bg flex items-center justify-center mb-4 flex-shrink-0">
         <svg class="w-5 h-5 text-apple-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {% if icon_index == 0 %}
@@ -62,7 +62,10 @@
         </svg>
     </div>
     <h3 class="text-[17px] font-semibold text-apple-black mb-2 leading-snug">{{ story.title }}</h3>
-    <p class="text-sm text-apple-gray leading-relaxed mb-4 line-clamp-2 flex-1">{{ story.subtitle or (story.content | strip_tags | str_limit(100)) }}</p>
+    {# `story` here is always a lite DTO (id/title/subtitle/image_path) — no
+       plain-content field exists post-DB-cleanup (Phase 3 dropped `content`
+       for `search_text`), so subtitle is the only excerpt source. #}
+    <p class="text-sm text-apple-gray leading-relaxed mb-4 line-clamp-2 flex-1">{{ story.subtitle or "" }}</p>
     <span class="text-apple-blue text-xs font-medium inline-flex items-center group-hover:underline mt-auto">
         Đọc mẩu chuyện
         <svg class="w-3.5 h-3.5 ml-1 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

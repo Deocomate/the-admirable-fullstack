@@ -1,7 +1,7 @@
 ---
 phase: 9
 title: "Khu vực Client"
-status: pending
+status: completed
 priority: P1
 effort: "2d"
 dependencies: [8]
@@ -103,16 +103,64 @@ Nhánh `article:*` chỉ render khi `og_type == "article"` — giữ đúng đi�
 
 ## Success Criteria
 
-- [ ] 8 route trả 200 với dữ liệu thật đã migrate.
-- [ ] URI khớp chính xác `docs/page-sitemap.md` (kiểm bằng script so danh sách route).
-- [ ] Slug/id không tồn tại trả 404 với template lỗi, không phải traceback.
-- [ ] Audio player phát được file audio thật từ `/media/uploads/audio/...`.
-- [ ] YouTube nhúng hiển thị đúng với các định dạng URL đang có trong DB.
-- [ ] Nội dung song ngữ EN/VI hiển thị đúng thứ tự và định dạng như bản Laravel.
-- [ ] Phân trang search giữ `q` và `category` qua các trang.
-- [ ] Mỗi trang trong 8 route có `<title>`, `canonical`, `og:*`, `twitter:*` đúng giá trị và ≥1 khối JSON-LD parse được; figure/story có đủ `article:*`.
-- [ ] `pytest tests/functional/client` pass.
-- [ ] Ảnh chụp 8 trang hai hệ thống được lưu để đối chiếu.
+- [x] 8 route trả 200 với dữ liệu thật đã migrate.
+- [x] URI khớp chính xác `docs/page-sitemap.md` (kiểm bằng `app.url_path_for(...)` cho cả 8 tên route, xác nhận thủ công qua `curl` qua nginx).
+- [x] Slug/id không tồn tại trả 404 với template lỗi, không phải traceback.
+- [x] Audio player phát được file audio thật từ `/media/uploads/audio/...` (xác nhận qua `mark-zuckerberg`, `<audio>`/`<source>` trỏ đúng `media_url()`).
+- [x] YouTube nhúng hiển thị đúng với các định dạng URL đang có trong DB (`watch?v=`, `watch?v=...&t=88s` đã test qua dữ liệu thật).
+- [x] Nội dung song ngữ EN/VI hiển thị đúng thứ tự và định dạng như bản Laravel.
+- [x] Phân trang search giữ `q` và `category` qua các trang.
+- [x] Mỗi trang trong 8 route có `<title>`, `canonical`, `og:*`, `twitter:*` đúng giá trị và ≥1 khối JSON-LD parse được; figure/story có đủ `article:*`.
+- [x] `pytest tests/functional/client` pass (23 test, dữ liệu dev DB thật + 1 story tạo/xoá trong fixture).
+- [ ] Ảnh chụp 8 trang hai hệ thống được lưu để đối chiếu — **dời sang Phase 11**: hệ Laravel không còn chạy song song trong phiên làm việc này (không có worktree `main` dựng sẵn) và Playwright chưa có trong `pyproject.toml`. Phase 11 ("Testing & Parity Verification") là nơi sở hữu việc đối chiếu hai hệ thống theo đúng mô tả của chính bước 15; sẽ dựng cả hai hệ thống và chụp ảnh ở đó thay vì cài công cụ chụp ảnh tạm thời ở Phase 9.
+
+## Implementation Notes
+
+Thi công theo đúng thứ tự đề xuất (contact → about-us → category → story →
+search → figure → home), đọc trực tiếp 31 file Blade + toàn bộ DTO/use case
+Phase 5 trước khi viết router, không suy đoán giá trị SEO.
+
+**Lỗi thật phát hiện và sửa trong lúc thi công (không phải style):**
+
+1. `macros/cards.html` (viết ở Phase 8, trước khi DTO Phase 9 tồn tại)
+   dùng `figure.categories[0].name` — sai, `FigureSummaryDTO.category_names`
+   là `list[str]` phẳng, không phải object ORM. Sửa thành `figure.category_names[0]`.
+2. `macros/cards.html`'s `story_card` gọi `route('client.stories.show', id=story.id)`
+   — sai tên tham số, route thật dùng `story_id`. Sửa lại; phát hiện qua
+   render-smoke-test trước khi lên Docker.
+3. `story_card` có fallback `story.content | strip_tags | str_limit(100)` —
+   `content` không tồn tại trên bất kỳ DTO nào truyền vào macro này
+   (`StorySummaryLite` chỉ có subtitle; cột `content` đã bị Phase 3 drop
+   thay bằng `search_text`). Sửa fallback thành chỉ dùng `subtitle`, cập
+   nhật test tương ứng ở `tests/presentation/test_macros.py`.
+4. `about-us/_core-values.html` và `_audience.html` dùng `about_us.core_values.items`
+   — `items` va với method `dict.items()` built-in, Jinja's `getattr` trả
+   về bound method thay vì list, gây `TypeError` khi render. Sửa thành
+   bracket access `about_us.core_values['items']`.
+5. Tất cả `{% from "macros/..." import ... %}` phải thêm `with context` —
+   nếu không, các macro gọi `route()` (context-dependent global) bên trong
+   sẽ `KeyError('request')` vì macro imported mặc định không kế thừa
+   context của template gọi nó. Phát hiện qua render-smoke-test full-context
+   (không chỉ syntax check).
+6. `tests/presentation/conftest.py`'s dummy route cho `client.stories.show`
+   khai tham số đường dẫn là `{id}`; route thật (Phase 9) dùng `{story_id}`.
+   Sửa cho khớp.
+
+**Phát hiện, không sửa trong Phase 9 (ngoài phạm vi lớp Presentation):**
+tất cả 7 model SQLAlchemy (`figures`, `story_snippets`, `users`, `categories`,
+`contacts`, `featured_figures`, `settings`) có cột `created_at`/`updated_at`
+không có default ở DB lẫn Python, và mapper `apply_to_model` của ít nhất
+`figure`/`story_snippet`/`user` không copy hai trường này khi ghi — nghĩa là
+bản ghi tạo mới qua ứng dụng (chưa có route thật cho tới Phase 10) sẽ có
+timestamp `NULL` vĩnh viễn, ảnh hưởng `article:published_time`/`modified_time`
+và thứ tự `list_latest()`. Dữ liệu migrate thật (Phase 3) không bị ảnh hưởng
+vì được set trực tiếp lúc migrate. Cần Phase 10 (khi các use case
+`create_figure`/`create_story`/... thật sự được gọi qua route admin) xử lý —
+đã ghi vào `phase-10-admin-area.md`.
+
+Toàn bộ 31 template + 7 router đã verify sống qua Docker Compose thật
+(`docker compose up -d --build`, MySQL/Redis/nginx thật, dữ liệu 30 figure
+migrate từ Laravel), không chỉ unit test.
 
 ## Risk Assessment
 

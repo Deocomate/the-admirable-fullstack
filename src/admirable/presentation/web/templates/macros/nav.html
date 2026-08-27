@@ -19,6 +19,7 @@
 {% endmacro %}
 
 {% macro pagination(page, base_url) %}
+{% set sep = '&' if '?' in base_url else '?' %}
 {% if page.last_page > 1 %}
 <div class="mt-10 flex items-center justify-center gap-1">
     {# Previous #}
@@ -27,7 +28,7 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
         </span>
     {% else %}
-        <a href="{{ base_url }}?page={{ page.page - 1 }}" class="w-9 h-9 rounded-full flex items-center justify-center text-apple-gray hover:bg-apple-gray-light/50 transition-colors cursor-pointer" aria-label="Trang trước">
+        <a href="{{ base_url }}{{ sep }}page={{ page.page - 1 }}" class="w-9 h-9 rounded-full flex items-center justify-center text-apple-gray hover:bg-apple-gray-light/50 transition-colors cursor-pointer" aria-label="Trang trước">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
         </a>
     {% endif %}
@@ -37,13 +38,13 @@
         {% if p == page.page %}
             <span class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium bg-apple-black text-white">{{ p }}</span>
         {% else %}
-            <a href="{{ base_url }}?page={{ p }}" class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium text-apple-gray hover:bg-apple-gray-light/50 transition-colors cursor-pointer">{{ p }}</a>
+            <a href="{{ base_url }}{{ sep }}page={{ p }}" class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium text-apple-gray hover:bg-apple-gray-light/50 transition-colors cursor-pointer">{{ p }}</a>
         {% endif %}
     {% endfor %}
 
     {# Next #}
     {% if page.has_next %}
-        <a href="{{ base_url }}?page={{ page.page + 1 }}" class="w-9 h-9 rounded-full flex items-center justify-center text-apple-gray hover:bg-apple-gray-light/50 transition-colors cursor-pointer" aria-label="Trang sau">
+        <a href="{{ base_url }}{{ sep }}page={{ page.page + 1 }}" class="w-9 h-9 rounded-full flex items-center justify-center text-apple-gray hover:bg-apple-gray-light/50 transition-colors cursor-pointer" aria-label="Trang sau">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
         </a>
     {% else %}

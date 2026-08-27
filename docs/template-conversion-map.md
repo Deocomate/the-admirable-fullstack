@@ -29,41 +29,41 @@ Cây đích phản chiếu cây Blade — xem `plans/260827-0051-migrate-laravel
 | `components/client/shared/share-buttons.blade.php` | `macros/nav.html` (`share_buttons`) | Xong | URL nội suy qua `\| tojson`, không dùng `{{ }}` trần trong JS attribute |
 | — (mới, không có trong Blade) | `macros/forms.html` | Xong | DRY cho form admin — copy markup thật từ `admin/categories/form.blade.php` v.v. rồi tham số hoá |
 
-## Trang Client (31 file) — Phase 9, chờ thi công
+## Trang Client (31 file) — Phase 9, đã xong
 
-| Blade | Jinja2 đích | Trạng thái |
-|---|---|---|
-| `client/home/index.blade.php` | `client/home/index.html` | Chờ Phase 9 |
-| `client/home/_how-it-works.blade.php` | `client/home/_how-it-works.html` | Chờ Phase 9 |
-| `client/home/_media-badges.blade.php` | `client/home/_media-badges.html` | Chờ Phase 9 |
-| `client/home/_newsletter.blade.php` | `client/home/_newsletter.html` | Chờ Phase 9 |
-| `client/home/_quote-section.blade.php` | `client/home/_quote-section.html` | Chờ Phase 9 |
-| `client/category/index.blade.php` | `client/category/index.html` | Chờ Phase 9 |
-| `client/figure/show.blade.php` | `client/figure/show.html` | Chờ Phase 9 |
-| `client/figure/_key-facts.blade.php` | `client/figure/_key-facts.html` | Chờ Phase 9 |
-| `client/figure/_reading-progress-script.blade.php` | `client/figure/_reading-progress-script.html` | Chờ Phase 9 |
-| `client/figure/_related-figures-section.blade.php` | `client/figure/_related-figures-section.html` | Chờ Phase 9 |
-| `client/figure/_story-snippets-section.blade.php` | `client/figure/_story-snippets-section.html` | Chờ Phase 9 |
-| `client/story/show.blade.php` | `client/story/show.html` | Chờ Phase 9 |
-| `client/story/_other-stories-section.blade.php` | `client/story/_other-stories-section.html` | Chờ Phase 9 |
-| `client/search/index.blade.php` | `client/search/index.html` | Chờ Phase 9 |
-| `client/search/_category-pills.blade.php` | `client/search/_category-pills.html` | Chờ Phase 9 |
-| `client/search/_popular-trending.blade.php` | `client/search/_popular-trending.html` | Chờ Phase 9 |
-| `client/search/_results.blade.php` | `client/search/_results.html` | Chờ Phase 9 |
-| `client/search/_search-form.blade.php` | `client/search/_search-form.html` | Chờ Phase 9 |
-| `client/about-us/index.blade.php` | `client/about-us/index.html` | Chờ Phase 9 |
-| `client/about-us/_audience.blade.php` | `client/about-us/_audience.html` | Chờ Phase 9 |
-| `client/about-us/_core-values.blade.php` | `client/about-us/_core-values.html` | Chờ Phase 9 |
-| `client/about-us/_cta.blade.php` | `client/about-us/_cta.html` | Chờ Phase 9 |
-| `client/about-us/_hero.blade.php` | `client/about-us/_hero.html` | Chờ Phase 9 |
-| `client/about-us/_problem-solution.blade.php` | `client/about-us/_problem-solution.html` | Chờ Phase 9 |
-| `client/about-us/_stats.blade.php` | `client/about-us/_stats.html` | Chờ Phase 9 |
-| `client/contact/index.blade.php` | `client/contact/index.html` | Chờ Phase 9 |
-| `client/contact/_buy-me-a-coffee.blade.php` | `client/contact/_buy-me-a-coffee.html` | Chờ Phase 9 |
-| `client/contact/_contact-info.blade.php` | `client/contact/_contact-info.html` | Chờ Phase 9 |
-| `client/contact/_cta.blade.php` | `client/contact/_cta.html` | Chờ Phase 9 |
-| `client/contact/_hero.blade.php` | `client/contact/_hero.html` | Chờ Phase 9 |
-| `client/contact/_services.blade.php` | `client/contact/_services.html` | Chờ Phase 9 |
+| Blade | Jinja2 đích | Trạng thái | Ghi chú |
+|---|---|---|---|
+| `client/home/index.blade.php` | `client/home/index.html` | Xong | |
+| `client/home/_how-it-works.blade.php` | `client/home/_how-it-works.html` | Xong | |
+| `client/home/_media-badges.blade.php` | `client/home/_media-badges.html` | Xong | Dùng chung cho cả `home/index.html` và `category/index.html` (featured card) — không nhân bản |
+| `client/home/_newsletter.blade.php` | `client/home/_newsletter.html` | Xong | |
+| `client/home/_quote-section.blade.php` | `client/home/_quote-section.html` | Xong | |
+| `client/category/index.blade.php` | `client/category/index.html` | Xong | |
+| `client/figure/show.blade.php` | `client/figure/show.html` | Xong | |
+| `client/figure/_key-facts.blade.php` | `client/figure/_key-facts.html` | Xong | |
+| `client/figure/_reading-progress-script.blade.php` | `client/figure/_reading-progress-script.html` | Xong | |
+| `client/figure/_related-figures-section.blade.php` | `client/figure/_related-figures-section.html` | Xong | |
+| `client/figure/_story-snippets-section.blade.php` | `client/figure/_story-snippets-section.html` | Xong | |
+| `client/story/show.blade.php` | `client/story/show.html` | Xong | |
+| `client/story/_other-stories-section.blade.php` | `client/story/_other-stories-section.html` | Xong | |
+| `client/search/index.blade.php` | `client/search/index.html` | Xong | |
+| `client/search/_category-pills.blade.php` | `client/search/_category-pills.html` | Xong | |
+| `client/search/_popular-trending.blade.php` | `client/search/_popular-trending.html` | Xong | |
+| `client/search/_results.blade.php` | `client/search/_results.html` | Xong | |
+| `client/search/_search-form.blade.php` | `client/search/_search-form.html` | Xong | |
+| `client/about-us/index.blade.php` | `client/about-us/index.html` | Xong | |
+| `client/about-us/_audience.blade.php` | `client/about-us/_audience.html` | Xong | |
+| `client/about-us/_core-values.blade.php` | `client/about-us/_core-values.html` | Xong | |
+| `client/about-us/_cta.blade.php` | `client/about-us/_cta.html` | Xong | |
+| `client/about-us/_hero.blade.php` | `client/about-us/_hero.html` | Xong | |
+| `client/about-us/_problem-solution.blade.php` | `client/about-us/_problem-solution.html` | Xong | |
+| `client/about-us/_stats.blade.php` | `client/about-us/_stats.html` | Xong | |
+| `client/contact/index.blade.php` | `client/contact/index.html` | Xong | |
+| `client/contact/_buy-me-a-coffee.blade.php` | `client/contact/_buy-me-a-coffee.html` | Xong | |
+| `client/contact/_contact-info.blade.php` | `client/contact/_contact-info.html` | Xong | |
+| `client/contact/_cta.blade.php` | `client/contact/_cta.html` | Xong | |
+| `client/contact/_hero.blade.php` | `client/contact/_hero.html` | Xong | |
+| `client/contact/_services.blade.php` | `client/contact/_services.html` | Xong | |
 
 ## Trang Admin (36 file) — Phase 10, chờ thi công (trừ auth + dashboard)
 

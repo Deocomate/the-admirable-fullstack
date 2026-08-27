@@ -5,6 +5,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlencode
 
 from jinja2 import pass_context
 from markupsafe import Markup, escape
@@ -20,6 +21,24 @@ _TEMPLATES_DIR = Path(__file__).parent / "templates"
 def asset_url(path: str) -> str:
     """`asset()` equivalent — shared with `seo.py` so both compute the same URL."""
     return f"/static/{path.lstrip('/')}"
+
+
+def media_url(path: str | None, url_prefix: str) -> str | None:
+    """`asset('storage/' . $path)` equivalent — shared with routers that need
+    to build a fully-resolved media URL for `SeoMeta.og_image` (see seo.py's
+    `_is_already_resolved`, which requires this instead of a bare path)."""
+    return f"{url_prefix}{path}" if path else None
+
+
+def _with_query(base: str, **params: Any) -> str:
+    """`route($name, ['q' => $query])` equivalent: Starlette's `url_for` only
+    fills path params, so query-string params (search filters, pagination)
+    are appended here instead. Falsy values are dropped, matching Laravel's
+    array-building pattern of only adding a key when it has a value."""
+    filtered = {k: v for k, v in params.items() if v}
+    if not filtered:
+        return base
+    return f"{base}?{urlencode(filtered)}"
 
 
 @pass_context
@@ -151,7 +170,8 @@ def build_templates(settings: Settings) -> Jinja2Templates:
     env.globals["is_route"] = _is_route
     env.globals["now"] = datetime.now
     env.globals["asset"] = asset_url
-    env.globals["media_url"] = lambda path: f"{settings.media.url_prefix}{path}" if path else None
+    env.globals["with_query"] = _with_query
+    env.globals["media_url"] = lambda path: media_url(path, settings.media.url_prefix)
     env.globals["config"] = {"app_name": settings.app.name, "base_url": settings.app.base_url}
 
     env.filters["nl2br"] = _nl2br

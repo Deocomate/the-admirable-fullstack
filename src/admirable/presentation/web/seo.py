@@ -32,7 +32,15 @@ class SeoMeta:
     json_ld: tuple[dict[str, Any], ...] = field(default_factory=tuple)
 
 
-def _is_absolute_url(value: str) -> bool:
+def _is_already_resolved(value: str) -> bool:
+    """True for an absolute external URL, or a root-relative path already
+    produced by `asset_url()`/`media_url()` (e.g. a figure's avatar via
+    `media_url(figure.avatar_path)`) — either way, wrapping it again through
+    `asset_url()` would be wrong. Only a bare relative path with no leading
+    slash (Blade's `ltrim($seoImage, '/')` fallback case) still gets wrapped.
+    """
+    if value.startswith("/"):
+        return True
     parsed = urlparse(value)
     return bool(parsed.scheme and parsed.netloc)
 
@@ -56,10 +64,10 @@ def build_seo_context(request: Request, meta: SeoMeta) -> dict[str, Any]:
     # otherwise it gets asset_url()-wrapped twice.
     if meta.og_image is None:
         seo_image = asset_url("assets/images/logo.png")
-    elif _is_absolute_url(meta.og_image):
+    elif _is_already_resolved(meta.og_image):
         seo_image = meta.og_image
     else:
-        seo_image = asset_url(meta.og_image.lstrip("/"))
+        seo_image = asset_url(meta.og_image)
 
     seo_locale = settings.app.locale.replace("_", "-")
 

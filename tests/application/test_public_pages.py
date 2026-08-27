@@ -58,6 +58,7 @@ async def test_get_figure_detail_includes_related() -> None:
     assert result.name == "Marie Curie"
     assert len(result.related_figures) == 1
     assert result.related_figures[0].name == "Albert Einstein"
+    assert result.category_slugs == [category.slug]
 
 
 async def test_get_figure_detail_missing_slug_raises() -> None:
@@ -71,9 +72,13 @@ async def test_get_figure_detail_missing_slug_raises() -> None:
 
 async def test_get_story_detail_includes_other_stories() -> None:
     figures = FakeFigureRepository()
+    categories = FakeCategoryRepository()
     story_snippets = FakeStorySnippetRepository()
     storage = FakeFileStorage()
-    figure = await CreateFigure(figures, storage).execute(CreateFigureCommand(name="Marie Curie"))
+    category = await CreateCategory(categories).execute(CreateCategoryCommand(name="Science"))
+    figure = await CreateFigure(figures, storage).execute(
+        CreateFigureCommand(name="Marie Curie", category_ids=[category.id])
+    )
 
     s1 = await CreateStory(story_snippets, figures, storage).execute(
         CreateStoryCommand(figure_id=figure.id, title="Chapter 1")
@@ -82,8 +87,11 @@ async def test_get_story_detail_includes_other_stories() -> None:
         CreateStoryCommand(figure_id=figure.id, title="Chapter 2")
     )
 
-    result = await GetStoryDetail(story_snippets, figures).execute(s1.id)
+    result = await GetStoryDetail(story_snippets, figures, categories).execute(s1.id)
     assert result.snippet.title == "Chapter 1"
+    assert result.snippet.figure_slug == figure.slug
+    assert result.snippet.category_name == "Science"
+    assert result.snippet.category_slug == category.slug
     assert len(result.other_stories) == 1
     assert result.other_stories[0].title == "Chapter 2"
 

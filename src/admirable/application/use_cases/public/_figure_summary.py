@@ -21,6 +21,8 @@ async def to_summary(
         category_names=names,
         story_snippets_count=count,
         is_featured=is_featured,
+        audio_path=figure.audio_path,
+        youtube_url=figure.youtube_url,
     )
 
 
