@@ -1,5 +1,4 @@
-"""Ports `StoreContactRequest`/`UpdateContactRequest` (identical rules on
-both, matching the Laravel source)."""
+"""Contact form schema and field labels for validation."""
 
 from pydantic import BaseModel, Field
 

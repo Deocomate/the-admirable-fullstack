@@ -1,10 +1,4 @@
-"""content_blocks value objects.
-
-Mirrors the JSON schema currently produced by the admin form JS
-(`content_blocks[idx][text_en]`, ...) and consumed by `FigureService` /
-`StorySnippetService` on the Laravel side. Kept byte-for-byte compatible so
-existing rows need no data conversion.
-"""
+"""Content block value objects representing structured bilingual article content."""
 
 from dataclasses import dataclass
 from typing import Literal

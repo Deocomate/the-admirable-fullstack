@@ -1,5 +1,4 @@
-"""Search pagination preserves `q`/`category` across pages (Phase 9 plan
-step 13) — replaces Laravel's `->appends($request->query())`."""
+"""Search pagination preserves `q`/`category` query parameters across pages."""
 
 from httpx import AsyncClient
 

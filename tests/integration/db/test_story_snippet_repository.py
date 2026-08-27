@@ -11,8 +11,13 @@ from admirable.infrastructure.db.repositories.story_snippet_repository_impl impo
 
 def make_figure(slug: str) -> Figure:
     return Figure(
-        id=None, name="Story Figure", slug=slug, short_description=None, key_facts=[],
-        content_blocks=[], search_text="",
+        id=None,
+        name="Story Figure",
+        slug=slug,
+        short_description=None,
+        key_facts=[],
+        content_blocks=[],
+        search_text="",
     )
 
 
@@ -24,14 +29,22 @@ async def test_add_and_list_other_by_figure(db_session: AsyncSession) -> None:
     blocks = parse_content_blocks([{"type": "heading", "text_en": "Chapter 1"}])
     s1 = await snippet_repo.add(
         StorySnippet(
-            id=None, figure_id=figure.id, title="First", subtitle=None,  # type: ignore[arg-type]
-            content_blocks=blocks, search_text="Chapter 1",
+            id=None,
+            figure_id=figure.id,
+            title="First",
+            subtitle=None,  # type: ignore[arg-type]
+            content_blocks=blocks,
+            search_text="Chapter 1",
         )
     )
     s2 = await snippet_repo.add(
         StorySnippet(
-            id=None, figure_id=figure.id, title="Second", subtitle=None,  # type: ignore[arg-type]
-            content_blocks=blocks, search_text="Chapter 1",
+            id=None,
+            figure_id=figure.id,
+            title="Second",
+            subtitle=None,  # type: ignore[arg-type]
+            content_blocks=blocks,
+            search_text="Chapter 1",
         )
     )
 

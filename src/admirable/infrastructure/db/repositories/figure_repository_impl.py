@@ -6,7 +6,6 @@ from admirable.domain.entities.figure import Figure
 from admirable.domain.value_objects.pagination import Page
 from admirable.infrastructure.clock import SystemClock
 from admirable.infrastructure.db.mappers import figure_mapper
-from admirable.infrastructure.db.models.associations import category_figure_table
 from admirable.infrastructure.db.models.category import CategoryModel
 from admirable.infrastructure.db.models.featured_figure import FeaturedFigureModel
 from admirable.infrastructure.db.models.figure import FigureModel
@@ -62,11 +61,9 @@ class FigureRepositoryImpl:
             stmt = stmt.where(FigureModel.name.like(like))
             count_stmt = count_stmt.where(FigureModel.name.like(like))
         if category_id is not None:
-            category_match = category_figure_table.c.category_id == category_id
+            category_match = CategoryModel.id == category_id
             stmt = stmt.join(FigureModel.categories).where(category_match)
-            count_stmt = count_stmt.join(
-                category_figure_table, category_figure_table.c.figure_id == FigureModel.id
-            ).where(category_match)
+            count_stmt = count_stmt.join(FigureModel.categories).where(category_match)
 
         offset = (page - 1) * per_page
         stmt = stmt.order_by(FigureModel.created_at.desc()).limit(per_page).offset(offset)
@@ -161,7 +158,7 @@ class FigureRepositoryImpl:
     ) -> list[Figure]:
         if not category_ids:
             return []
-        category_match = category_figure_table.c.category_id.in_(category_ids)
+        category_match = CategoryModel.id.in_(category_ids)
         stmt = (
             select(FigureModel)
             .join(FigureModel.categories)

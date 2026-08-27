@@ -13,9 +13,7 @@ class StorySnippetModel(Base):
     __tablename__ = "story_snippets"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
-    figure_id: Mapped[int] = mapped_column(
-        BigInteger, ForeignKey("figures.id", ondelete="CASCADE")
-    )
+    figure_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("figures.id", ondelete="CASCADE"))
     title: Mapped[str] = mapped_column(String(255))
     subtitle: Mapped[str | None] = mapped_column(String(255))
     content_blocks: Mapped[list | None] = mapped_column(ContentBlocksType)  # type: ignore[type-arg]

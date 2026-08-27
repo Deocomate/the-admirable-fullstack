@@ -46,9 +46,7 @@ async def test_update_story_replaces_image_and_audio() -> None:
 
     figure = await CreateFigure(figures, storage).execute(CreateFigureCommand(name="Marie Curie"))
     created = await CreateStory(story_snippets, figures, storage).execute(
-        CreateStoryCommand(
-            figure_id=figure.id, title="Ch1", image=await _empty_upload("old.jpg")
-        )
+        CreateStoryCommand(figure_id=figure.id, title="Ch1", image=await _empty_upload("old.jpg"))
     )
     stored = await story_snippets.get_by_id(created.id)
     assert stored is not None
@@ -56,7 +54,9 @@ async def test_update_story_replaces_image_and_audio() -> None:
 
     updated = await UpdateStory(story_snippets, figures, storage).execute(
         UpdateStoryCommand(
-            story_id=created.id, figure_id=figure.id, title="Ch1",
+            story_id=created.id,
+            figure_id=figure.id,
+            title="Ch1",
             image=await _empty_upload("new.jpg"),
         )
     )

@@ -1,8 +1,4 @@
-"""Fixture payload shape copied from the real admin figures form JS
-(resources/views/admin/figures/partials/content-blocks-script.blade.php):
-`content_blocks[${idx}][text_en]`, `key_facts[${idx}][label]`,
-`category_ids[]` — not invented, so this proves the parser handles what the
-existing form actually sends."""
+"""Tests for unflatten_form_data converting multi-dimensional form fields into nested structures."""
 
 from admirable.presentation.web.forms.base import unflatten_form_data
 

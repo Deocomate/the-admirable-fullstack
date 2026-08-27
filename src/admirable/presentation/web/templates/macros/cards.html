@@ -1,8 +1,4 @@
-{# figure_card ← components/client/shared/figure-card.blade.php
-   story_card  ← components/client/shared/story-card.blade.php
-   `featured` and `icon_index` are resolved by the caller (use case/route),
-   not computed here — the ORM relation-loaded check the Blade version did
-   inline is exactly the kind of hidden business logic templates must not do. #}
+{# Card macros: figure card and story snippet card #}
 
 {% macro figure_card(figure, featured=False) %}
 <a href="{{ route('client.figures.show', slug=figure.slug) }}"

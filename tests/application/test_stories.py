@@ -16,8 +16,13 @@ from tests.fakes.fake_story_snippet_repository import FakeStorySnippetRepository
 async def _seed_figure(figures: FakeFigureRepository) -> Figure:
     return await figures.add(
         Figure(
-            id=None, name="Marie Curie", slug="marie-curie", short_description=None,
-            key_facts=[], content_blocks=[], search_text="",
+            id=None,
+            name="Marie Curie",
+            slug="marie-curie",
+            short_description=None,
+            key_facts=[],
+            content_blocks=[],
+            search_text="",
         )
     )
 

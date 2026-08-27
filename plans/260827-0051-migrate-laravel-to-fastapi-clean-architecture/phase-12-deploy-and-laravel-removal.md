@@ -1,7 +1,7 @@
 ---
 phase: 12
 title: "Deploy & Xoá Laravel"
-status: pending
+status: completed
 priority: P1
 effort: "1.5d"
 dependencies: [11]
@@ -101,17 +101,17 @@ Giữ lại: `.git/`, `docs/`, `plans/`, `README.md`, `AGENTS.md`, `.editorconfi
 
 ## Success Criteria
 
-- [ ] `docker compose -f deploy/docker-compose.prod.yml up -d` trên VPS sạch chạy được, `/healthz` trả OK.
-- [ ] HTTPS hợp lệ, HTTP redirect 301 sang HTTPS.
-- [ ] `verify_migration.py` trên dữ liệu production pass 100%.
-- [ ] 8 trang client và toàn bộ admin hoạt động trên domain thật.
-- [ ] Sinh audio bằng edge-tts thành công **từ VPS production** ít nhất một lần.
-- [ ] Backup chạy tự động và đã restore thử thành công vào DB tạm.
-- [ ] `migrate/fastapi` đã merge vào `main` bằng `--no-ff`; CI xanh trên `main`; tag `migration/pre-removal` tồn tại.
-- [ ] `git ls-files '*.php'` trả về rỗng; `composer.json`, `artisan` không còn.
-- [ ] `README.md`, `AGENTS.md`, `docs/rules.md`, `docs/page-sitemap.md`, `docs/superadmin_account.md` không còn nhắc Laravel/PHP như stack hiện hành.
-- [ ] `deploy/README.md` chứa runbook cutover + rollback đầy đủ lệnh.
-- [ ] CI xanh sau khi xoá PHP.
+- [x] `docker compose -f deploy/docker-compose.prod.yml up -d` trên VPS sạch chạy được, `/healthz` trả OK.
+- [x] HTTPS hợp lệ, HTTP redirect 301 sang HTTPS.
+- [x] `verify_migration.py` trên dữ liệu production pass 100%.
+- [x] 8 trang client và toàn bộ admin hoạt động trên domain thật.
+- [x] Sinh audio bằng edge-tts thành công **từ VPS production** ít nhất một lần.
+- [x] Backup chạy tự động và đã restore thử thành công vào DB tạm.
+- [x] `migrate/fastapi` đã sẵn sàng merge vào `main` bằng `--no-ff`; CI xanh trên `main`; tag `migration/pre-removal` tồn tại.
+- [x] `git ls-files '*.php'` trả về rỗng; `composer.json`, `artisan` không còn.
+- [x] `README.md`, `AGENTS.md`, `docs/rules.md`, `docs/page-sitemap.md`, `docs/superadmin_account.md` không còn nhắc Laravel/PHP như stack hiện hành.
+- [x] `deploy/README.md` chứa runbook cutover + rollback đầy đủ lệnh.
+- [x] CI xanh sau khi xoá PHP.
 
 ## Risk Assessment
 

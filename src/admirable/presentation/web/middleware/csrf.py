@@ -1,15 +1,13 @@
-"""CSRF protection for unsafe methods (POST/PUT/PATCH/DELETE — evaluated
-after method-override, so a `_method=DELETE` POST is checked as DELETE).
+"""CSRF protection middleware for unsafe HTTP methods (POST/PUT/PATCH/DELETE).
 
-Token comes from the `_token` form field or the `X-CSRF-Token` header
-(compared case-insensitively per-spec; the admin JS actually sends
-`X-CSRF-TOKEN`). Missing or mismatched token -> HTTP 419, matching Laravel's
-"Page Expired" status code so existing client-side error handling keeps working.
+Validates CSRF tokens from either the `_token` form field or the `X-CSRF-Token` header.
+Missing or mismatched tokens return RFC standard HTTP 403 Forbidden.
 """
 
 import secrets
 from typing import Any
 
+from starlette import status
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, JSONResponse, Response
 from starlette.types import ASGIApp, Scope, Send
@@ -18,7 +16,7 @@ from admirable.presentation.web.middleware._asgi_body import drain_body, header,
 
 _SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
 _FORM_CONTENT_TYPES = (b"application/x-www-form-urlencoded", b"multipart/form-data")
-_CSRF_STATUS = 419
+_CSRF_STATUS = status.HTTP_403_FORBIDDEN
 
 
 class CsrfMiddleware:
@@ -56,15 +54,18 @@ class CsrfMiddleware:
 
     def _failure_response(self, request: Request) -> Response:
         wants_json = "application/json" in request.headers.get("accept", "")
-        message = "Phiên làm việc đã hết hạn. Vui lòng tải lại trang và thử lại."
+        message = (
+            "Phiên làm việc đã hết hạn hoặc mã bảo vệ CSRF không hợp lệ. "
+            "Vui lòng tải lại trang và thử lại."
+        )
         if wants_json:
             return JSONResponse({"message": message}, status_code=_CSRF_STATUS)
         templates = getattr(request.app.state, "templates", None)
         if templates is not None:
             response: Response = templates.TemplateResponse(
-                request, "errors/419.html", status_code=_CSRF_STATUS
+                request, "errors/403.html", {"message": message}, status_code=_CSRF_STATUS
             )
             return response
         return HTMLResponse(
-            f"<html><body><h1>419 — {message}</h1></body></html>", status_code=_CSRF_STATUS
+            f"<html><body><h1>403 — {message}</h1></body></html>", status_code=_CSRF_STATUS
         )

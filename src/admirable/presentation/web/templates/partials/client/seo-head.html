@@ -1,7 +1,4 @@
-{# Renders the SEO/OG/Twitter/JSON-LD meta tags computed by seo.build_seo_context().
-   The <title> tag itself lives directly in layouts/client.html (wrapped in a
-   {% block title %} so pages can override it) — everything else is here,
-   mirroring components/client/layout/app.blade.php:45-90. #}
+{# Renders SEO, Open Graph, Twitter cards, and JSON-LD structured meta tags #}
 <meta name="description" content="{{ seo.description }}" />
 <meta name="robots" content="{{ seo.robots }}" />
 {% if seo.keywords %}

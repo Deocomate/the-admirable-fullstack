@@ -20,8 +20,11 @@ async def generate_audio_task(kind: str, entity_id: int) -> None:
     try:
         async with build_worker_scope(settings) as container:
             use_case = GenerateAudio(
-                container.figures, container.story_snippets, container.tts,
-                container.storage, container.clock,
+                container.figures,
+                container.story_snippets,
+                container.tts,
+                container.storage,
+                container.clock,
             )
             await use_case.execute(AudioActionCommand(kind=kind, entity_id=entity_id))  # type: ignore[arg-type]
     except Exception:

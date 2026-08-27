@@ -37,16 +37,19 @@ Xây lớp trong cùng của Clean Architecture: entity nghiệp vụ, value obj
 class HeadingBlock:
     text_en: str
 
+
 @dataclass(frozen=True)
 class ParagraphBlock:
     text_en: str
     text_vi: str | None = None
     heading_en: str | None = None
 
+
 @dataclass(frozen=True)
 class QuoteBlock:
     text_en: str
     author: str | None = None
+
 
 ContentBlock = HeadingBlock | ParagraphBlock | QuoteBlock
 ```

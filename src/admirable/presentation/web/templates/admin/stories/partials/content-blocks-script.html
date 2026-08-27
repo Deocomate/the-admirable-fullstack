@@ -1,10 +1,4 @@
-{# ── Story Content Blocks Script ──────────────────────────────────────── #}
-{# Ported verbatim from content-blocks-script.blade.php — only the initial
-   data interpolation point changed (`@json($existingBlocks)` -> `blocks | tojson`,
-   with `blocks` computed once in the router instead of duplicated `@php`
-   blocks in two templates). Do not rewrite this JS — see Phase 10's risk
-   assessment: the admin figures/stories forms are tightly coupled to the
-   exact field names this script generates. #}
+{# ── Story Content Blocks Dynamic Form Script ───────────────────────────── #}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const container = document.getElementById('story-blocks-container');

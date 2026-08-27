@@ -1,5 +1,4 @@
-"""Default mailer (matches Laravel's `MAIL_MAILER=log`): writes to the logger
-instead of sending, so password-reset links are visible in dev without SMTP."""
+"""Development mailer adapter: writes email contents directly to the application logger."""
 
 import logging
 

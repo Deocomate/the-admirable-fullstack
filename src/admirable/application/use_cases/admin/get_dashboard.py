@@ -14,9 +14,7 @@ class DashboardStatsDTO(BaseModel):
 
 
 class GetDashboard:
-    """Ports `AuthController::dashboard`'s stat cards — `admins_count` is
-    fetched unconditionally; the router only shows that card to a
-    superadmin, matching the Blade's `@if(auth()->user()->isSuperAdmin())`."""
+    """Retrieves statistical counts for admin dashboard display."""
 
     def __init__(
         self,

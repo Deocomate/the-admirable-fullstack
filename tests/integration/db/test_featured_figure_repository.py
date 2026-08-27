@@ -10,8 +10,13 @@ from admirable.infrastructure.db.repositories.figure_repository_impl import Figu
 
 def make_figure(slug: str) -> Figure:
     return Figure(
-        id=None, name="Featured Figure", slug=slug, short_description=None, key_facts=[],
-        content_blocks=[], search_text="",
+        id=None,
+        name="Featured Figure",
+        slug=slug,
+        short_description=None,
+        key_facts=[],
+        content_blocks=[],
+        search_text="",
     )
 
 

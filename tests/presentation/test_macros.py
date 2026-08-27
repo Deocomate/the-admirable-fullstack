@@ -47,8 +47,7 @@ def test_story_card_renders_without_subtitle(
     html = _render(
         templates,
         make_request("/"),
-        '{% import "macros/cards.html" as cards with context %}'
-        "{{ cards.story_card(story=story) }}",
+        '{% import "macros/cards.html" as cards with context %}{{ cards.story_card(story=story) }}',
         story=story,
     )
     assert "A Story" in html
@@ -80,10 +79,7 @@ def test_content_blocks_renders_heading_paragraph_quote(
 def test_content_blocks_skips_empty_text(
     templates: Jinja2Templates, make_request: Callable[..., Request]
 ) -> None:
-    # Matches the Blade source exactly: the outer <article> wrapper is keyed
-    # off whether the blocks list itself is non-empty, not whether any block
-    # survives the per-block empty-text skip — so it still renders here,
-    # just with no block content inside.
+    # The outer <article> wrapper is rendered when the blocks list is non-empty.
     blocks = [{"type": "paragraph", "text_en": "   "}]
     html = _render(
         templates,
@@ -115,8 +111,7 @@ def test_audio_player_renders_nothing_without_path(
     html = _render(
         templates,
         make_request("/"),
-        '{% import "macros/media.html" as media with context %}'
-        "{{ media.audio_player(None) }}",
+        '{% import "macros/media.html" as media with context %}{{ media.audio_player(None) }}',
     )
     assert html.strip() == ""
 
@@ -145,8 +140,7 @@ def test_pagination_hidden_for_single_page(
     html = _render(
         templates,
         make_request("/"),
-        '{% import "macros/nav.html" as nav with context %}'
-        '{{ nav.pagination(page, "/x") }}',
+        '{% import "macros/nav.html" as nav with context %}{{ nav.pagination(page, "/x") }}',
         page=page,
     )
     assert html.strip() == ""
@@ -161,8 +155,7 @@ def test_pagination_renders_page_numbers_and_links(
     html = _render(
         templates,
         make_request("/"),
-        '{% import "macros/nav.html" as nav with context %}'
-        '{{ nav.pagination(page, "/x") }}',
+        '{% import "macros/nav.html" as nav with context %}{{ nav.pagination(page, "/x") }}',
         page=page,
     )
     assert "/x?page=1" in html
@@ -197,7 +190,7 @@ def test_forms_text_input_shows_error(
     )
     assert "border-red-400" in html
     assert "Bắt buộc." in html
-    assert 'required' in html
+    assert "required" in html
 
 
 def test_forms_checkbox_renders_hidden_fallback(

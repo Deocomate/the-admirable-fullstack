@@ -47,10 +47,7 @@ class DuplicateSlugError(BusinessRuleViolationError):
 
 
 class DuplicateValueError(BusinessRuleViolationError):
-    """An application-level uniqueness check (Laravel's `unique:` validation
-    rule, which needs a DB query and so can't live in a Pydantic form) was
-    violated. The router catches this and attaches a field-specific message,
-    the same way `auth.py` handles `InvalidCredentialsError`."""
+    """Raised when a unique business constraint in the repository is violated."""
 
     def __init__(self, field: str, value: str) -> None:
         self.field = field

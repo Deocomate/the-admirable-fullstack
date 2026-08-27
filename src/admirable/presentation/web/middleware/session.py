@@ -1,13 +1,7 @@
-"""Server-side Redis session — deliberately not Starlette's SessionMiddleware,
-which packs all state into the cookie and can't be invalidated server-side
-(we dropped Laravel's `sessions` table, but logout must still be real).
+"""Server-side Redis session middleware.
 
-The cookie holds only a signed session id. Session data lives at Redis key
-`sess:{sid}` with a sliding TTL. Flash messages and validation old-input/
-errors use a double buffer: a use case writes to `_next_*` this request: the
-next request's Session.__init__ promotes `_next_*` to the readable `_flash`/
-`_old`/`_errors`, and those display-only keys are dropped again before the
-next save — so they're visible for exactly one subsequent request.
+The cookie holds only a signed session ID. Session state is stored in Redis at key `sess:{sid}`
+with configurable sliding TTL, supporting flash data, old input, and validation errors.
 """
 
 import json
@@ -85,8 +79,7 @@ class Session(MutableMapping[str, Any]):
         self.regenerated = True
 
     def remember_for(self, seconds: int) -> None:
-        """'Remember me': extend this session's TTL beyond the usual default
-        (Laravel's `remember_token` column was dropped — this replaces it)."""
+        """'Remember me': extend this session's TTL beyond the default lifetime."""
         self.ttl_override_seconds = seconds
 
     def invalidate(self) -> None:

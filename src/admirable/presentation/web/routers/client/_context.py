@@ -1,9 +1,5 @@
-"""Shared client-page context builder: SEO dict + the footer's categories/
-contacts. Every client page needs this since layouts/client.html's footer is
-included unconditionally — computed explicitly here (per router call, not a
-hidden template global) since footer.blade.php's own inline DB query is
-exactly the hidden-dependency pattern Phase 8 deliberately did not replicate.
-"""
+"""Shared client-page context builder: builds SEO metadata and loads
+categories/contacts for page layout."""
 
 from typing import Any
 

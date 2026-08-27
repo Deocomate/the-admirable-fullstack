@@ -1,7 +1,4 @@
-{# category_pills ← components/client/shared/category-pills.blade.php
-   pagination     ← components/client/shared/pagination.blade.php (uses
-                     domain Page.window() instead of Laravel's full page range)
-   share_buttons  ← components/client/shared/share-buttons.blade.php #}
+{# Navigation macros: category pills, pagination, and social share buttons #}
 
 {% macro category_pills(categories, active_slug=None) %}
 <div class="flex flex-wrap justify-center gap-2" role="list" aria-label="Lĩnh vực">

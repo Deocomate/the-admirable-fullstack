@@ -1,3 +1,5 @@
+"""Functional tests for CSRF protection middleware."""
+
 import re
 
 from httpx import AsyncClient
@@ -9,18 +11,18 @@ def _extract_csrf_token(html: str) -> str:
     return match.group(1)
 
 
-async def test_post_without_token_returns_419(client: AsyncClient) -> None:
+async def test_post_without_token_returns_403(client: AsyncClient) -> None:
     response = await client.post("/admin/login", data={"email": "x@example.com", "password": "y"})
-    assert response.status_code == 419
+    assert response.status_code == 403
 
 
-async def test_post_with_wrong_token_returns_419(client: AsyncClient) -> None:
+async def test_post_with_wrong_token_returns_403(client: AsyncClient) -> None:
     await client.get("/admin/login")  # establish a session
     response = await client.post(
         "/admin/login",
         data={"_token": "totally-wrong-token", "email": "x@example.com", "password": "y"},
     )
-    assert response.status_code == 419
+    assert response.status_code == 403
 
 
 async def test_post_with_valid_token_passes_csrf_check(client: AsyncClient) -> None:
@@ -31,7 +33,7 @@ async def test_post_with_valid_token_passes_csrf_check(client: AsyncClient) -> N
         data={"_token": token, "email": "wrong@example.com", "password": "wrong"},
         follow_redirects=False,
     )
-    # Not 419: the request passed CSRF and reached the login use case,
+    # Not 403: the request passed CSRF and reached the login use case,
     # which redirected back because the credentials themselves are wrong.
     assert response.status_code == 303
 
@@ -48,11 +50,11 @@ async def test_header_token_accepted_case_insensitively(client: AsyncClient) -> 
     assert response.status_code == 303
 
 
-async def test_json_accept_header_gets_json_419_body(client: AsyncClient) -> None:
+async def test_json_accept_header_gets_json_403_body(client: AsyncClient) -> None:
     response = await client.post(
         "/admin/login",
         data={"email": "x", "password": "y"},
         headers={"Accept": "application/json"},
     )
-    assert response.status_code == 419
+    assert response.status_code == 403
     assert response.headers["content-type"].startswith("application/json")

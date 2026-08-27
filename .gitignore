@@ -1,51 +1,50 @@
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+
+# Python / Virtual Environment
+.venv/
+venv/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Type Checking & Linting
+.ruff_cache/
+.mypy_cache/
+
+# Application Data & Media
+media/
+backups/
+*.sqlite
+*.sqlite3
+*.db
+
+# Logs & OS artifacts
 *.log
 .DS_Store
-.env
-.env.backup
-.env.production
-.phpactor.json
-.phpunit.result.cache
-/.fleet
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
-/auth.json
-/node_modules
-/public/build
-/public/hot
-/public/storage
-/storage/*.key
-/storage/pail
-/vendor
-Homestead.json
-Homestead.yaml
 Thumbs.db
 
-# AI Agent files
+# IDE & Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# AI Agent runtime artifacts
 .agent/
-.agents/
 .gemini/
-AGENTS.md
-GEMINI.md
-CLAUDE.md
-.repomixignore
-opencode.json
 _codebase/
 storage.zip
 storage.rar
-
-storage.zip
-storage.rar
-
-# Python / FastAPI
-.venv/
-__pycache__/
-*.pyc
-.ruff_cache/
-.mypy_cache/
-.pytest_cache/
-media/
-.coverage
-backups/

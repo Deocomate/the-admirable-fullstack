@@ -29,8 +29,7 @@ class DbSettings(BaseModel):
     @property
     def dsn(self) -> str:
         return (
-            f"mysql+asyncmy://{self.user}:{self.password}"
-            f"@{self.host}:{self.port}/{self.database}"
+            f"mysql+asyncmy://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
         )
 
 

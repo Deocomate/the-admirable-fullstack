@@ -1,10 +1,6 @@
-"""DRY registration for admin CRUD resource groups — Laravel's
-`Route::resource($name, Controller::class)->except(['show'])` equivalent: 6
-named routes (index, create, store, edit, update, destroy) per resource.
+"""Standard CRUD resource router registration helper for admin management views.
 
-Handlers are registered in the same order Laravel would: `create` (a static
-GET path) before the `{id}`-parameterized routes, so a future static segment
-added under a resource never risks being swallowed by a dynamic one.
+Registers 6 canonical named routes: index, create, store, edit, update, and destroy.
 """
 
 from collections.abc import Awaitable, Callable
@@ -36,7 +32,7 @@ def register_resource(
         f"{prefix}/{{id}}/edit", handlers["edit"], methods=["GET"], name=f"{name}.edit"
     )
     router.add_api_route(
-        f"{prefix}/{{id}}", handlers["update"], methods=["PUT"], name=f"{name}.update"
+        f"{prefix}/{{id}}", handlers["update"], methods=["PUT", "PATCH"], name=f"{name}.update"
     )
     router.add_api_route(
         f"{prefix}/{{id}}", handlers["destroy"], methods=["DELETE"], name=f"{name}.destroy"

@@ -1,5 +1,11 @@
-"""Jinja2 environment: globals and filters that stand in for what Blade gave
-Laravel for free (`route()`, `@csrf`, `old()`, `$errors`, `session()->flash`)."""
+"""Jinja2 templating environment configuration, globals, and custom filters.
+
+Provides standard template helpers:
+- Globals: `route`, `csrf_token`, `csrf_field`, `old`, `errors`, `flash`, `current_user`,
+  `is_route`, `asset`, `media_url`, `config`
+- Filters: `nl2br`, `truncate_words`, `str_limit`, `strip_tags`, `date_vi`,
+  `number_format`, `youtube_embed_id`
+"""
 
 import re
 from datetime import datetime
@@ -19,22 +25,17 @@ _TEMPLATES_DIR = Path(__file__).parent / "templates"
 
 
 def asset_url(path: str) -> str:
-    """`asset()` equivalent — shared with `seo.py` so both compute the same URL."""
+    """Returns static asset URL path."""
     return f"/static/{path.lstrip('/')}"
 
 
 def media_url(path: str | None, url_prefix: str) -> str | None:
-    """`asset('storage/' . $path)` equivalent — shared with routers that need
-    to build a fully-resolved media URL for `SeoMeta.og_image` (see seo.py's
-    `_is_already_resolved`, which requires this instead of a bare path)."""
+    """Returns fully-qualified media URL for uploaded files."""
     return f"{url_prefix}{path}" if path else None
 
 
 def _with_query(base: str, **params: Any) -> str:
-    """`route($name, ['q' => $query])` equivalent: Starlette's `url_for` only
-    fills path params, so query-string params (search filters, pagination)
-    are appended here instead. Falsy values are dropped, matching Laravel's
-    array-building pattern of only adding a key when it has a value."""
+    """Appends non-empty query parameters to a base URL."""
     filtered = {k: v for k, v in params.items() if v}
     if not filtered:
         return base
@@ -85,8 +86,7 @@ def _current_user(context: dict[str, Any]) -> AuthenticatedUserDTO | None:
 
 @pass_context
 def _is_route(context: dict[str, Any], pattern: str) -> bool:
-    """`request()->routeIs('admin.figures.*')` equivalent; `None`-safe for
-    contexts with no matched route (error pages)."""
+    """Checks if current request matches a given route name or wildcard pattern."""
     request = context["request"]
     route = request.scope.get("route")
     name = getattr(route, "name", None)
@@ -109,7 +109,7 @@ def _truncate_words(value: str, count: int = 30) -> str:
 
 
 def _str_limit(value: str | None, limit: int = 100, end: str = "...") -> str:
-    """`Str::limit()` equivalent: truncates by character count, not words."""
+    """Truncates string to specified character limit."""
     if not value:
         return ""
     if len(value) <= limit:
@@ -130,9 +130,7 @@ def _number_format(value: float | int, decimals: int = 0) -> str:
     return f"{value:,.{decimals}f}"
 
 
-_YOUTUBE_RE = re.compile(
-    r"(?:youtu\.be/|youtube\.com/(?:embed/|v/|watch\?v=))([a-zA-Z0-9_-]{11})"
-)
+_YOUTUBE_RE = re.compile(r"(?:youtu\.be/|youtube\.com/(?:embed/|v/|watch\?v=))([a-zA-Z0-9_-]{11})")
 
 
 def _youtube_embed_id(url: str | None) -> str | None:
@@ -143,8 +141,18 @@ def _youtube_embed_id(url: str | None) -> str | None:
 
 
 _VI_MONTHS = (
-    "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
-    "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12",
+    "Tháng 1",
+    "Tháng 2",
+    "Tháng 3",
+    "Tháng 4",
+    "Tháng 5",
+    "Tháng 6",
+    "Tháng 7",
+    "Tháng 8",
+    "Tháng 9",
+    "Tháng 10",
+    "Tháng 11",
+    "Tháng 12",
 )
 
 
@@ -155,6 +163,7 @@ def _date_vi(value: Any) -> str:
 
 
 def build_templates(settings: Settings) -> Jinja2Templates:
+    """Builds and configures the Jinja2Templates environment."""
     templates = Jinja2Templates(directory=str(_TEMPLATES_DIR))
     env = templates.env
     env.trim_blocks = True

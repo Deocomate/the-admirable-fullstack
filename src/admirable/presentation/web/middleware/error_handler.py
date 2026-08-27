@@ -1,6 +1,4 @@
-"""Maps domain/presentation exceptions to HTTP responses. HTML requests get
-templates; JSON requests (the audio endpoints) get JSON — matching the
-Laravel controllers' existing status codes exactly."""
+"""Registers application exception handlers mapping domain and web exceptions to HTTP responses."""
 
 import logging
 

@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main, migrate/fastapi]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint & Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Install dependencies
+        run: uv sync --dev
+      - name: Run Ruff Lint
+        run: uv run ruff check src tests scripts
+      - name: Run Ruff Format Check
+        run: uv run ruff format --check src tests scripts
+
+  typecheck:
+    name: Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Install dependencies
+        run: uv sync --dev
+      - name: Run Mypy
+        run: uv run mypy src
+
+  test:
+    name: Test & Coverage
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: admirable
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Install dependencies
+        run: uv sync --dev
+      - name: Run Architecture & Route Parity Tests
+        run: |
+          uv run pytest tests/architecture/ -v
+          uv run pytest tests/functional/test_route_parity.py -v
+      - name: Run Full Test Suite with Coverage
+        run: uv run pytest --cov=admirable --cov-report=term-missing

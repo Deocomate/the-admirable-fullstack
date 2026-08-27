@@ -10,13 +10,5 @@ plans/
 docs/
 .git/
 .env
-storage/
-vendor/
-app/
-bootstrap/
-config/
-database/
-resources/
-routes/
-public/
-node_modules/
+.agents/
+backups/

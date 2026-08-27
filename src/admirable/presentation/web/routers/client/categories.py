@@ -1,6 +1,4 @@
-"""Ports `CategoryController::index`/`show` — same use case and template for
-both, distinguished only by whether a `slug` path param is present, matching
-`client/category/index.blade.php`'s own `$category ?? null` branch."""
+"""Client router for category listings and filtered figure views."""
 
 from typing import Annotated
 

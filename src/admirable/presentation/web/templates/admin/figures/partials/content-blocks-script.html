@@ -1,12 +1,4 @@
-{# ── Content Blocks & Key Facts JavaScript ──────────────────────────── #}
-{# Ported verbatim from content-blocks-script.blade.php — this file has no
-   Blade/Jinja interpolation points of its own; it reads `initialKeyFacts`
-   and `initialBlocks`, which key-facts-card.html and content-blocks-card.html
-   declare as top-level `const`s earlier in the page (classic, non-module
-   <script> tags share one global lexical scope, so this works the same as
-   in the original multi-partial Blade layout). Do not rewrite this JS —
-   see Phase 10's risk assessment: the admin figures/stories forms are
-   tightly coupled to the exact field names this script generates. #}
+{# ── Content Blocks & Key Facts Dynamic Form JavaScript ───────────────── #}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 

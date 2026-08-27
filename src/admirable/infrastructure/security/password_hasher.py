@@ -1,8 +1,6 @@
-"""Implements PasswordHasherPort with bcrypt.
+"""Bcrypt implementation of PasswordHasherPort.
 
-Python's `bcrypt` verifies Laravel's `$2y$` hashes directly (it's just a
-notation variant of `$2b$`), so no prefix rewrite is needed for `verify()`.
-New hashes are written with the standard `$2b$` prefix.
+Hashes passwords using standard bcrypt `$2b$` format with configurable cost factor.
 """
 
 import bcrypt
@@ -27,6 +25,6 @@ class BcryptPasswordHasher:
     def needs_rehash(self, password_hash: str) -> bool:
         try:
             cost = int(password_hash.split("$")[2])
-        except (IndexError, ValueError):
+        except IndexError, ValueError:
             return True
         return cost != self._rounds

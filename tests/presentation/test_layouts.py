@@ -1,6 +1,5 @@
 """Renders each layout end-to-end and checks structural markers (navbar,
-footer, sidebar, csrf-token meta) plus the full seo-head tag list required
-by the Phase 8 success criteria (cross-checked against app.blade.php:45-90)."""
+footer, sidebar, csrf-token meta) plus the full seo-head tag list."""
 
 from collections.abc import Callable
 
@@ -25,7 +24,7 @@ _REQUIRED_SEO_TAGS = (
     'name="twitter:title"',
     'name="twitter:description"',
     'name="twitter:image"',
-    'application/ld+json',
+    "application/ld+json",
     '<link rel="icon"',
     '<link rel="shortcut icon"',
 )
@@ -71,7 +70,7 @@ def test_admin_layout_has_csrf_meta_and_sidebar(
     request = make_request("/")
     html = templates.get_template("layouts/admin.html").render(request=request)
     assert '<meta name="csrf-token"' in html
-    assert 'bg-[#0f0f13]' in html  # sidebar
+    assert "bg-[#0f0f13]" in html  # sidebar
     assert "Tổng quan" in html
 
 
@@ -95,10 +94,10 @@ def test_admin_auth_layout_has_csrf_meta(
     assert "Admin Admirable.site" in html
 
 
-def test_error_419_renders(
+def test_error_403_renders(
     templates: Jinja2Templates, make_request: Callable[..., Request]
 ) -> None:
     request = make_request("/")
-    html = templates.get_template("errors/419.html").render(request=request)
-    assert "419" in html
-    assert "hết hạn" in html
+    html = templates.get_template("errors/403.html").render(request=request)
+    assert "403" in html
+    assert "Không có quyền truy cập" in html

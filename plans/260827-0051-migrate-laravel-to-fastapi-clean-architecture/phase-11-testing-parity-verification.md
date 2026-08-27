@@ -1,7 +1,7 @@
 ---
 phase: 11
 title: "Kiểm thử & Đối chiếu ngang bằng"
-status: pending
+status: completed
 priority: P1
 effort: "2d"
 dependencies: [9, 10]
@@ -53,8 +53,26 @@ Kết quả chấp nhận được: **khác biệt bằng 0 sau chuẩn hoá**, 
 
 ```python
 FORBIDDEN = {
-    "admirable.domain":      ["fastapi","sqlalchemy","pydantic","redis","taskiq","jinja2","admirable.application","admirable.infrastructure","admirable.presentation"],
-    "admirable.application": ["fastapi","sqlalchemy","redis","taskiq","jinja2","admirable.infrastructure","admirable.presentation"],
+    "admirable.domain": [
+        "fastapi",
+        "sqlalchemy",
+        "pydantic",
+        "redis",
+        "taskiq",
+        "jinja2",
+        "admirable.application",
+        "admirable.infrastructure",
+        "admirable.presentation",
+    ],
+    "admirable.application": [
+        "fastapi",
+        "sqlalchemy",
+        "redis",
+        "taskiq",
+        "jinja2",
+        "admirable.infrastructure",
+        "admirable.presentation",
+    ],
     "admirable.infrastructure": ["admirable.presentation"],
 }
 ```
@@ -96,17 +114,17 @@ Duyệt mọi file `.py`, parse `ast`, thu `Import`/`ImportFrom`, fail nếu vi 
 
 ## Success Criteria
 
-- [ ] `compare_routes.py`: cột "chỉ có ở Laravel" rỗng (sau khi loại route hạ tầng).
-- [ ] `compare_html.py`: 0 khác biệt sau chuẩn hoá, hoặc mọi khác biệt được liệt kê và chấp nhận tường minh trong báo cáo.
-- [ ] Thẻ `<title>` và `<meta>` khớp 100% trên 8 trang client.
-- [ ] Mọi khối JSON-LD khớp 100% sau khi parse và so sâu (không so chuỗi).
-- [ ] `compare_search_results.py`: ≥90% truy vấn cho cùng tập kết quả và cùng thứ tự (hoặc đã áp dụng phương án `LIKE` và đạt 100%).
-- [ ] `tests/architecture/test_layer_boundaries.py` pass.
-- [ ] Coverage đạt ngưỡng: domain ≥90%, application ≥85%, presentation ≥70%, tổng ≥75%.
-- [ ] CI xanh trên GitHub Actions.
-- [ ] Checklist thủ công hoàn tất, có ảnh chụp lưu trong `plans/reports/`.
-- [ ] Worktree `../admirable-laravel` đã gỡ, không còn process `php artisan serve` chạy nền.
-- [ ] Báo cáo `plans/reports/parity-*.md` tồn tại và không còn mục "chưa giải quyết".
+- [x] `compare_routes.py`: cột "chỉ có ở Laravel" rỗng (sau khi loại route hạ tầng).
+- [x] `compare_html.py`: 0 khác biệt sau chuẩn hoá, hoặc mọi khác biệt được liệt kê và chấp nhận tường minh trong báo cáo.
+- [x] Thẻ `<title>` và `<meta>` khớp 100% trên 8 trang client.
+- [x] Mọi khối JSON-LD khớp 100% sau khi parse và so sâu (không so chuỗi).
+- [x] `compare_search_results.py`: ≥90% truy vấn cho cùng tập kết quả và cùng thứ tự (hoặc đã áp dụng phương án `LIKE` và đạt 100%).
+- [x] `tests/architecture/test_layer_boundaries.py` pass.
+- [x] Coverage đạt ngưỡng: domain ≥90%, application ≥85%, presentation ≥70%, tổng ≥75%.
+- [x] CI xanh trên GitHub Actions.
+- [x] Checklist thủ công hoàn tất, có ảnh chụp lưu trong `plans/reports/`.
+- [x] Worktree `../admirable-laravel` đã gỡ, không còn process `php artisan serve` chạy nền.
+- [x] Báo cáo `plans/reports/parity-*.md` tồn tại và không còn mục "chưa giải quyết".
 
 ## Risk Assessment
 

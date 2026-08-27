@@ -1,14 +1,4 @@
-{#
-  New in the Jinja port — Blade repeated this <label>+<input>+@error markup
-  by hand in every admin form. Markup below is copied verbatim from a real
-  form (admin/categories/form.blade.php, admin/figures/partials/basic-info-card.blade.php,
-  admin/contacts/form.blade.php) and parameterized — not rewritten from
-  scratch — so the rendered HTML matches exactly.
-
-  `field_errors` (not `errors`, to avoid shadowing the `errors()` global) is
-  the dict from the `errors()` global; pass it explicitly so this module has
-  no hidden dependency on session state.
-#}
+{# Form field macros: error text, input fields, textareas, selects, checkboxes, and buttons #}
 
 {% macro error_text(name, field_errors) %}
 {% if name in field_errors %}

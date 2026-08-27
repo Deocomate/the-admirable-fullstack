@@ -1,7 +1,8 @@
-"""Runs in the Taskiq worker. Ports from `GenerateAudioJob::handle` — keeps
-all three cancellation checkpoints from the Laravel version: before TTS,
-after TTS, and after the file is written (deleting the just-written file if
-the user cancelled while it was being generated)."""
+"""Taskiq background worker use case for asynchronous audio generation.
+
+Includes multiple cancellation checkpoints to safely abort TTS processing
+and clean up generated files if cancelled by the user.
+"""
 
 from collections.abc import AsyncIterator
 from typing import Protocol, cast

@@ -22,8 +22,11 @@ from tests.fakes.fake_user_repository import FakeUserRepository
 async def _seed_user(users: FakeUserRepository, hasher: FakePasswordHasher) -> User:
     return await users.add(
         User(
-            id=None, name="Admin", email="admin@example.com",
-            password_hash=hasher.hash("correct-password"), role=Role.ADMIN,
+            id=None,
+            name="Admin",
+            email="admin@example.com",
+            password_hash=hasher.hash("correct-password"),
+            role=Role.ADMIN,
         )
     )
 
@@ -55,9 +58,7 @@ async def test_login_unknown_email_raises() -> None:
     hasher = FakePasswordHasher()
 
     with pytest.raises(InvalidCredentialsError):
-        await Login(users, hasher).execute(
-            LoginCommand(email="nobody@example.com", password="x")
-        )
+        await Login(users, hasher).execute(LoginCommand(email="nobody@example.com", password="x"))
 
 
 async def test_login_rehashes_when_needed() -> None:

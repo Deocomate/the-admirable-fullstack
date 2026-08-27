@@ -12,9 +12,7 @@ class FeaturedFigureModel(Base):
     __table_args__ = (UniqueConstraint("figure_id", name="uq_featured_figures_figure_id"),)
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
-    figure_id: Mapped[int] = mapped_column(
-        BigInteger, ForeignKey("figures.id", ondelete="CASCADE")
-    )
+    figure_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("figures.id", ondelete="CASCADE"))
     priority: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime | None]
     updated_at: Mapped[datetime | None]

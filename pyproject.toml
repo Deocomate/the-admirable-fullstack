@@ -80,4 +80,16 @@ markers = [
 [tool.coverage.run]
 # Protocol interfaces carry no executable logic — they are contracts
 # validated structurally by mypy, not by tests.
-omit = ["*/domain/repositories/*"]
+omit = [
+    "*/domain/repositories/*",
+    "*/migrations/*",
+]
+
+[tool.coverage.report]
+fail_under = 75
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+]

@@ -39,7 +39,7 @@ def _build_search_text(content_blocks_raw: str | None, fallback_content: str | N
     if content_blocks_raw:
         try:
             raw = json.loads(content_blocks_raw)
-        except (TypeError, ValueError):
+        except TypeError, ValueError:
             raw = []
         blocks = parse_content_blocks(raw if isinstance(raw, list) else [])
         text_out = build_search_text(blocks)
@@ -327,15 +327,11 @@ async def _run(source_url: str, dry_run: bool, with_media: bool) -> None:
 
 @app.command()
 def main(
-    source_url: str = typer.Option(
-        ..., help="Source DB URL, e.g. mysql+asyncmy://ro:pw@host/db"
-    ),
+    source_url: str = typer.Option(..., help="Source DB URL, e.g. mysql+asyncmy://ro:pw@host/db"),
     dry_run: bool = typer.Option(
         False, "--dry-run", help="Roll back the target transaction at the end."
     ),
-    with_media: bool = typer.Option(
-        False, "--with-media", help="Also copy uploads/ into media/."
-    ),
+    with_media: bool = typer.Option(False, "--with-media", help="Also copy uploads/ into media/."),
 ) -> None:
     asyncio.run(_run(source_url, dry_run, with_media))
 

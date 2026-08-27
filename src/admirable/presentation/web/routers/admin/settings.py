@@ -1,8 +1,4 @@
-"""Ports `SettingController` + `routes/web.php`'s `admin.settings.about-us*`
-routes. Every field is `nullable` in Laravel's validation and
-`AboutUsContent.merge()` tolerantly coerces whatever comes in, so — unlike
-the other admin forms — there's no failure path here that needs `old()`/
-error-preserving redirects; a save always succeeds."""
+"""Admin settings router for managing dynamic About Us page content."""
 
 from typing import Annotated
 

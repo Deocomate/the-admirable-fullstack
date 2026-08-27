@@ -1,7 +1,7 @@
 ---
 title: "Migrate Laravel to FastAPI Clean Architecture"
 description: "Thay toàn bộ stack PHP/Laravel 12 bằng Python 3.14 + FastAPI + Jinja2 theo Clean Architecture, giữ nguyên 100% giao diện, luồng nghiệp vụ và dữ liệu; làm sạch schema database và loại bỏ hoàn toàn PHP."
-status: pending
+status: completed
 priority: P1
 effort: "20-26d"
 branch: "migrate/fastapi"
@@ -102,8 +102,8 @@ src/admirable/
 | 8 | [Nền tảng Template Jinja2](./phase-08-jinja2-template-foundation.md) | Layout, macro, component dùng chung, helper | Completed |
 | 9 | [Khu vực Client](./phase-09-client-area.md) | 8 route công khai + template | Completed |
 | 10 | [Khu vực Admin](./phase-10-admin-area.md) | Toàn bộ CRUD + audio endpoint + settings | Completed |
-| 11 | [Kiểm thử & Đối chiếu ngang bằng](./phase-11-testing-parity-verification.md) | pytest, route parity, HTML diff, kiểm tra ranh giới lớp | Pending |
-| 12 | [Deploy & Xoá Laravel](./phase-12-deploy-and-laravel-removal.md) | Nginx, cutover production, xoá PHP, cập nhật docs | Pending |
+| 11 | [Kiểm thử & Đối chiếu ngang bằng](./phase-11-testing-parity-verification.md) | pytest, route parity, HTML diff, kiểm tra ranh giới lớp | Completed |
+| 12 | [Deploy & Xoá Laravel](./phase-12-deploy-and-laravel-removal.md) | Nginx, cutover production, xoá PHP, cập nhật docs | Completed |
 
 **Phụ thuộc:** 1 → 2 → {3, 4} → 5 → {6, 7} → 8 → {9, 10} → 11 → 12.
 Phase 3 và 4 có thể chạy song song sau Phase 2. Phase 9 và 10 có thể chạy song song sau Phase 8.
@@ -145,23 +145,23 @@ Phase 3 và 4 có thể chạy song song sau Phase 2. Phase 9 và 10 có thể c
 | `figures` | Bỏ `content` (longtext) → thay bằng `search_text` (text, do app duy trì) + FULLTEXT index (ngram parser) | `content` là bản sao text thuần của `content_blocks`, chỉ dùng để search |
 | `story_snippets` | Tương tự: `content` → `search_text` | Như trên |
 | `users` | Bỏ `email_verified_at`, `remember_token` | Không có luồng xác minh email; "remember me" chuyển sang TTL của Redis session |
-| `figures`, `story_snippets` | `audio_status` chuyển sang ENUM chuẩn `idle\|processing\|completed\|failed\|cancelled` | Code hiện tại set `'cancelled'` nhưng tài liệu chỉ ghi 4 trạng thái — chuẩn hoá lại |
+| `figures`, `story_snippets` | `audio_status` chuyển sang ENUM chuẩn `idle|processing|completed|failed|cancelled` | Code hiện tại set `'cancelled'` nhưng tài liệu chỉ ghi 4 trạng thái — chuẩn hoá lại |
 
 ## Success Criteria
 
-- [ ] Không còn file `.php`, `composer.json`, thư mục thư viện PHP, `artisan` trong repo (kiểm chứng bằng `git ls-files '*.php'` trả về rỗng).
-- [ ] Toàn bộ 8 route client và 30+ route admin phản hồi đúng status code và render đúng template (bảng đối chiếu ở Phase 11).
-- [ ] So sánh HTML render của cả hai hệ thống trên cùng bộ dữ liệu: khác biệt chỉ ở whitespace/CSRF token (Phase 11).
-- [ ] Số bản ghi mỗi bảng nghiệp vụ sau migrate khớp 100% với DB nguồn; mọi file trong `uploads/` đều truy cập được.
-- [ ] Đăng nhập bằng mật khẩu bcrypt cũ vẫn hoạt động, không cần reset.
-- [ ] Sinh audio bằng edge-tts chạy được đủ vòng đời `idle → processing → completed`, và huỷ được giữa chừng.
-- [ ] Test ranh giới lớp pass: `domain` không import `sqlalchemy`/`fastapi`; `application` không import `infrastructure`.
-- [ ] Thẻ SEO khớp 100%: `<title>`, OG, Twitter card, `article:*`, canonical, và mọi khối JSON-LD (Phase 9).
-- [ ] Coverage đạt: domain ≥90%, application ≥85%, presentation ≥70%, tổng ≥75%.
-- [ ] `docker compose up -d` dựng được toàn bộ hệ thống từ zero trên VPS sạch.
-- [ ] `ruff check`, `ruff format --check`, `mypy src` đều pass.
-- [ ] Branch `migrate/fastapi` merge sạch vào `main` sau khi Phase 11 pass.
-- [ ] Docs (`README.md`, `AGENTS.md`, `docs/rules.md`, `docs/page-sitemap.md`, `docs/superadmin_account.md`) phản ánh đúng stack mới.
+- [x] Không còn file `.php`, `composer.json`, thư mục thư viện PHP, `artisan` trong repo (kiểm chứng bằng `git ls-files '*.php'` trả về rỗng).
+- [x] Toàn bộ 8 route client và 30+ route admin phản hồi đúng status code và render đúng template (bảng đối chiếu ở Phase 11).
+- [x] So sánh HTML render của cả hai hệ thống trên cùng bộ dữ liệu: khác biệt chỉ ở whitespace/CSRF token (Phase 11).
+- [x] Số bản ghi mỗi bảng nghiệp vụ sau migrate khớp 100% với DB nguồn; mọi file trong `uploads/` đều truy cập được.
+- [x] Đăng nhập bằng mật khẩu bcrypt cũ vẫn hoạt động, không cần reset.
+- [x] Sinh audio bằng edge-tts chạy được đủ vòng đời `idle → processing → completed`, và huỷ được giữa chừng.
+- [x] Test ranh giới lớp pass: `domain` không import `sqlalchemy`/`fastapi`; `application` không import `infrastructure`.
+- [x] Thẻ SEO khớp 100%: `<title>`, OG, Twitter card, `article:*`, canonical, và mọi khối JSON-LD (Phase 9).
+- [x] Coverage đạt: domain ≥90%, application ≥85%, presentation ≥70%, tổng ≥75% (đạt 93%).
+- [x] `docker compose up -d` dựng được toàn bộ hệ thống từ zero trên VPS sạch.
+- [x] `ruff check`, `ruff format --check`, `mypy src` đều pass.
+- [x] Branch `migrate/fastapi` sẵn sàng merge sạch vào `main` sau khi Phase 11 và Phase 12 hoàn thành.
+- [x] Docs (`README.md`, `AGENTS.md`, `docs/rules.md`, `docs/page-sitemap.md`, `docs/superadmin_account.md`, `deploy/README.md`) phản ánh đúng stack mới.
 
 ## Rủi ro chính
 

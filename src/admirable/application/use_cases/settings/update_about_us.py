@@ -11,5 +11,4 @@ class UpdateAboutUs:
         self._settings = settings
 
     async def execute(self, cmd: UpdateAboutUsCommand) -> None:
-        # ensure_ascii=False matches Laravel's JSON_UNESCAPED_UNICODE
         await self._settings.set(_KEY, json.dumps(cmd.data, ensure_ascii=False))

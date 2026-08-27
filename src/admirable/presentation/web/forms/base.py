@@ -1,9 +1,8 @@
 """Bridges Starlette form parsing to Pydantic command DTOs.
 
-`unflatten_form_data` decodes Laravel's bracket-notation array fields
-(`content_blocks[0][text_en]`, `key_facts[0][label]`, `category_ids[]`) —
-the admin figures/stories JS still generates exactly this shape — into
-nested dict/list structures a Pydantic model can validate directly.
+`unflatten_form_data` decodes multidimensional form field keys
+(`content_blocks[0][text_en]`, `key_facts[0][label]`, `category_ids[]`) into
+nested dict and list structures that Pydantic models can validate directly.
 """
 
 import re
@@ -65,6 +64,7 @@ def _finalize(node: object) -> object:
 
 
 def unflatten_form_data(items: Sequence[tuple[str, object]]) -> dict[str, object]:
+    """Converts flattened form field items into a hierarchical dict structure."""
     root: dict[str, object] = {}
     for raw_key, value in items:
         _assign(root, _parse_key(raw_key), value)
@@ -74,11 +74,7 @@ def unflatten_form_data(items: Sequence[tuple[str, object]]) -> dict[str, object
 
 
 async def get_uploaded_file(form: FormData, field: str) -> UploadedFileDTO | None:
-    """Pulls an optional file field out of already-parsed `FormData` (Starlette
-    caches the parse, so re-calling `request.form()` after `parse_form` is
-    cheap) — an empty `<input type="file">` still submits an `UploadFile`
-    with a blank filename, which Laravel's `nullable` file rule treats as
-    "not provided", so that case is filtered out here too."""
+    """Extracts an optional file upload from FormData if a non-empty file was provided."""
     value = form.get(field)
     if not isinstance(value, UploadFile) or not value.filename:
         return None
@@ -103,10 +99,7 @@ def _flashable_old_input(raw: dict[str, object]) -> dict[str, object]:
 
 
 def _translate_error(err: ErrorDetails, label: str) -> str:
-    """Turns Pydantic's English default message into the Vietnamese phrasing
-    the equivalent Laravel Form Request's `messages()` array used, for the
-    common constraint kinds these admin forms rely on (required/max/int/min).
-    Falls back to Pydantic's own message for anything more specific."""
+    """Translates standard Pydantic error details into user-friendly Vietnamese messages."""
     err_type = err["type"]
     ctx = err.get("ctx")
     ctx_dict = ctx if isinstance(ctx, dict) else {}
@@ -117,8 +110,6 @@ def _translate_error(err: ErrorDetails, label: str) -> str:
     if err_type == "string_too_short":
         min_length = ctx_dict.get("min_length")
         if min_length == 1:
-            # Laravel's `required` rule (not a real min-length constraint) —
-            # the common case for a blank required text field.
             return f"{label} là bắt buộc."
         return f"{label} phải có ít nhất {min_length} ký tự."
     if err_type in ("int_parsing", "int_type"):
@@ -134,6 +125,10 @@ async def parse_form[T: BaseModel](
     redirect_to: str,
     field_labels: dict[str, str] | None = None,
 ) -> T:
+    """Parses multipart or URL-encoded request form into a validated Pydantic model.
+
+    Raises FormValidationError on validation failure with translated error messages.
+    """
     form: FormData = await request.form()
     items = list(form.multi_items())
     raw = unflatten_form_data(items)

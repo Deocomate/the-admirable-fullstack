@@ -1,9 +1,4 @@
-"""Ports `AuthController` + `routes/web.php`'s admin.auth.* group.
-
-Two routers, matching Laravel's `guest` vs `auth` middleware groups exactly:
-`guest_router` (login/forgot/reset) rejects already-logged-in users,
-`auth_router` (dashboard/logout) requires a session.
-"""
+"""Authentication routers for admin user login, password recovery, dashboard, and logout."""
 
 from typing import Annotated
 

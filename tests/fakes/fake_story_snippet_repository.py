@@ -33,9 +33,7 @@ class FakeStorySnippetRepository:
     async def list_other_by_figure(
         self, figure_id: int, exclude_id: int, limit: int
     ) -> list[StorySnippet]:
-        items = [
-            s for s in self._items.values() if s.figure_id == figure_id and s.id != exclude_id
-        ]
+        items = [s for s in self._items.values() if s.figure_id == figure_id and s.id != exclude_id]
         return items[:limit]
 
     async def add(self, snippet: StorySnippet) -> StorySnippet:

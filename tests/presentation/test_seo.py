@@ -1,6 +1,4 @@
-"""build_seo_context reproduces app.blade.php's three computed values exactly
-(seo_canonical / seo_image / seo_locale) plus the WebSite JSON-LD merge order.
-The 4 og:image scenarios are the plan's explicit required test matrix."""
+"""Unit tests for build_seo_context computing canonical URLs, OG images, and JSON-LD schemas."""
 
 from collections.abc import Callable
 from typing import Any

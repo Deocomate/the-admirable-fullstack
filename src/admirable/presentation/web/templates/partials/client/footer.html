@@ -1,12 +1,4 @@
-{#
-  components/client/layout/footer.blade.php queried Category/Contact directly
-  inside its own @php block — a hidden global DB dependency, which this port
-  deliberately does not replicate (Phase 8 non-functional requirement: no
-  component may depend on hidden globals). `categories` and `contacts` must be
-  supplied in the render context by whatever builds the client base context
-  for every page (wired in Phase 9, since footer.html is included by every
-  client layout render).
-#}
+{# Client layout footer: renders brand description, categories, social contacts, and copyright #}
 <footer class="bg-apple-white border-t border-apple-gray-light/50">
     <div class="max-w-[980px] mx-auto px-4 sm:px-6">
         {# Main footer content #}

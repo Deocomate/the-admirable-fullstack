@@ -8,20 +8,35 @@ async def test_active_ordered(db_session: AsyncSession) -> None:
     repo = ContactRepositoryImpl(db_session)
     await repo.add(
         Contact(
-            id=None, type="email", label="Email IT", value="a@b.com",
-            icon=None, sort_order=1, is_active=True,
+            id=None,
+            type="email",
+            label="Email IT",
+            value="a@b.com",
+            icon=None,
+            sort_order=1,
+            is_active=True,
         )
     )
     await repo.add(
         Contact(
-            id=None, type="phone", label="Phone IT", value="123",
-            icon=None, sort_order=0, is_active=True,
+            id=None,
+            type="phone",
+            label="Phone IT",
+            value="123",
+            icon=None,
+            sort_order=0,
+            is_active=True,
         )
     )
     await repo.add(
         Contact(
-            id=None, type="fax", label="Fax IT (inactive)", value="000",
-            icon=None, sort_order=2, is_active=False,
+            id=None,
+            type="fax",
+            label="Fax IT (inactive)",
+            value="000",
+            icon=None,
+            sort_order=2,
+            is_active=False,
         )
     )
 

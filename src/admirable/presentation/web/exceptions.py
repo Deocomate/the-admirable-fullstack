@@ -3,9 +3,7 @@ class NotAuthenticatedError(Exception):
 
 
 class AlreadyAuthenticatedError(Exception):
-    """Raised by `require_guest` when a logged-in user hits a guest-only
-    route (login, forgot-password, reset-password) — redirects to the
-    dashboard, matching Laravel's `guest` middleware."""
+    """Raised when an authenticated user accesses a guest-only route."""
 
 
 class ForbiddenError(Exception):

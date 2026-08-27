@@ -21,7 +21,7 @@ def test_never_splits_mid_word() -> None:
 
 
 def test_all_chunks_within_limit() -> None:
-    text = ("This is a sentence. " * 1200)  # ~24000 chars
+    text = "This is a sentence. " * 1200  # ~24000 chars
     chunks = chunk_text(text, max_chars=3000)
     assert len(text) > 20000
     for chunk in chunks:

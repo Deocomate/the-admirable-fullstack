@@ -90,11 +90,13 @@ templates/
 @dataclass(frozen=True)
 class SeoMeta:
     title: str = "The Admirable — Những tấm gương đáng ngưỡng mộ"
-    description: str = "Khám phá những câu chuyện truyền cảm hứng..."   # copy nguyên default của Blade
+    description: str = (
+        "Khám phá những câu chuyện truyền cảm hứng..."  # copy nguyên default của Blade
+    )
     active_page: str = ""
-    canonical_url: str | None = None      # None → dùng URL hiện tại
+    canonical_url: str | None = None  # None → dùng URL hiện tại
     og_type: str = "website"
-    og_image: str | None = None           # None → asset('assets/images/logo.png')
+    og_image: str | None = None  # None → asset('assets/images/logo.png')
     robots: str = "index,follow"
     keywords: str | None = None
     published_time: str | None = None
@@ -102,6 +104,7 @@ class SeoMeta:
     article_section: str | None = None
     article_tags: tuple[str, ...] = ()
     json_ld: tuple[dict, ...] = ()
+
 
 def build_seo_context(request, meta: SeoMeta) -> dict: ...
 ```

@@ -1,6 +1,4 @@
-"""SEO metadata computation, moved out of the Blade `@php` block
-(`components/client/layout/app.blade.php:17-41`) into pure Python so the
-template only renders — it never computes."""
+"""SEO metadata computation and JSON-LD schema builder."""
 
 from dataclasses import dataclass, field
 from typing import Any
@@ -33,12 +31,7 @@ class SeoMeta:
 
 
 def _is_already_resolved(value: str) -> bool:
-    """True for an absolute external URL, or a root-relative path already
-    produced by `asset_url()`/`media_url()` (e.g. a figure's avatar via
-    `media_url(figure.avatar_path)`) — either way, wrapping it again through
-    `asset_url()` would be wrong. Only a bare relative path with no leading
-    slash (Blade's `ltrim($seoImage, '/')` fallback case) still gets wrapped.
-    """
+    """True for an absolute URL or root-relative path produced by asset/media helpers."""
     if value.startswith("/"):
         return True
     parsed = urlparse(value)
@@ -46,22 +39,12 @@ def _is_already_resolved(value: str) -> bool:
 
 
 def build_seo_context(request: Request, meta: SeoMeta) -> dict[str, Any]:
-    """Reproduces `app.blade.php`'s three computed values exactly:
-    `seo_canonical`, `seo_image` (wrapped through `asset()` only when not
-    already an absolute URL — the `FILTER_VALIDATE_URL` branch), and
-    `seo_locale`. Then prepends the default `WebSite`/`SearchAction` schema
-    to the page's own `json_ld`, matching `array_merge([$default], $jsonLd)`.
-    """
+    """Computes SEO canonical URLs, OG images, and prepends default Schema.org JSON-LD."""
     settings: Settings = request.app.state.settings
     site_name = settings.app.name
 
     seo_canonical = meta.canonical_url or str(request.url.replace(query=""))
 
-    # Laravel's asset() returns a fully-qualified absolute URL, so the
-    # default logo path short-circuits the FILTER_VALIDATE_URL branch below.
-    # Our asset_url() is root-relative instead, so the default must be used
-    # as-is here rather than run through the "wrap if not absolute" check —
-    # otherwise it gets asset_url()-wrapped twice.
     if meta.og_image is None:
         seo_image = asset_url("assets/images/logo.png")
     elif _is_already_resolved(meta.og_image):

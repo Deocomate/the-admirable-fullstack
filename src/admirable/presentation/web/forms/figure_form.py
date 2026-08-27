@@ -1,11 +1,4 @@
-"""Ports `StoreFigureRequest`/`UpdateFigureRequest` (identical rules on
-both). `avatar`/`audio` files come from `FormData` directly (see
-`forms/base.py`'s `get_uploaded_file`); `category_ids.*.exists` isn't
-re-checked here — `sync_categories` only attaches ids that exist.
-
-Unlike stories, a figure's `content_blocks.*.text_en` is `nullable` at the
-Laravel validation layer — a block with blank `text_en` is dropped later by
-`parse_content_blocks`/`to_domain_blocks`, not rejected outright."""
+"""Figure form validation schema and field labels."""
 
 from pydantic import BaseModel, Field
 

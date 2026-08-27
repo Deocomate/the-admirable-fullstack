@@ -1,7 +1,4 @@
-{# Ported from admin/partials/audio-generator.blade.php. Included (not
-   imported as a macro) so it inherits the caller's context automatically —
-   set `audio_model` (a story/figure DTO, or none for a not-yet-created one)
-   and `audio_type` ('story' | 'figure') before including this file. #}
+{# Audio generator component partial for TTS synthesis, polling, and cancellation #}
 {% set can_generate_audio = audio_model is not none and audio_type is not none %}
 {% set audio_component_id = "audio-generator-" ~ (audio_type or "new") ~ "-" ~ (audio_model.id if audio_model else "new") %}
 {% set audio_status = audio_model.audio_status if audio_model else "idle" %}

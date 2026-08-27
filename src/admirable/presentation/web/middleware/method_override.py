@@ -1,10 +1,8 @@
-"""Laravel's `@method('PUT')` spoofing: a hidden `_method` form field on a
-POST request is used to route to PUT/PATCH/DELETE handlers.
+"""ASGI middleware for HTTP method overriding on HTML form submissions.
 
-Pure ASGI (not BaseHTTPMiddleware) because the body must be read to find
-`_method`, then replayed byte-for-byte to the real handler — BaseHTTPMiddleware
-builds a fresh Request downstream that can't see a body already consumed by
-a middleware-local Request object.
+HTML forms only natively support GET and POST methods. When submitting forms
+that perform RESTful updates or deletions, a hidden `_method` field (PUT, PATCH, DELETE)
+allows routing to the appropriate HTTP verb handler in FastAPI.
 """
 
 from typing import Any

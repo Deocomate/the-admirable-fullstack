@@ -9,8 +9,13 @@ from tests.fakes.fake_story_snippet_repository import FakeStorySnippetRepository
 
 def _blank_figure(name: str, slug: str) -> Figure:
     return Figure(
-        id=None, name=name, slug=slug, short_description=None,
-        key_facts=[], content_blocks=[], search_text="",
+        id=None,
+        name=name,
+        slug=slug,
+        short_description=None,
+        key_facts=[],
+        content_blocks=[],
+        search_text="",
     )
 
 
@@ -60,8 +65,7 @@ async def test_three_featured_backfills_remaining_three() -> None:
 
 async def test_six_featured_still_backfills_one() -> None:
     """`slice(1, 6)` on exactly 6 featured records yields only 5 — one
-    non-featured backfill slot remains, matching Laravel's own behavior.
-    Only >=7 featured records avoid backfill entirely (see the next test)."""
+    non-featured backfill slot remains. Only >=7 featured records avoid backfill entirely."""
     use_case, figures, featured = await _make_use_case()
     seeded = await _seed_figures(figures, 10)
     for priority, figure in enumerate(seeded[:6]):

@@ -86,19 +86,40 @@ _ABOUT_US_DATA = {
         "tagline": "Giá trị cốt lõi",
         "title": "Những gì chúng tôi tin tưởng",
         "items": [
-            {"title": "Tri thức mở", "description": "Mọi nội dung đều miễn phí, không cần đăng ký, không paywall. Kiến thức là quyền của tất cả."},
-            {"title": "Chất lượng cao", "description": "Bài viết được biên soạn kỹ lưỡng, song ngữ chuẩn xác, đúng ngữ pháp và phù hợp IELTS."},
-            {"title": "Truyền cảm hứng", "description": "Nội dung tích cực, khơi dậy động lực học tập và tinh thần vươn lên từ các tấm gương."},
-            {"title": "Đa dạng lĩnh vực", "description": "Từ khoa học, chính trị, nghệ thuật đến thể thao — phủ sóng mọi góc nhìn về nhân loại."},
+            {
+                "title": "Tri thức mở",
+                "description": "Mọi nội dung đều miễn phí, không cần đăng ký, không paywall. Kiến thức là quyền của tất cả.",
+            },
+            {
+                "title": "Chất lượng cao",
+                "description": "Bài viết được biên soạn kỹ lưỡng, song ngữ chuẩn xác, đúng ngữ pháp và phù hợp IELTS.",
+            },
+            {
+                "title": "Truyền cảm hứng",
+                "description": "Nội dung tích cực, khơi dậy động lực học tập và tinh thần vươn lên từ các tấm gương.",
+            },
+            {
+                "title": "Đa dạng lĩnh vực",
+                "description": "Từ khoa học, chính trị, nghệ thuật đến thể thao — phủ sóng mọi góc nhìn về nhân loại.",
+            },
         ],
     },
     "audience": {
         "title": "Nền tảng này dành cho ai?",
         "description": "Không cần tạo tài khoản rườm rà. Hệ thống được mở hoàn toàn công khai để mang tri thức đến với tất cả mọi người.",
         "items": [
-            {"title": "Người học IELTS", "description": "Đắm chìm trong từ vựng cao cấp (Advanced Vocabulary) và cấu trúc câu phức tạp một cách tự nhiên qua các bài viết học thuật mang tính tiểu sử."},
-            {"title": "Người yêu tiếng Anh", "description": "Cải thiện cả hai kỹ năng Reading và Listening đồng thời thông qua các bài đọc song ngữ kèm giọng đọc audio chuẩn xác."},
-            {"title": "Người tìm cảm hứng", "description": "Dành cho bất cứ ai muốn tìm kiếm năng lượng tích cực, sự kiên cường và động lực từ những con người đã làm thay đổi thế giới."},
+            {
+                "title": "Người học IELTS",
+                "description": "Đắm chìm trong từ vựng cao cấp (Advanced Vocabulary) và cấu trúc câu phức tạp một cách tự nhiên qua các bài viết học thuật mang tính tiểu sử.",
+            },
+            {
+                "title": "Người yêu tiếng Anh",
+                "description": "Cải thiện cả hai kỹ năng Reading và Listening đồng thời thông qua các bài đọc song ngữ kèm giọng đọc audio chuẩn xác.",
+            },
+            {
+                "title": "Người tìm cảm hứng",
+                "description": "Dành cho bất cứ ai muốn tìm kiếm năng lượng tích cực, sự kiên cường và động lực từ những con người đã làm thay đổi thế giới.",
+            },
         ],
     },
     "cta": {
@@ -138,8 +159,13 @@ async def _run() -> None:
             if (contact_type, value) not in existing_contacts:
                 await container.contacts.add(
                     Contact(
-                        id=None, type=contact_type, label=label, value=value,
-                        icon=None, sort_order=sort_order, is_active=True,
+                        id=None,
+                        type=contact_type,
+                        label=label,
+                        value=value,
+                        icon=None,
+                        sort_order=sort_order,
+                        is_active=True,
                     )
                 )
         typer.echo(f"Contacts: {len(_CONTACTS)} ensured")

@@ -15,8 +15,13 @@ from tests.fakes.fake_text_to_speech import FakeTextToSpeech
 async def _seed_processing_figure(figures: FakeFigureRepository) -> Figure:
     blocks = parse_content_blocks([{"type": "heading", "text_en": "Hello"}])
     figure = Figure(
-        id=None, name="Marie Curie", slug="marie-curie", short_description=None,
-        key_facts=[], content_blocks=blocks, search_text="Hello",
+        id=None,
+        name="Marie Curie",
+        slug="marie-curie",
+        short_description=None,
+        key_facts=[],
+        content_blocks=blocks,
+        search_text="Hello",
     )
     created = await figures.add(figure)
     created.request_audio_generation()
@@ -50,8 +55,13 @@ async def test_generate_audio_not_processing_is_noop() -> None:
     blocks = parse_content_blocks([{"type": "heading", "text_en": "Hello"}])
     figure = await figures.add(
         Figure(
-            id=None, name="Idle Figure", slug="idle-figure", short_description=None,
-            key_facts=[], content_blocks=blocks, search_text="Hello",
+            id=None,
+            name="Idle Figure",
+            slug="idle-figure",
+            short_description=None,
+            key_facts=[],
+            content_blocks=blocks,
+            search_text="Hello",
         )
     )
     tts = FakeTextToSpeech()

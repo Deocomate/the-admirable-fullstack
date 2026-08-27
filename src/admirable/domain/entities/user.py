@@ -24,9 +24,10 @@ class User:
         return self.role in (Role.SUPERADMIN, Role.ADMIN)
 
     def can_be_deleted_by(self, actor: User) -> None:
-        """Raises if deletion is not allowed; matches `UserService::deleteAdmin`.
-        A superadmin can never be deleted (not just "the last one" — Laravel's
-        `deleteAdmin` rejects deleting *any* superadmin unconditionally)."""
+        """Validates whether this user can be deleted by the specified actor.
+
+        Superadmins cannot be deleted, and users cannot delete their own account.
+        """
         if self.is_superadmin():
             raise CannotDeleteSuperAdminError()
         if actor.id == self.id:

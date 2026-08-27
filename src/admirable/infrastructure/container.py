@@ -101,8 +101,10 @@ def build_request_scope(session: AsyncSession, settings: Settings, redis: Redis)
         settings_repo=SettingRepositoryImpl(session),
         storage=LocalFileStorage(settings.media.root),
         tts=EdgeTtsAdapter(
-            voice=settings.tts.voice, rate=settings.tts.rate,
-            volume=settings.tts.volume, pitch=settings.tts.pitch,
+            voice=settings.tts.voice,
+            rate=settings.tts.rate,
+            volume=settings.tts.volume,
+            pitch=settings.tts.pitch,
             max_chars_per_chunk=settings.tts.max_chars_per_chunk,
         ),
         queue=TaskiqQueue(),

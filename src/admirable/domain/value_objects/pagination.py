@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class Page[T]:
-    """Replaces Laravel's `LengthAwarePaginator`."""
+    """Pagination value object with sliding window calculations."""
 
     items: Sequence[T]
     total: int

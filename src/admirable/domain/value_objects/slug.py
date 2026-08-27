@@ -23,12 +23,7 @@ class Slug:
 
     @classmethod
     def from_text(cls, text: str) -> Slug:
-        """ASCII-fold + kebab-case, equivalent to Laravel's `Str::slug`.
-
-        Only used for newly created records — existing rows keep their
-        original slug verbatim on migration, so any divergence from
-        `Str::slug` never touches already-published URLs.
-        """
+        """Generates a URL-friendly ASCII slug from text using kebab-case formatting."""
         # Đ/đ is a stroke letter, not a combining diacritic — NFKD does not
         # decompose it, so it must be mapped explicitly or it gets dropped.
         text = text.replace("Đ", "D").replace("đ", "d")
