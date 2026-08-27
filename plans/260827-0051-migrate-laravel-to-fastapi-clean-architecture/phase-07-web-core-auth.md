@@ -1,7 +1,7 @@
 ---
 phase: 7
 title: "Web core & Auth"
-status: pending
+status: completed
 priority: P1
 effort: "2.5d"
 dependencies: [5]

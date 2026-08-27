@@ -1,0 +1,12 @@
+{% extends "admin/layout/auth.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+    <h2 class="text-lg font-semibold text-gray-800 mb-2">Chào mừng trở lại{% if current_user() %}, {{ current_user().name }}{% endif %}</h2>
+    <p class="text-sm text-gray-500">
+        Đây là trang dashboard tạm thời — nội dung đầy đủ sẽ được dựng ở Phase 10.
+    </p>
+    <form method="POST" action="{{ route('admin.auth.logout') }}" class="mt-4">
+        {{ csrf_field() }}
+        <button type="submit" class="text-sm" style="color:#A31D1D;">Đăng xuất</button>
+    </form>
+{% endblock %}

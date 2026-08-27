@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Lỗi{% endblock %} — Admirable.site</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }</style>
+</head>
+<body class="h-full flex items-center justify-center min-h-screen bg-gray-50">
+    <div class="text-center px-4">
+        <p class="text-6xl font-bold" style="color:#A31D1D;">{% block code %}{% endblock %}</p>
+        <h1 class="mt-4 text-xl font-semibold text-gray-800">{% block heading %}{% endblock %}</h1>
+        <p class="mt-2 text-sm text-gray-500">{% block message %}{% endblock %}</p>
+        <a href="/" class="mt-6 inline-block text-sm" style="color:#A31D1D;">← Về trang chủ</a>
+    </div>
+</body>
+</html>

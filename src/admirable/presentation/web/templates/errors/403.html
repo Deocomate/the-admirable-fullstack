@@ -1,0 +1,5 @@
+{% extends "errors/layout.html" %}
+{% block title %}Không có quyền truy cập{% endblock %}
+{% block code %}403{% endblock %}
+{% block heading %}Không có quyền truy cập{% endblock %}
+{% block message %}{{ message or "Bạn không có quyền truy cập trang này." }}{% endblock %}
