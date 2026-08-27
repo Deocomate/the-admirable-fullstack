@@ -95,7 +95,7 @@ src/admirable/
 | 1 | [Nền tảng & Tooling](./phase-01-foundation-tooling.md) | Python 3.14, uv, Docker Compose, khung thư mục, config | Completed |
 | 2 | [Lớp Domain](./phase-02-domain-layer.md) | Entity, value object, repository interface | Completed |
 | 3 | [Schema sạch & Migrate dữ liệu](./phase-03-database-schema-data-migration.md) | Alembic baseline, drop bảng, script migrate + rollback | Completed |
-| 4 | [Hạ tầng Persistence](./phase-04-persistence-infrastructure.md) | SQLAlchemy async, ORM model, repository impl | Pending |
+| 4 | [Hạ tầng Persistence](./phase-04-persistence-infrastructure.md) | SQLAlchemy async, ORM model, repository impl | Completed |
 | 5 | [Lớp Application](./phase-05-application-use-cases.md) | Toàn bộ use case thay 9 Laravel service | Pending |
 | 6 | [Adapter: TTS, Queue, Storage](./phase-06-adapters-tts-queue-storage.md) | edge-tts, Taskiq worker, file storage, bcrypt | Pending |
 | 7 | [Web core & Auth](./phase-07-web-core-auth.md) | App factory, DI, session, CSRF, method-override, auth | Pending |

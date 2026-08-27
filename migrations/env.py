@@ -1,5 +1,6 @@
 import asyncio
 from logging.config import fileConfig
+from typing import Any
 
 from alembic import context
 from sqlalchemy import pool
@@ -11,7 +12,22 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-target_metadata = None
+from admirable.infrastructure.db.base import Base  # noqa: E402
+from admirable.infrastructure.db.models import *  # noqa: E402,F403 populate Base.metadata
+
+target_metadata = Base.metadata
+
+# MySQL FULLTEXT ... WITH PARSER ngram indexes are created via raw op.execute
+# (SQLAlchemy has no construct for the ngram parser clause) and so are
+# invisible to the ORM metadata — exclude them from autogenerate/check so
+# they aren't flagged as "removed" on every diff.
+_IGNORED_INDEXES = {"ft_figures_search", "ft_story_snippets_search"}
+
+
+def include_object(
+    object: Any, name: str | None, type_: str, reflected: bool, compare_to: Any
+) -> bool:
+    return not (type_ == "index" and name in _IGNORED_INDEXES)
 
 
 def get_url() -> str:
@@ -26,13 +42,16 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        include_object=include_object,
     )
     with context.begin_transaction():
         context.run_migrations()
 
 
 def do_run_migrations(connection: Connection) -> None:
-    context.configure(connection=connection, target_metadata=target_metadata)
+    context.configure(
+        connection=connection, target_metadata=target_metadata, include_object=include_object
+    )
     with context.begin_transaction():
         context.run_migrations()
 

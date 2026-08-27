@@ -38,9 +38,10 @@ def upgrade() -> None:
         "categories",
         sa.Column("id", sa.BigInteger, primary_key=True, autoincrement=True),
         sa.Column("name", sa.String(255), nullable=False),
-        sa.Column("slug", sa.String(255), nullable=False, unique=True),
+        sa.Column("slug", sa.String(255), nullable=False),
         sa.Column("created_at", sa.DateTime, nullable=True),
         sa.Column("updated_at", sa.DateTime, nullable=True),
+        sa.UniqueConstraint("slug", name="uq_categories_slug"),
         **_MYSQL_OPTS,
     )
 
@@ -48,7 +49,7 @@ def upgrade() -> None:
         "figures",
         sa.Column("id", sa.BigInteger, primary_key=True, autoincrement=True),
         sa.Column("name", sa.String(255), nullable=False),
-        sa.Column("slug", sa.String(255), nullable=False, unique=True),
+        sa.Column("slug", sa.String(255), nullable=False),
         sa.Column("avatar_path", sa.String(255), nullable=True),
         sa.Column("short_description", sa.Text, nullable=True),
         sa.Column("key_facts", sa.JSON, nullable=True),
@@ -65,6 +66,7 @@ def upgrade() -> None:
         sa.Column("youtube_url", sa.String(255), nullable=True),
         sa.Column("created_at", sa.DateTime, nullable=True),
         sa.Column("updated_at", sa.DateTime, nullable=True),
+        sa.UniqueConstraint("slug", name="uq_figures_slug"),
         **_MYSQL_OPTS,
     )
 
@@ -121,11 +123,11 @@ def upgrade() -> None:
             sa.BigInteger,
             sa.ForeignKey("figures.id", ondelete="CASCADE"),
             nullable=False,
-            unique=True,
         ),
         sa.Column("priority", sa.Integer, nullable=False, server_default="0"),
         sa.Column("created_at", sa.DateTime, nullable=True),
         sa.Column("updated_at", sa.DateTime, nullable=True),
+        sa.UniqueConstraint("figure_id", name="uq_featured_figures_figure_id"),
         **_MYSQL_OPTS,
     )
 
@@ -133,11 +135,12 @@ def upgrade() -> None:
         "users",
         sa.Column("id", sa.BigInteger, primary_key=True, autoincrement=True),
         sa.Column("name", sa.String(255), nullable=False),
-        sa.Column("email", sa.String(255), nullable=False, unique=True),
+        sa.Column("email", sa.String(255), nullable=False),
         sa.Column("password", sa.String(255), nullable=False),
         sa.Column("role", sa.Enum("superadmin", "admin", name="role_enum"), nullable=False),
         sa.Column("created_at", sa.DateTime, nullable=True),
         sa.Column("updated_at", sa.DateTime, nullable=True),
+        sa.UniqueConstraint("email", name="uq_users_email"),
         **_MYSQL_OPTS,
     )
 
