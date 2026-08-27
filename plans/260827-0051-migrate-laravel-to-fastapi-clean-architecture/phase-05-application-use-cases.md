@@ -1,7 +1,7 @@
 ---
 phase: 5
 title: "Lớp Application — Use Cases"
-status: pending
+status: completed
 priority: P1
 effort: "3d"
 dependencies: [4]
