@@ -31,6 +31,7 @@ class ListCategories:
                     name=category.name,
                     slug=category.slug,
                     figures_count=count,
+                    created_at=category.created_at,
                 )
             )
         return ListCategoriesResult(

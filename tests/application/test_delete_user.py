@@ -2,16 +2,19 @@ import pytest
 
 from admirable.application.use_cases.users.delete_user import DeleteUser
 from admirable.domain.entities.user import User
-from admirable.domain.exceptions import LastSuperAdminDeletionError, SelfDeletionError
+from admirable.domain.exceptions import CannotDeleteSuperAdminError, SelfDeletionError
 from admirable.domain.value_objects.role import Role
 from tests.fakes.fake_user_repository import FakeUserRepository
 
 
-async def test_cannot_delete_last_superadmin() -> None:
+async def test_cannot_delete_superadmin() -> None:
     users = FakeUserRepository()
     target = await users.add(
         User(
-            id=None, name="Root", email="root@example.com", password_hash="h",
+            id=None,
+            name="Root",
+            email="root@example.com",
+            password_hash="h",
             role=Role.SUPERADMIN,
         )
     )
@@ -19,28 +22,28 @@ async def test_cannot_delete_last_superadmin() -> None:
         User(id=None, name="Admin", email="admin@example.com", password_hash="h", role=Role.ADMIN)
     )
 
-    with pytest.raises(LastSuperAdminDeletionError):
+    with pytest.raises(CannotDeleteSuperAdminError):
         await DeleteUser(users).execute(target.id, actor=other_admin)  # type: ignore[arg-type]
 
 
 async def test_cannot_delete_self() -> None:
     users = FakeUserRepository()
-    superadmin_a = await users.add(
-        User(id=None, name="A", email="a@example.com", password_hash="h", role=Role.SUPERADMIN)
-    )
-    await users.add(
-        User(id=None, name="B", email="b@example.com", password_hash="h", role=Role.SUPERADMIN)
+    admin_a = await users.add(
+        User(id=None, name="A", email="a@example.com", password_hash="h", role=Role.ADMIN)
     )
 
     with pytest.raises(SelfDeletionError):
-        await DeleteUser(users).execute(superadmin_a.id, actor=superadmin_a)  # type: ignore[arg-type]
+        await DeleteUser(users).execute(admin_a.id, actor=admin_a)  # type: ignore[arg-type]
 
 
 async def test_can_delete_regular_admin() -> None:
     users = FakeUserRepository()
     superadmin = await users.add(
         User(
-            id=None, name="Root", email="root@example.com", password_hash="h",
+            id=None,
+            name="Root",
+            email="root@example.com",
+            password_hash="h",
             role=Role.SUPERADMIN,
         )
     )

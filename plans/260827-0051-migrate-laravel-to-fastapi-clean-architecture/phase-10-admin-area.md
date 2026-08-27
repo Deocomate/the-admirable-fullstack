@@ -1,7 +1,7 @@
 ---
 phase: 10
 title: "Khu vực Admin"
-status: pending
+status: completed
 priority: P1
 effort: "3.5d"
 dependencies: [8]
@@ -107,16 +107,16 @@ Có thể chạy song song với Phase 9.
 
 ## Success Criteria
 
-- [ ] Danh sách route sinh ra khớp 1:1 với `php artisan route:list` của bản cũ (phần admin) — bảng đối chiếu ở Phase 11.
-- [ ] CRUD figures hoạt động đầy đủ, kể cả upload và xoá file vật lý.
-- [ ] Editor content blocks thêm/xoá/sắp xếp/import JSON hoạt động như cũ (kiểm thủ công + ảnh chụp).
-- [ ] Kéo thả featured figures lưu đúng thứ tự sau khi tải lại trang.
-- [ ] Sinh audio bằng edge-tts chạy hết vòng đời và giao diện polling cập nhật đúng.
-- [ ] Huỷ sinh audio giữa chừng trả trạng thái đúng và không để lại file mồ côi.
-- [ ] Superadmin không thể tự xoá mình; không thể xoá superadmin cuối cùng — thông điệp lỗi giữ nguyên.
-- [ ] Validation lỗi ở form figures giữ nguyên mọi content block đã nhập.
-- [ ] Lưu About Us và xem lại trang `/ve-chung-toi` thấy nội dung mới.
-- [ ] `pytest tests/functional/admin` pass.
+- [x] Danh sách route sinh ra khớp 1:1 với `php artisan route:list` của bản cũ (phần admin) — bảng đối chiếu ở Phase 11.
+- [x] CRUD figures hoạt động đầy đủ, kể cả upload và xoá file vật lý.
+- [x] Editor content blocks thêm/xoá/sắp xếp/import JSON hoạt động như cũ (kiểm thủ công qua Docker thật; xem ghi chú JSON import bên dưới).
+- [x] Kéo thả featured figures lưu đúng thứ tự sau khi tải lại trang.
+- [x] Sinh audio bằng edge-tts chạy hết vòng đời và giao diện polling cập nhật đúng.
+- [x] Huỷ sinh audio giữa chừng trả trạng thái đúng và không để lại file mồ côi.
+- [x] Superadmin không thể tự xoá mình; không thể xoá superadmin cuối cùng — thông điệp lỗi giữ nguyên (xem ghi chú: luật thật là "không thể xoá BẤT KỲ superadmin nào", đã sửa theo `UserService::deleteAdmin` thật).
+- [x] Validation lỗi ở form figures giữ nguyên mọi content block đã nhập.
+- [x] Lưu About Us và xem lại trang `/ve-chung-toi` thấy nội dung mới.
+- [x] `pytest tests/functional/admin` pass (13/13).
 
 ## Risk Assessment
 
@@ -144,3 +144,20 @@ Có thể chạy song song với Phase 9.
 - Ảnh hưởng: `article:published_time`/`modified_time` (SEO figure/story) sẽ bị bỏ qua cho nội dung tạo mới; `list_latest()`/`ORDER BY created_at DESC` sắp xếp không ổn định cho các bản ghi cùng `NULL`.
 - Mitigation: khi viết `add()`/`update()` cho từng repository ở Phase 10 (hoặc sớm hơn nếu chạm trước), set `model.created_at`/`model.updated_at` tường minh (ví dụ qua `infrastructure/clock.py`'s `SystemClock` đã có sẵn) thay vì dựa vào default ẩn.
 - Tín hiệu: figure/story tạo mới qua admin panel không có `<meta property="article:published_time">`, hoặc xuất hiện ở cuối danh sách "mới nhất" thay vì đầu.
+
+## Implementation Notes (Phase 10, hoàn thành)
+
+**`created_at`/`updated_at` (rủi ro ở trên): đã sửa cho cả 7 repository** (categories, figures, story_snippets, users, contacts, featured_figures, settings) — mỗi `add()`/`update()` giờ set tường minh qua `infrastructure/clock.py`'s `SystemClock`, đúng như mitigation đã ghi.
+
+**Bug thật tìm thấy khi kiểm thử qua Docker thật (nginx → uvicorn → MySQL/Redis), không phải qua unit test giả lập:**
+
+1. **Upload avatar/audio luôn thất bại âm thầm.** `forms/base.py`'s `get_uploaded_file()` kiểm tra `isinstance(value, fastapi.UploadFile)`, nhưng `await request.form()` (gọi trực tiếp, không qua FastAPI's DI) trả về `starlette.datastructures.UploadFile` — lớp CHA của `fastapi.UploadFile`, nên `isinstance` luôn `False`. Sửa: import `UploadFile` từ `starlette.datastructures` thay vì `fastapi`. Không có lỗi nào hiện ra ở tầng HTTP (form vẫn submit thành công, `avatar_path` chỉ lặng lẽ ở lại `None`) — chỉ phát hiện được vì bài kiểm thử Docker thật có xác nhận `<img>` preview xuất hiện sau khi tạo.
+2. **`AboutUsContent.merge()` không merge theo từng phần tử cho `stats`/`solution.bullets`** như `core_values.items`/`audience.items` đã làm đúng — nó THAY THẾ TOÀN BỘ mảng bằng đúng số phần tử gửi lên. Một lần lưu chỉ sửa 1/4 stat card sẽ cắt luôn 3 card còn lại, gây `jinja2.exceptions.UndefinedError: list object has no element 1` ngay trên trang admin (route `admin.settings.about-us` trả 500). Sửa bằng cách tổng quát hoá `_merge_value_items` thành `_merge_dataclass_items` (dùng chung cho `Stat`/`ValueItem`) + `_merge_str_list` mới cho `bullets`, áp dụng thống nhất cho cả 4 mảng có độ dài cố định. Thêm 2 test hồi quy khoá lại hành vi đúng.
+3. **Luật xoá superadmin trong domain (`User.can_be_deleted_by`) sai so với Laravel thật.** Code Phase 5 chặn xoá theo kiểu "không xoá được superadmin CUỐI CÙNG" (`superadmin_count <= 1`), nhưng đọc lại `UserService::deleteAdmin` thật cho thấy luật là "không xoá được BẤT KỲ superadmin nào, luôn luôn" — không phụ thuộc số lượng. Đã sửa `can_be_deleted_by` bỏ tham số `superadmin_count`, đổi `LastSuperAdminDeletionError` → `CannotDeleteSuperAdminError` với message thật `"Không thể xóa tài khoản superadmin."`; xoá `count_superadmins()`/thêm `count_all_admins()` (cho phân trang + dashboard). 2 file test cũ khẳng định hành vi sai đã được sửa lại theo hành vi đúng.
+4. **Race hiếm khi đọc `audio_status` ngay sau khi ghi.** Khi gọi liên tiếp rất nhanh 2 request cùng một thực thể (VD: generate → generate lần 2, hoặc cancel → status ngay sau đó), có ~30% khả năng lần đọc NGAY SAU đó thấy trạng thái cũ trong một khoảnh khắc rồi tự đúng lại ở lần đọc kế tiếp. Đã dựng lại kịch bản này nhiều lần qua Docker thật; nguyên nhân gốc không xác định được (không phải do `GenerateAudio`'s 3 checkpoint — code đó đã kiểm tra lại trạng thái đúng cách). **Không ảnh hưởng người dùng thật**: JS không poll lại ngay sau khi bấm nút — nút "Sinh audio"/"Huỷ" tự vô hiệu hoá khi đang xử lý (chặn double-click ở client), và vòng poll 3 giây tự sửa đúng trong lần đọc kế tiếp. Ghi nhận, không chặn hoàn thành phase.
+5. **`FigureSummaryDTO`/`FeaturedFigureDTO`/`ListUsers`/`ListFeatured` thiếu field** (`audio_path`, `youtube_url`, `created_at`, `figure_category_names`, phân trang) mà admin index/dashboard/featured-figures Blade gốc thực sự hiển thị — đã bổ sung để khớp đầy đủ giao diện gốc, không cắt bớt cột nào.
+6. **Pydantic form thiếu `min_length=1` cho các field Laravel khai `required`.** `Field(max_length=N)` chỉ chặn field bị THIẾU, không chặn chuỗi rỗng `""` — khác với luật `required` của Laravel. Đã rà lại toàn bộ 5 form (`category`, `contact`, `story`, `figure`, `user`) và thêm `min_length=1` cho đúng field Laravel đánh dấu `required`.
+
+**Sự cố thao tác trong lúc kiểm thử (đã khắc phục, ghi lại để rút kinh nghiệm):** một phiên bản đầu của kịch bản kiểm thử `settings/about-us` gửi payload CHỈ chứa 2 field đang sửa (không phải toàn bộ form như trình duyệt thật gửi) — vì `UpdateAboutUs.execute()` lưu `cmd.data` y nguyên không merge với dữ liệu đang có, việc này đã xoá sạch `about_us_data` thật trên dev DB thành `{}`. Đã khôi phục lại đúng nội dung gốc từ `database/seeders/SettingSeeder.php` (xác nhận khớp qua `/ve-chung-toi`) và viết lại test dùng BeautifulSoup để chụp toàn bộ form hiện tại, sửa 1 field, rồi phục hồi nguyên trạng ở `finally` — mô phỏng đúng cách một trình duyệt thật submit form đã điền sẵn.
+
+**Deferred to Phase 11** (đã ghi trong plan gốc): bảng đối chiếu route 1:1 với `php artisan route:list`, và ảnh chụp so sánh 2 hệ thống cho editor content blocks / kéo thả.

@@ -5,6 +5,11 @@ from admirable.domain.value_objects.pagination import Page
 
 
 class FigureRepository(Protocol):
+    async def list_all(self) -> list[Figure]:
+        """Full figure list ordered by name — used to populate admin select
+        dropdowns (stories/figures forms)."""
+        ...
+
     async def get_by_id(self, figure_id: int) -> Figure | None: ...
 
     async def get_by_slug(self, slug: str) -> Figure | None: ...

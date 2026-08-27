@@ -64,4 +64,6 @@ def to_figure_detail_dto(figure: Figure, category_names: list[str]) -> FigureDet
         youtube_url=figure.youtube_url,
         category_ids=figure.category_ids,
         category_names=category_names,
+        created_at=figure.created_at,
+        updated_at=figure.updated_at,
     )

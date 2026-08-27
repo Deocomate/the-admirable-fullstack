@@ -1,5 +1,4 @@
 from admirable.domain.entities.user import User
-from admirable.domain.value_objects.role import Role
 
 
 class FakeUserRepository:
@@ -18,8 +17,8 @@ class FakeUserRepository:
         start = (page - 1) * per_page
         return items[start : start + per_page]
 
-    async def count_superadmins(self) -> int:
-        return sum(1 for u in self._items.values() if u.role == Role.SUPERADMIN)
+    async def count_all_admins(self) -> int:
+        return len(self._items)
 
     async def add(self, user: User) -> User:
         user.id = self._next_id

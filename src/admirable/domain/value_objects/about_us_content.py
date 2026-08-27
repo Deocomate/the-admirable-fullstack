@@ -87,10 +87,7 @@ class AboutUsContent:
 
         stats_raw = raw.get("stats")
         if isinstance(stats_raw, list):
-            content.stats = [
-                Stat(**{**Stat().__dict__, **_str_only(item)}) if isinstance(item, dict) else Stat()
-                for item in stats_raw
-            ] or content.stats
+            content.stats = _merge_dataclass_items(stats_raw, content.stats)
 
         problem_raw = raw.get("problem")
         if isinstance(problem_raw, dict):
@@ -102,11 +99,7 @@ class AboutUsContent:
             content.solution = Solution(
                 title=str(solution_raw.get("title", content.solution.title)),
                 description=str(solution_raw.get("description", content.solution.description)),
-                bullets=(
-                    [str(b) for b in bullets]
-                    if isinstance(bullets, list)
-                    else content.solution.bullets
-                ),
+                bullets=_merge_str_list(bullets, content.solution.bullets),
             )
 
         core_values_raw = raw.get("core_values")
@@ -115,7 +108,7 @@ class AboutUsContent:
             content.core_values = CoreValues(
                 tagline=str(core_values_raw.get("tagline", content.core_values.tagline)),
                 title=str(core_values_raw.get("title", content.core_values.title)),
-                items=_merge_value_items(items, content.core_values.items),
+                items=_merge_dataclass_items(items, content.core_values.items),
             )
 
         audience_raw = raw.get("audience")
@@ -124,7 +117,7 @@ class AboutUsContent:
             content.audience = Audience(
                 title=str(audience_raw.get("title", content.audience.title)),
                 description=str(audience_raw.get("description", content.audience.description)),
-                items=_merge_value_items(items, content.audience.items),
+                items=_merge_dataclass_items(items, content.audience.items),
             )
 
         cta_raw = raw.get("cta")
@@ -138,14 +131,30 @@ def _str_only(raw: dict[str, object]) -> dict[str, str]:
     return {k: str(v) for k, v in raw.items() if isinstance(v, str)}
 
 
-def _merge_value_items(items_raw: object, defaults: list[ValueItem]) -> list[ValueItem]:
+def _merge_dataclass_items[T](items_raw: object, defaults: list[T]) -> list[T]:
+    """Per-index merge against a fixed-length default list — matches PHP's
+    `array_replace_recursive` for a numerically-indexed sub-array: index 0
+    from `items_raw` overrides index 0 of `defaults`, index 1 overrides index
+    1, etc.; indices the caller didn't submit keep their default value.
+    A shorter/absent `items_raw` (e.g. editing only the first of 4 stats)
+    must NOT truncate the list, unlike wholesale-replacing it would."""
     if not isinstance(items_raw, list) or not items_raw:
         return defaults
-    result: list[ValueItem] = []
+    result: list[T] = []
     for i, default in enumerate(defaults):
         raw_item = items_raw[i] if i < len(items_raw) else None
         if isinstance(raw_item, dict):
-            result.append(ValueItem(**{**default.__dict__, **_str_only(raw_item)}))
+            result.append(type(default)(**{**default.__dict__, **_str_only(raw_item)}))
         else:
             result.append(default)
     return result
+
+
+def _merge_str_list(items_raw: object, defaults: list[str]) -> list[str]:
+    """Same per-index-merge-with-defaults rule as `_merge_dataclass_items`,
+    for a plain string list (`solution.bullets`)."""
+    if not isinstance(items_raw, list) or not items_raw:
+        return defaults
+    return [
+        str(items_raw[i]) if i < len(items_raw) else default for i, default in enumerate(defaults)
+    ]

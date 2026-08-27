@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from admirable.domain.entities.category import Category
 from admirable.domain.value_objects.pagination import Page
+from admirable.infrastructure.clock import SystemClock
 from admirable.infrastructure.db.mappers import category_mapper
 from admirable.infrastructure.db.models.associations import category_figure_table
 from admirable.infrastructure.db.models.category import CategoryModel
@@ -11,9 +12,15 @@ from admirable.infrastructure.db.models.category import CategoryModel
 class CategoryRepositoryImpl:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
+        self._clock = SystemClock()
 
     async def get_by_id(self, category_id: int) -> Category | None:
         model = await self._session.get(CategoryModel, category_id)
+        return category_mapper.to_entity(model) if model else None
+
+    async def get_by_name(self, name: str) -> Category | None:
+        stmt = select(CategoryModel).where(CategoryModel.name == name)
+        model = (await self._session.execute(stmt)).scalar_one_or_none()
         return category_mapper.to_entity(model) if model else None
 
     async def list_paginated(self, page: int, per_page: int) -> Page[Category]:
@@ -34,6 +41,10 @@ class CategoryRepositoryImpl:
         models = (await self._session.execute(stmt)).scalars().all()
         return [category_mapper.to_entity(m) for m in models]
 
+    async def count(self) -> int:
+        stmt = select(func.count()).select_from(CategoryModel)
+        return (await self._session.execute(stmt)).scalar_one()
+
     async def count_figures(self, category_id: int) -> int:
         stmt = (
             select(func.count())
@@ -45,6 +56,9 @@ class CategoryRepositoryImpl:
     async def add(self, category: Category) -> Category:
         model = CategoryModel()
         category_mapper.apply_to_model(category, model)
+        now = self._clock.now()
+        model.created_at = now
+        model.updated_at = now
         self._session.add(model)
         await self._session.flush()
         return category_mapper.to_entity(model)
@@ -54,6 +68,7 @@ class CategoryRepositoryImpl:
         if model is None:
             raise ValueError(f"Category {category.id} not found")
         category_mapper.apply_to_model(category, model)
+        model.updated_at = self._clock.now()
         await self._session.flush()
         return category_mapper.to_entity(model)
 

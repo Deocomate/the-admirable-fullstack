@@ -65,52 +65,52 @@ Cây đích phản chiếu cây Blade — xem `plans/260827-0051-migrate-laravel
 | `client/contact/_hero.blade.php` | `client/contact/_hero.html` | Xong | |
 | `client/contact/_services.blade.php` | `client/contact/_services.html` | Xong | |
 
-## Trang Admin (36 file) — Phase 10, chờ thi công (trừ auth + dashboard)
+## Trang Admin (36 file) — Phase 10, đã xong
 
 | Blade | Jinja2 đích | Trạng thái |
 |---|---|---|
 | `admin/auth/login.blade.php` | `admin/auth/login.html` | Xong (Phase 7, retrofit layout ở Phase 8) |
 | `admin/auth/forgot-password.blade.php` | `admin/auth/forgot-password.html` | Xong (Phase 7, retrofit layout ở Phase 8) |
 | `admin/auth/reset.blade.php` | `admin/auth/reset.html` | Xong (Phase 7, retrofit layout ở Phase 8) |
-| `admin/dashboard.blade.php` | `admin/dashboard.html` | Khung xong (Phase 8: layout đúng); thống kê thật ở Phase 10 |
-| `admin/categories/form.blade.php` | `admin/categories/form.html` | Chờ Phase 10 |
-| `admin/categories/index.blade.php` | `admin/categories/index.html` | Chờ Phase 10 |
-| `admin/contacts/form.blade.php` | `admin/contacts/form.html` | Chờ Phase 10 |
-| `admin/contacts/index.blade.php` | `admin/contacts/index.html` | Chờ Phase 10 |
-| `admin/featured-figures/index.blade.php` | `admin/featured-figures/index.html` | Chờ Phase 10 |
-| `admin/figures/form.blade.php` | `admin/figures/form.html` | Chờ Phase 10 |
-| `admin/figures/index.blade.php` | `admin/figures/index.html` | Chờ Phase 10 |
-| `admin/figures/partials/actions-card.blade.php` | `admin/figures/partials/actions-card.html` | Chờ Phase 10 |
-| `admin/figures/partials/basic-info-card.blade.php` | `admin/figures/partials/basic-info-card.html` | Chờ Phase 10 |
-| `admin/figures/partials/categories-card.blade.php` | `admin/figures/partials/categories-card.html` | Chờ Phase 10 |
-| `admin/figures/partials/content-blocks-card.blade.php` | `admin/figures/partials/content-blocks-card.html` | Chờ Phase 10 |
-| `admin/figures/partials/content-blocks-script.blade.php` | `admin/figures/partials/content-blocks-script.html` | Chờ Phase 10 — JS nội suy cần rà theo rủi ro Phase 8 |
-| `admin/figures/partials/copy-prompt-card.blade.php` | `admin/figures/partials/copy-prompt-card.html` | Chờ Phase 10 |
-| `admin/figures/partials/key-facts-card.blade.php` | `admin/figures/partials/key-facts-card.html` | Chờ Phase 10 |
-| `admin/figures/partials/media-card.blade.php` | `admin/figures/partials/media-card.html` | Chờ Phase 10 |
-| `admin/partials/audio-generator.blade.php` | `admin/partials/audio-generator.html` | Chờ Phase 10 — dùng `@json()`, cần `\| tojson` |
-| `admin/settings/about-us.blade.php` | `admin/settings/about-us.html` | Chờ Phase 10 |
-| `admin/settings/partials/audience-section.blade.php` | `admin/settings/partials/audience-section.html` | Chờ Phase 10 |
-| `admin/settings/partials/core-values-section.blade.php` | `admin/settings/partials/core-values-section.html` | Chờ Phase 10 |
-| `admin/settings/partials/cta-section.blade.php` | `admin/settings/partials/cta-section.html` | Chờ Phase 10 |
-| `admin/settings/partials/hero-section.blade.php` | `admin/settings/partials/hero-section.html` | Chờ Phase 10 |
-| `admin/settings/partials/problem-solution-section.blade.php` | `admin/settings/partials/problem-solution-section.html` | Chờ Phase 10 |
-| `admin/settings/partials/stats-section.blade.php` | `admin/settings/partials/stats-section.html` | Chờ Phase 10 |
-| `admin/stories/form.blade.php` | `admin/stories/form.html` | Chờ Phase 10 |
-| `admin/stories/index.blade.php` | `admin/stories/index.html` | Chờ Phase 10 |
-| `admin/stories/partials/actions-card.blade.php` | `admin/stories/partials/actions-card.html` | Chờ Phase 10 |
-| `admin/stories/partials/basic-info-card.blade.php` | `admin/stories/partials/basic-info-card.html` | Chờ Phase 10 |
-| `admin/stories/partials/content-blocks-card.blade.php` | `admin/stories/partials/content-blocks-card.html` | Chờ Phase 10 |
-| `admin/stories/partials/content-blocks-script.blade.php` | `admin/stories/partials/content-blocks-script.html` | Chờ Phase 10 |
-| `admin/stories/partials/media-card.blade.php` | `admin/stories/partials/media-card.html` | Chờ Phase 10 |
-| `admin/users/create.blade.php` | `admin/users/create.html` | Chờ Phase 10 |
-| `admin/users/edit.blade.php` | `admin/users/edit.html` | Chờ Phase 10 |
-| `admin/users/index.blade.php` | `admin/users/index.html` | Chờ Phase 10 |
+| `admin/dashboard.blade.php` | `admin/dashboard.html` | Xong — thống kê thật (`GetDashboard`) nối ở Phase 10 |
+| `admin/categories/form.blade.php` | `admin/categories/form.html` | Xong |
+| `admin/categories/index.blade.php` | `admin/categories/index.html` | Xong |
+| `admin/contacts/form.blade.php` | `admin/contacts/form.html` | Xong |
+| `admin/contacts/index.blade.php` | `admin/contacts/index.html` | Xong |
+| `admin/featured-figures/index.blade.php` | `admin/featured-figures/index.html` | Xong — SortableJS + endpoint `reorder` JSON |
+| `admin/figures/form.blade.php` | `admin/figures/form.html` | Xong |
+| `admin/figures/index.blade.php` | `admin/figures/index.html` | Xong |
+| `admin/figures/partials/actions-card.blade.php` | `admin/figures/partials/actions-card.html` | Xong |
+| `admin/figures/partials/basic-info-card.blade.php` | `admin/figures/partials/basic-info-card.html` | Xong |
+| `admin/figures/partials/categories-card.blade.php` | `admin/figures/partials/categories-card.html` | Xong |
+| `admin/figures/partials/content-blocks-card.blade.php` | `admin/figures/partials/content-blocks-card.html` | Xong |
+| `admin/figures/partials/content-blocks-script.blade.php` | `admin/figures/partials/content-blocks-script.html` | Xong — 582 dòng JS chuyển nguyên xi, không sửa một dòng |
+| `admin/figures/partials/copy-prompt-card.blade.php` | `admin/figures/partials/copy-prompt-card.html` | Xong |
+| `admin/figures/partials/key-facts-card.blade.php` | `admin/figures/partials/key-facts-card.html` | Xong |
+| `admin/figures/partials/media-card.blade.php` | `admin/figures/partials/media-card.html` | Xong |
+| `admin/partials/audio-generator.blade.php` | `admin/partials/audio-generator.html` | Xong — `@json()` → `\| tojson`, include (không phải macro) để nhận context tự động |
+| `admin/settings/about-us.blade.php` | `admin/settings/about-us.html` | Xong |
+| `admin/settings/partials/audience-section.blade.php` | `admin/settings/partials/audience-section.html` | Xong |
+| `admin/settings/partials/core-values-section.blade.php` | `admin/settings/partials/core-values-section.html` | Xong — dùng `['items']` (bracket) không dùng `.items` (trùng tên method dict) |
+| `admin/settings/partials/cta-section.blade.php` | `admin/settings/partials/cta-section.html` | Xong |
+| `admin/settings/partials/hero-section.blade.php` | `admin/settings/partials/hero-section.html` | Xong |
+| `admin/settings/partials/problem-solution-section.blade.php` | `admin/settings/partials/problem-solution-section.html` | Xong |
+| `admin/settings/partials/stats-section.blade.php` | `admin/settings/partials/stats-section.html` | Xong |
+| `admin/stories/form.blade.php` | `admin/stories/form.html` | Xong |
+| `admin/stories/index.blade.php` | `admin/stories/index.html` | Xong |
+| `admin/stories/partials/actions-card.blade.php` | `admin/stories/partials/actions-card.html` | Xong |
+| `admin/stories/partials/basic-info-card.blade.php` | `admin/stories/partials/basic-info-card.html` | Xong |
+| `admin/stories/partials/content-blocks-card.blade.php` | `admin/stories/partials/content-blocks-card.html` | Xong |
+| `admin/stories/partials/content-blocks-script.blade.php` | `admin/stories/partials/content-blocks-script.html` | Xong — 285 dòng JS chuyển nguyên xi |
+| `admin/stories/partials/media-card.blade.php` | `admin/stories/partials/media-card.html` | Xong |
+| `admin/users/create.blade.php` | `admin/users/create.html` | Xong |
+| `admin/users/edit.blade.php` | `admin/users/edit.html` | Xong |
+| `admin/users/index.blade.php` | `admin/users/index.html` | Xong |
 
 ## Tổng kết
 
-- 84/84 file đã liệt kê.
+- 84/84 file đã liệt kê, 84/84 đã chuyển xong.
 - 17/17 file layout & component dùng chung: xong (Phase 8).
-- 3/3 template auth + khung dashboard: xong (Phase 7 nội dung, Phase 8 layout).
-- 31 trang client + 33 trang/partial admin còn lại (không tính auth+dashboard): chờ Phase 9/10.
+- 31/31 trang client: xong (Phase 9).
+- 36/36 trang/partial admin (kể cả auth + dashboard): xong (Phase 7/8/10).
 - `macros/forms.html` là bổ sung mới (DRY), không map 1-1 với file Blade nào.

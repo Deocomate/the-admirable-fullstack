@@ -4,6 +4,7 @@ from sqlalchemy.orm import selectinload
 
 from admirable.domain.entities.featured_figure import FeaturedFigure
 from admirable.domain.entities.figure import Figure
+from admirable.infrastructure.clock import SystemClock
 from admirable.infrastructure.db.mappers import featured_figure_mapper, figure_mapper
 from admirable.infrastructure.db.models.featured_figure import FeaturedFigureModel
 from admirable.infrastructure.db.models.figure import FigureModel
@@ -12,6 +13,7 @@ from admirable.infrastructure.db.models.figure import FigureModel
 class FeaturedFigureRepositoryImpl:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
+        self._clock = SystemClock()
 
     async def list_ordered_with_figure(
         self, limit: int | None = None
@@ -19,9 +21,7 @@ class FeaturedFigureRepositoryImpl:
         stmt = (
             select(FeaturedFigureModel)
             .join(FeaturedFigureModel.figure)
-            .options(
-                selectinload(FeaturedFigureModel.figure).selectinload(FigureModel.categories)
-            )
+            .options(selectinload(FeaturedFigureModel.figure).selectinload(FigureModel.categories))
             .order_by(FeaturedFigureModel.priority, FeaturedFigureModel.id)
         )
         if limit is not None:
@@ -56,6 +56,9 @@ class FeaturedFigureRepositoryImpl:
     async def add(self, featured_figure: FeaturedFigure) -> FeaturedFigure:
         model = FeaturedFigureModel()
         featured_figure_mapper.apply_to_model(featured_figure, model)
+        now = self._clock.now()
+        model.created_at = now
+        model.updated_at = now
         self._session.add(model)
         await self._session.flush()
         return featured_figure_mapper.to_entity(model)

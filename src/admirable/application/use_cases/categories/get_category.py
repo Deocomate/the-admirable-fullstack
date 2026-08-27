@@ -13,5 +13,9 @@ class GetCategory:
             raise EntityNotFoundError("Category", category_id)
         figures_count = await self._categories.count_figures(category_id)
         return CategoryDTO(
-            id=category.id, name=category.name, slug=category.slug, figures_count=figures_count  # type: ignore[arg-type]
+            id=category.id,  # type: ignore[arg-type]
+            name=category.name,
+            slug=category.slug,
+            figures_count=figures_count,
+            created_at=category.created_at,
         )

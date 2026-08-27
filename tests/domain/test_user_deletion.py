@@ -1,7 +1,7 @@
 import pytest
 
 from admirable.domain.entities.user import User
-from admirable.domain.exceptions import LastSuperAdminDeletionError, SelfDeletionError
+from admirable.domain.exceptions import CannotDeleteSuperAdminError, SelfDeletionError
 from admirable.domain.value_objects.role import Role
 
 
@@ -13,27 +13,23 @@ def make_user(**overrides: object) -> User:
     return User(**defaults)  # type: ignore[arg-type]
 
 
-def test_cannot_delete_last_superadmin() -> None:
+def test_cannot_delete_superadmin() -> None:
+    """Matches `UserService::deleteAdmin`: a superadmin can never be deleted,
+    not just "the last one" — this holds even with multiple superadmins."""
     target = make_user(id=1, role=Role.SUPERADMIN)
     actor = make_user(id=2, role=Role.SUPERADMIN)
-    with pytest.raises(LastSuperAdminDeletionError):
-        target.can_be_deleted_by(actor, superadmin_count=1)
-
-
-def test_can_delete_superadmin_when_multiple_exist() -> None:
-    target = make_user(id=1, role=Role.SUPERADMIN)
-    actor = make_user(id=2, role=Role.SUPERADMIN)
-    target.can_be_deleted_by(actor, superadmin_count=2)
+    with pytest.raises(CannotDeleteSuperAdminError):
+        target.can_be_deleted_by(actor)
 
 
 def test_cannot_delete_self() -> None:
     target = make_user(id=2, role=Role.ADMIN)
     actor = make_user(id=2, role=Role.ADMIN)
     with pytest.raises(SelfDeletionError):
-        target.can_be_deleted_by(actor, superadmin_count=1)
+        target.can_be_deleted_by(actor)
 
 
 def test_can_delete_other_admin() -> None:
     target = make_user(id=2, role=Role.ADMIN)
     actor = make_user(id=1, role=Role.SUPERADMIN)
-    target.can_be_deleted_by(actor, superadmin_count=1)
+    target.can_be_deleted_by(actor)

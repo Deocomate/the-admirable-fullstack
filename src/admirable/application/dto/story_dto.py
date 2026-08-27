@@ -38,6 +38,10 @@ class StorySummaryDTO(BaseModel):
     figure_name: str
     title: str
     subtitle: str | None
+    image_path: str | None = None
+    audio_path: str | None = None
+    youtube_url: str | None = None
+    created_at: datetime | None = None
 
 
 class StoryDetailDTO(BaseModel):

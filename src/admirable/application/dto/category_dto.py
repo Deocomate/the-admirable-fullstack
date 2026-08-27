@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
@@ -15,3 +17,4 @@ class CategoryDTO(BaseModel):
     name: str
     slug: str
     figures_count: int = 0
+    created_at: datetime | None = None

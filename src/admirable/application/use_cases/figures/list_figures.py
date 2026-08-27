@@ -50,6 +50,9 @@ class ListFigures:
                     short_description=figure.short_description,
                     category_names=names,
                     story_snippets_count=count,
+                    audio_path=figure.audio_path,
+                    youtube_url=figure.youtube_url,
+                    created_at=figure.created_at,
                 )
             )
         return ListFiguresResult(

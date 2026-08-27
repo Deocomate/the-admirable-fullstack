@@ -10,6 +10,9 @@ class FakeFigureRepository:
         """Test-only hook: mirrors what FeaturedFigureRepository would report,
         used by search()/get_top_featured() ordering."""
 
+    async def list_all(self) -> list[Figure]:
+        return sorted(self._items.values(), key=lambda f: f.name)
+
     async def get_by_id(self, figure_id: int) -> Figure | None:
         return self._items.get(figure_id)
 

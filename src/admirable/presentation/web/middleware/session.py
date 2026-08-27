@@ -68,6 +68,15 @@ class Session(MutableMapping[str, Any]):
         value = old_input.get(field, default)
         return str(value) if value is not None else default
 
+    def old_raw(self, field: str, default: Any = None) -> Any:
+        """Like `old()` but returns the value unconverted — for a nested
+        field (`content_blocks`, `key_facts`) `unflatten_form_data` produced
+        as a real list/dict, not a scalar. The whole session round-trips
+        through `json.dumps`/`json.loads` (see `to_storage`), so this is
+        still plain JSON-shaped data, just not coerced to `str`."""
+        old_input: dict[str, Any] = self._data.get("_old", {})
+        return old_input.get(field, default)
+
     @property
     def errors(self) -> dict[str, list[str]]:
         return dict(self._data.get("_errors", {}))
@@ -134,9 +143,7 @@ class RedisSessionMiddleware(BaseHTTPMiddleware):
             final_sid = secrets.token_urlsafe(32)
 
         ttl = session.ttl_override_seconds or self._ttl
-        await self._redis.set(
-            f"{_KEY_PREFIX}{final_sid}", json.dumps(session.to_storage()), ex=ttl
-        )
+        await self._redis.set(f"{_KEY_PREFIX}{final_sid}", json.dumps(session.to_storage()), ex=ttl)
         response.set_cookie(
             self._cookie_name,
             self._sign(final_sid),

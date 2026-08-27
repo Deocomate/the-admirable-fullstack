@@ -2,7 +2,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from admirable.domain.entities.user import User
-from admirable.domain.value_objects.role import Role
+from admirable.infrastructure.clock import SystemClock
 from admirable.infrastructure.db.mappers import user_mapper
 from admirable.infrastructure.db.models.user import UserModel
 
@@ -10,6 +10,7 @@ from admirable.infrastructure.db.models.user import UserModel
 class UserRepositoryImpl:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
+        self._clock = SystemClock()
 
     async def get_by_id(self, user_id: int) -> User | None:
         model = await self._session.get(UserModel, user_id)
@@ -30,13 +31,16 @@ class UserRepositoryImpl:
         models = (await self._session.execute(stmt)).scalars().all()
         return [user_mapper.to_entity(m) for m in models]
 
-    async def count_superadmins(self) -> int:
-        stmt = select(func.count()).select_from(UserModel).where(UserModel.role == Role.SUPERADMIN)
+    async def count_all_admins(self) -> int:
+        stmt = select(func.count()).select_from(UserModel)
         return (await self._session.execute(stmt)).scalar_one()
 
     async def add(self, user: User) -> User:
         model = UserModel()
         user_mapper.apply_to_model(user, model)
+        now = self._clock.now()
+        model.created_at = now
+        model.updated_at = now
         self._session.add(model)
         await self._session.flush()
         return user_mapper.to_entity(model)
@@ -46,6 +50,7 @@ class UserRepositoryImpl:
         if model is None:
             raise ValueError(f"User {user.id} not found")
         user_mapper.apply_to_model(user, model)
+        model.updated_at = self._clock.now()
         await self._session.flush()
         return user_mapper.to_entity(model)
 

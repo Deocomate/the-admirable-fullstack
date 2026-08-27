@@ -41,6 +41,10 @@ class ListStories:
                     figure_name=figure_names[snippet.figure_id],
                     title=snippet.title,
                     subtitle=snippet.subtitle,
+                    image_path=snippet.image_path,
+                    audio_path=snippet.audio_path,
+                    youtube_url=snippet.youtube_url,
+                    created_at=snippet.created_at,
                 )
             )
         return ListStoriesResult(

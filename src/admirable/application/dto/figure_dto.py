@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 from admirable.application.dto.files import UploadedFileDTO
@@ -55,6 +57,7 @@ class FigureSummaryDTO(BaseModel):
     is_featured: bool = False
     audio_path: str | None = None
     youtube_url: str | None = None
+    created_at: datetime | None = None
 
 
 class FigureDetailDTO(BaseModel):
@@ -71,3 +74,5 @@ class FigureDetailDTO(BaseModel):
     youtube_url: str | None
     category_ids: list[int]
     category_names: list[str]
+    created_at: datetime | None = None
+    updated_at: datetime | None = None

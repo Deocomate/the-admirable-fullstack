@@ -60,4 +60,5 @@ async def test_list_users() -> None:
         CreateUserCommand(name="B", email="b@example.com", password="pw")
     )
     result = await ListUsers(users).execute()
-    assert len(result) == 2
+    assert len(result.items) == 2
+    assert result.total == 2

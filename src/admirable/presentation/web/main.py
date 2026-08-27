@@ -16,6 +16,14 @@ from admirable.presentation.web.middleware.csrf import CsrfMiddleware
 from admirable.presentation.web.middleware.error_handler import register_exception_handlers
 from admirable.presentation.web.middleware.method_override import MethodOverrideMiddleware
 from admirable.presentation.web.middleware.session import RedisSessionMiddleware
+from admirable.presentation.web.routers.admin import audio as admin_audio
+from admirable.presentation.web.routers.admin import categories as admin_categories
+from admirable.presentation.web.routers.admin import contacts as admin_contacts
+from admirable.presentation.web.routers.admin import featured_figures as admin_featured_figures
+from admirable.presentation.web.routers.admin import figures as admin_figures
+from admirable.presentation.web.routers.admin import settings as admin_settings
+from admirable.presentation.web.routers.admin import stories as admin_stories
+from admirable.presentation.web.routers.admin import users as admin_users
 from admirable.presentation.web.routers.admin.auth import auth_router, guest_router
 from admirable.presentation.web.routers.client import (
     about_us,
@@ -91,6 +99,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app.include_router(guest_router)
     app.include_router(auth_router)
+    app.include_router(admin_audio.router)
+    app.include_router(admin_categories.router)
+    app.include_router(admin_contacts.router)
+    app.include_router(admin_featured_figures.router)
+    app.include_router(admin_figures.router)
+    app.include_router(admin_settings.router)
+    app.include_router(admin_stories.router)
+    app.include_router(admin_users.router)
 
     # Client (public) routers registered after admin routers so no admin
     # dynamic segment (e.g. /{slug}) can shadow /admin/... paths.

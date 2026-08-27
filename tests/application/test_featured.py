@@ -6,14 +6,20 @@ from admirable.application.use_cases.featured.remove_featured import RemoveFeatu
 from admirable.application.use_cases.featured.reorder_featured import ReorderFeatured
 from admirable.domain.entities.figure import Figure
 from admirable.domain.exceptions import BusinessRuleViolationError, EntityNotFoundError
+from tests.fakes.fake_category_repository import FakeCategoryRepository
 from tests.fakes.fake_featured_figure_repository import FakeFeaturedFigureRepository
 from tests.fakes.fake_figure_repository import FakeFigureRepository
 
 
 def _figure(name: str, slug: str) -> Figure:
     return Figure(
-        id=None, name=name, slug=slug, short_description=None,
-        key_facts=[], content_blocks=[], search_text="",
+        id=None,
+        name=name,
+        slug=slug,
+        short_description=None,
+        key_facts=[],
+        content_blocks=[],
+        search_text="",
     )
 
 
@@ -53,11 +59,11 @@ async def test_remove_and_list_featured() -> None:
     f1 = await figures.add(_figure("A", "a"))
     added = await AddFeatured(featured, figures).execute(f1.id)  # type: ignore[arg-type]
 
-    listed = await ListFeatured(featured).execute()
+    listed = await ListFeatured(featured, FakeCategoryRepository()).execute()
     assert len(listed) == 1
 
     await RemoveFeatured(featured).execute(added.id)  # type: ignore[arg-type]
-    listed = await ListFeatured(featured).execute()
+    listed = await ListFeatured(featured, FakeCategoryRepository()).execute()
     assert listed == []
 
 
@@ -71,5 +77,5 @@ async def test_reorder_featured() -> None:
 
     await ReorderFeatured(featured).execute([f2.id, f1.id])  # type: ignore[list-item]
 
-    listed = await ListFeatured(featured).execute()
+    listed = await ListFeatured(featured, FakeCategoryRepository()).execute()
     assert [item.figure_slug for item in listed] == ["b", "a"]

@@ -11,6 +11,9 @@ class FakeCategoryRepository:
     async def get_by_id(self, category_id: int) -> Category | None:
         return self._items.get(category_id)
 
+    async def get_by_name(self, name: str) -> Category | None:
+        return next((c for c in self._items.values() if c.name == name), None)
+
     async def list_paginated(self, page: int, per_page: int) -> Page[Category]:
         items = list(self._items.values())
         start = (page - 1) * per_page
@@ -20,6 +23,9 @@ class FakeCategoryRepository:
 
     async def list_all(self) -> list[Category]:
         return sorted(self._items.values(), key=lambda c: c.name)
+
+    async def count(self) -> int:
+        return len(self._items)
 
     async def count_figures(self, category_id: int) -> int:
         return self.figure_counts.get(category_id, 0)

@@ -1,0 +1,34 @@
+{% extends "layouts/admin.html" %}
+{% set breadcrumb = "Admin › Nhân vật › " ~ ("Chỉnh sửa" if figure is defined else "Thêm mới") %}
+{% block title %}{{ "Chỉnh sửa nhân vật" if figure is defined else "Thêm nhân vật" }}{% endblock %}
+{% block content %}
+
+    <form method="POST"
+          action="{{ route('admin.figures.update', id=figure.id) if figure is defined else route('admin.figures.store') }}"
+          enctype="multipart/form-data"
+          id="figure-form">
+        {{ csrf_field() }}
+        {% if figure is defined %}<input type="hidden" name="_method" value="PUT">{% endif %}
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+            {# LEFT COLUMN: Main content #}
+            <div class="xl:col-span-2 space-y-6">
+                {% include "admin/figures/partials/basic-info-card.html" %}
+                {% include "admin/figures/partials/key-facts-card.html" %}
+                {% include "admin/figures/partials/content-blocks-card.html" %}
+            </div>
+
+            {# RIGHT COLUMN: Media & metadata #}
+            <div class="space-y-6">
+                {% include "admin/figures/partials/copy-prompt-card.html" %}
+                {% include "admin/figures/partials/media-card.html" %}
+                {% include "admin/figures/partials/categories-card.html" %}
+                {% include "admin/figures/partials/actions-card.html" %}
+            </div>
+        </div>
+    </form>
+
+    {% include "admin/figures/partials/content-blocks-script.html" %}
+
+{% endblock %}

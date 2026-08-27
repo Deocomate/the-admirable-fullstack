@@ -19,13 +19,14 @@ async def test_add_and_get_by_email(db_session: AsyncSession) -> None:
     assert fetched.id == user.id
 
 
-async def test_count_superadmins(db_session: AsyncSession) -> None:
+async def test_count_all_admins(db_session: AsyncSession) -> None:
     repo = UserRepositoryImpl(db_session)
+    before = await repo.count_all_admins()
     await repo.add(make_user("super1-it@example.com", role=Role.SUPERADMIN))
     await repo.add(make_user("super2-it@example.com", role=Role.SUPERADMIN))
     await repo.add(make_user("admin1-it@example.com", role=Role.ADMIN))
 
-    assert await repo.count_superadmins() == 2
+    assert await repo.count_all_admins() == before + 3
 
 
 async def test_update_and_delete(db_session: AsyncSession) -> None:

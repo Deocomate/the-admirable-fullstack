@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 
-from admirable.domain.exceptions import LastSuperAdminDeletionError, SelfDeletionError
+from admirable.domain.exceptions import CannotDeleteSuperAdminError, SelfDeletionError
 from admirable.domain.value_objects.role import Role
 
 
@@ -23,9 +23,11 @@ class User:
     def is_admin(self) -> bool:
         return self.role in (Role.SUPERADMIN, Role.ADMIN)
 
-    def can_be_deleted_by(self, actor: User, superadmin_count: int) -> None:
-        """Raises if deletion is not allowed; matches `UserService::deleteAdmin`."""
-        if self.is_superadmin() and superadmin_count <= 1:
-            raise LastSuperAdminDeletionError()
+    def can_be_deleted_by(self, actor: User) -> None:
+        """Raises if deletion is not allowed; matches `UserService::deleteAdmin`.
+        A superadmin can never be deleted (not just "the last one" — Laravel's
+        `deleteAdmin` rejects deleting *any* superadmin unconditionally)."""
+        if self.is_superadmin():
+            raise CannotDeleteSuperAdminError()
         if actor.id == self.id:
             raise SelfDeletionError()

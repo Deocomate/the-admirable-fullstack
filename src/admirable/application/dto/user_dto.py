@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 from admirable.domain.value_objects.role import Role
@@ -21,3 +23,4 @@ class UserDTO(BaseModel):
     name: str
     email: str
     role: Role
+    created_at: datetime | None = None

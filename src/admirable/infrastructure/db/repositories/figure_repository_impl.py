@@ -4,6 +4,7 @@ from sqlalchemy.orm import selectinload
 
 from admirable.domain.entities.figure import Figure
 from admirable.domain.value_objects.pagination import Page
+from admirable.infrastructure.clock import SystemClock
 from admirable.infrastructure.db.mappers import figure_mapper
 from admirable.infrastructure.db.models.associations import category_figure_table
 from admirable.infrastructure.db.models.category import CategoryModel
@@ -15,6 +16,18 @@ from admirable.infrastructure.db.models.story_snippet import StorySnippetModel
 class FigureRepositoryImpl:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
+        self._clock = SystemClock()
+
+    async def list_all(self) -> list[Figure]:
+        """Full figure list ordered by name — the admin stories/figures form's
+        figure-select dropdown (`Figure::orderBy('name')->get(['id','name'])`)."""
+        stmt = (
+            select(FigureModel)
+            .options(selectinload(FigureModel.categories))
+            .order_by(FigureModel.name)
+        )
+        models = (await self._session.execute(stmt)).scalars().all()
+        return [figure_mapper.to_entity(m) for m in models]
 
     async def get_by_id(self, figure_id: int) -> Figure | None:
         stmt = (
@@ -173,6 +186,9 @@ class FigureRepositoryImpl:
     async def add(self, figure: Figure) -> Figure:
         model = FigureModel()
         figure_mapper.apply_to_model(figure, model)
+        now = self._clock.now()
+        model.created_at = now
+        model.updated_at = now
         self._session.add(model)
         await self._session.flush()
         return figure_mapper.to_entity(model)
@@ -182,6 +198,7 @@ class FigureRepositoryImpl:
         if model is None:
             raise ValueError(f"Figure {figure.id} not found")
         figure_mapper.apply_to_model(figure, model)
+        model.updated_at = self._clock.now()
         await self._session.flush()
         return figure_mapper.to_entity(model)
 

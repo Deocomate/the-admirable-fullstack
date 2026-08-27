@@ -11,6 +11,5 @@ class DeleteUser:
         target = await self._users.get_by_id(user_id)
         if target is None:
             raise EntityNotFoundError("User", user_id)
-        superadmin_count = await self._users.count_superadmins()
-        target.can_be_deleted_by(actor, superadmin_count)
+        target.can_be_deleted_by(actor)
         await self._users.delete(user_id)

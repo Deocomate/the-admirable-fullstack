@@ -18,6 +18,7 @@ from admirable.application.dto.auth_dto import (
     RequestPasswordResetCommand,
     ResetPasswordCommand,
 )
+from admirable.application.use_cases.admin.get_dashboard import GetDashboard
 from admirable.application.use_cases.auth.login import InvalidCredentialsError, Login
 from admirable.application.use_cases.auth.request_password_reset import RequestPasswordReset
 from admirable.application.use_cases.auth.reset_password import (
@@ -25,6 +26,7 @@ from admirable.application.use_cases.auth.reset_password import (
     ResetPassword,
 )
 from admirable.presentation.web.dependencies import (
+    get_dashboard_uc,
     get_login_use_case,
     get_request_password_reset_use_case,
     get_reset_password_use_case,
@@ -163,9 +165,12 @@ async def admin_home(request: Request) -> object:
 
 @auth_router.get("/dashboard", name="admin.dashboard")
 async def dashboard(
-    request: Request, user: Annotated[AuthenticatedUserDTO, Depends(require_auth)]
+    request: Request,
+    user: Annotated[AuthenticatedUserDTO, Depends(require_auth)],
+    use_case: Annotated[GetDashboard, Depends(get_dashboard_uc)],
 ) -> object:
-    return _templates(request).TemplateResponse(request, "admin/dashboard.html")
+    stats = await use_case.execute()
+    return _templates(request).TemplateResponse(request, "admin/dashboard.html", {"stats": stats})
 
 
 @auth_router.post("/logout", name="admin.auth.logout")

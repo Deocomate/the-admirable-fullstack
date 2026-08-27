@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from admirable.domain.entities.story_snippet import StorySnippet
 from admirable.domain.value_objects.pagination import Page
+from admirable.infrastructure.clock import SystemClock
 from admirable.infrastructure.db.mappers import story_snippet_mapper
 from admirable.infrastructure.db.models.story_snippet import StorySnippetModel
 
@@ -10,6 +11,7 @@ from admirable.infrastructure.db.models.story_snippet import StorySnippetModel
 class StorySnippetRepositoryImpl:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
+        self._clock = SystemClock()
 
     async def get_by_id(self, snippet_id: int) -> StorySnippet | None:
         model = await self._session.get(StorySnippetModel, snippet_id)
@@ -33,8 +35,10 @@ class StorySnippetRepositoryImpl:
             stmt = stmt.where(StorySnippetModel.title.like(like))
             count_stmt = count_stmt.where(StorySnippetModel.title.like(like))
 
-        stmt = stmt.order_by(StorySnippetModel.created_at.desc()).limit(per_page).offset(
-            (page - 1) * per_page
+        stmt = (
+            stmt.order_by(StorySnippetModel.created_at.desc())
+            .limit(per_page)
+            .offset((page - 1) * per_page)
         )
 
         total = (await self._session.execute(count_stmt)).scalar_one()
@@ -72,6 +76,9 @@ class StorySnippetRepositoryImpl:
     async def add(self, snippet: StorySnippet) -> StorySnippet:
         model = StorySnippetModel()
         story_snippet_mapper.apply_to_model(snippet, model)
+        now = self._clock.now()
+        model.created_at = now
+        model.updated_at = now
         self._session.add(model)
         await self._session.flush()
         return story_snippet_mapper.to_entity(model)
@@ -81,6 +88,7 @@ class StorySnippetRepositoryImpl:
         if model is None:
             raise ValueError(f"StorySnippet {snippet.id} not found")
         story_snippet_mapper.apply_to_model(snippet, model)
+        model.updated_at = self._clock.now()
         await self._session.flush()
         return story_snippet_mapper.to_entity(model)
 

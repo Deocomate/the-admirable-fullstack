@@ -1,0 +1,31 @@
+{% extends "layouts/admin.html" %}
+{% set breadcrumb = "Admin › Mẩu chuyện › " ~ ("Chỉnh sửa" if story is defined else "Thêm mới") %}
+{% block title %}{{ "Chỉnh sửa mẩu chuyện" if story is defined else "Thêm mẩu chuyện" }}{% endblock %}
+{% block content %}
+
+    <form method="POST"
+          action="{{ route('admin.stories.update', id=story.id) if story is defined else route('admin.stories.store') }}"
+          enctype="multipart/form-data"
+          id="story-form">
+        {{ csrf_field() }}
+        {% if story is defined %}<input type="hidden" name="_method" value="PUT">{% endif %}
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+            {# LEFT COLUMN: Main content #}
+            <div class="xl:col-span-2 space-y-6">
+                {% include "admin/stories/partials/basic-info-card.html" %}
+                {% include "admin/stories/partials/content-blocks-card.html" %}
+            </div>
+
+            {# RIGHT COLUMN: Media & actions #}
+            <div class="space-y-6">
+                {% include "admin/stories/partials/media-card.html" %}
+                {% include "admin/stories/partials/actions-card.html" %}
+            </div>
+        </div>
+    </form>
+
+    {% include "admin/stories/partials/content-blocks-script.html" %}
+
+{% endblock %}

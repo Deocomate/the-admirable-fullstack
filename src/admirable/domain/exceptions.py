@@ -27,17 +27,32 @@ class InvalidAudioTransitionError(BusinessRuleViolationError):
         super().__init__(f"Cannot transition audio status from {src!r} to {dst!r}")
 
 
-class LastSuperAdminDeletionError(BusinessRuleViolationError):
+class CannotDeleteSuperAdminError(BusinessRuleViolationError):
+    """Matches `UserService::deleteAdmin`: a superadmin account can never be
+    deleted through the admin UI, regardless of how many others exist."""
+
     def __init__(self) -> None:
-        super().__init__("Cannot delete the last superadmin account")
+        super().__init__("Không thể xóa tài khoản superadmin.")
 
 
 class SelfDeletionError(BusinessRuleViolationError):
     def __init__(self) -> None:
-        super().__init__("A user cannot delete their own account")
+        super().__init__("Bạn không thể tự xóa tài khoản của mình.")
 
 
 class DuplicateSlugError(BusinessRuleViolationError):
     def __init__(self, slug: str) -> None:
         self.slug = slug
         super().__init__(f"Slug already exists: {slug!r}")
+
+
+class DuplicateValueError(BusinessRuleViolationError):
+    """An application-level uniqueness check (Laravel's `unique:` validation
+    rule, which needs a DB query and so can't live in a Pydantic form) was
+    violated. The router catches this and attaches a field-specific message,
+    the same way `auth.py` handles `InvalidCredentialsError`."""
+
+    def __init__(self, field: str, value: str) -> None:
+        self.field = field
+        self.value = value
+        super().__init__(f"Duplicate value for {field}: {value!r}")

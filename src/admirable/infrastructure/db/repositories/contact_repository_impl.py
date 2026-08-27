@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from admirable.domain.entities.contact import Contact
 from admirable.domain.value_objects.pagination import Page
+from admirable.infrastructure.clock import SystemClock
 from admirable.infrastructure.db.mappers import contact_mapper
 from admirable.infrastructure.db.models.contact import ContactModel
 
@@ -10,6 +11,7 @@ from admirable.infrastructure.db.models.contact import ContactModel
 class ContactRepositoryImpl:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
+        self._clock = SystemClock()
 
     async def get_by_id(self, contact_id: int) -> Contact | None:
         model = await self._session.get(ContactModel, contact_id)
@@ -40,6 +42,9 @@ class ContactRepositoryImpl:
     async def add(self, contact: Contact) -> Contact:
         model = ContactModel()
         contact_mapper.apply_to_model(contact, model)
+        now = self._clock.now()
+        model.created_at = now
+        model.updated_at = now
         self._session.add(model)
         await self._session.flush()
         return contact_mapper.to_entity(model)
@@ -49,6 +54,7 @@ class ContactRepositoryImpl:
         if model is None:
             raise ValueError(f"Contact {contact.id} not found")
         contact_mapper.apply_to_model(contact, model)
+        model.updated_at = self._clock.now()
         await self._session.flush()
         return contact_mapper.to_entity(model)
 

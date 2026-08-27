@@ -9,10 +9,10 @@ nested dict/list structures a Pydantic model can validate directly.
 import re
 from collections.abc import Sequence
 
-from fastapi import UploadFile
 from pydantic import BaseModel
 from pydantic import ValidationError as PydanticValidationError
-from starlette.datastructures import FormData
+from pydantic_core import ErrorDetails
+from starlette.datastructures import FormData, UploadFile
 from starlette.requests import Request
 
 from admirable.application.dto.files import UploadedFileDTO
@@ -73,6 +73,18 @@ def unflatten_form_data(items: Sequence[tuple[str, object]]) -> dict[str, object
     return result
 
 
+async def get_uploaded_file(form: FormData, field: str) -> UploadedFileDTO | None:
+    """Pulls an optional file field out of already-parsed `FormData` (Starlette
+    caches the parse, so re-calling `request.form()` after `parse_form` is
+    cheap) — an empty `<input type="file">` still submits an `UploadFile`
+    with a blank filename, which Laravel's `nullable` file rule treats as
+    "not provided", so that case is filtered out here too."""
+    value = form.get(field)
+    if not isinstance(value, UploadFile) or not value.filename:
+        return None
+    return to_uploaded_file_dto(value)
+
+
 def to_uploaded_file_dto(upload: UploadFile) -> UploadedFileDTO:
     async def _stream() -> object:
         while chunk := await upload.read(1024 * 1024):
@@ -90,7 +102,38 @@ def _flashable_old_input(raw: dict[str, object]) -> dict[str, object]:
     return {k: v for k, v in raw.items() if not isinstance(v, UploadFile)}
 
 
-async def parse_form[T: BaseModel](request: Request, model: type[T], redirect_to: str) -> T:
+def _translate_error(err: ErrorDetails, label: str) -> str:
+    """Turns Pydantic's English default message into the Vietnamese phrasing
+    the equivalent Laravel Form Request's `messages()` array used, for the
+    common constraint kinds these admin forms rely on (required/max/int/min).
+    Falls back to Pydantic's own message for anything more specific."""
+    err_type = err["type"]
+    ctx = err.get("ctx")
+    ctx_dict = ctx if isinstance(ctx, dict) else {}
+    if err_type == "missing":
+        return f"{label} là bắt buộc."
+    if err_type == "string_too_long":
+        return f"{label} không được vượt quá {ctx_dict.get('max_length')} ký tự."
+    if err_type == "string_too_short":
+        min_length = ctx_dict.get("min_length")
+        if min_length == 1:
+            # Laravel's `required` rule (not a real min-length constraint) —
+            # the common case for a blank required text field.
+            return f"{label} là bắt buộc."
+        return f"{label} phải có ít nhất {min_length} ký tự."
+    if err_type in ("int_parsing", "int_type"):
+        return f"{label} phải là số nguyên."
+    if err_type == "greater_than_equal":
+        return f"{label} phải lớn hơn hoặc bằng {ctx_dict.get('ge')}."
+    return str(err["msg"])
+
+
+async def parse_form[T: BaseModel](
+    request: Request,
+    model: type[T],
+    redirect_to: str,
+    field_labels: dict[str, str] | None = None,
+) -> T:
     form: FormData = await request.form()
     items = list(form.multi_items())
     raw = unflatten_form_data(items)
@@ -98,8 +141,11 @@ async def parse_form[T: BaseModel](request: Request, model: type[T], redirect_to
     try:
         return model.model_validate(raw)
     except PydanticValidationError as exc:
+        labels = field_labels or {}
         errors: dict[str, list[str]] = {}
         for err in exc.errors():
             field = ".".join(str(p) for p in err["loc"])
-            errors.setdefault(field, []).append(err["msg"])
+            label = labels.get(field, field)
+            message = _translate_error(err, label) if field in labels else str(err["msg"])
+            errors.setdefault(field, []).append(message)
         raise FormValidationError(errors, _flashable_old_input(raw), redirect_to) from exc

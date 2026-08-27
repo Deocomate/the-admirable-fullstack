@@ -27,9 +27,7 @@ def test_merge_solution_bullets() -> None:
 
 
 def test_merge_core_values_items_partial() -> None:
-    content = AboutUsContent.merge(
-        {"core_values": {"items": [{"title": "First"}]}}
-    )
+    content = AboutUsContent.merge({"core_values": {"items": [{"title": "First"}]}})
     assert content.core_values.items[0].title == "First"
     assert len(content.core_values.items) == 4
     assert content.core_values.items[1].title == ""
@@ -40,10 +38,25 @@ def test_merge_stats() -> None:
     assert content.stats[0].value == "10"
 
 
+def test_merge_stats_partial_keeps_fixed_length() -> None:
+    """A form editing only the first of 4 stat cards must not truncate the
+    other 3 — matches PHP's `array_replace_recursive`, not a wholesale
+    list replace."""
+    content = AboutUsContent.merge({"stats": [{"value": "10", "label": "Years"}]})
+    assert len(content.stats) == 4
+    assert content.stats[1].value == ""
+    assert content.stats[1].label == ""
+
+
+def test_merge_solution_bullets_partial_keeps_fixed_length() -> None:
+    content = AboutUsContent.merge({"solution": {"bullets": ["only one"]}})
+    assert len(content.solution.bullets) == 3
+    assert content.solution.bullets[0] == "only one"
+    assert content.solution.bullets[1] == ""
+
+
 def test_merge_problem_and_cta() -> None:
-    content = AboutUsContent.merge(
-        {"problem": {"title": "Problem"}, "cta": {"quote": "Quote"}}
-    )
+    content = AboutUsContent.merge({"problem": {"title": "Problem"}, "cta": {"quote": "Quote"}})
     assert content.problem.title == "Problem"
     assert content.cta.quote == "Quote"
 
