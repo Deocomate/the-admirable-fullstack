@@ -20,6 +20,7 @@ dependencies = [
     "redis>=5.0",
     "edge-tts>=6.1",
     "bcrypt>=4.2",
+    "aiosmtplib>=3.0",
     "itsdangerous>=2.2",
     "aiofiles>=24.1",
     "python-slugify>=8.0",
@@ -67,6 +68,10 @@ strict = true
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+addopts = "-m 'not network'"
+markers = [
+    "network: requires real internet access (edge-tts); run explicitly with -m network",
+]
 
 [tool.coverage.run]
 # Protocol interfaces carry no executable logic — they are contracts

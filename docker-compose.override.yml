@@ -12,7 +12,7 @@ services:
   worker:
     build:
       target: builder
-    command: ["uv", "run", "taskiq", "worker", "admirable.infrastructure.queue.broker:broker"]
+    command: ["uv", "run", "taskiq", "worker", "admirable.infrastructure.queue.tasks:broker"]
     volumes:
       - ./src:/app/src
       - media_data:/app/media

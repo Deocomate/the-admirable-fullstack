@@ -19,6 +19,8 @@ services:
 
   redis:
     image: redis:7-alpine
+    ports:
+      - "6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -49,7 +51,7 @@ services:
     environment:
       DB__HOST: mysql
       REDIS__URL: redis://redis:6379/0
-    command: ["taskiq", "worker", "admirable.infrastructure.queue.broker:broker"]
+    command: ["taskiq", "worker", "admirable.infrastructure.queue.tasks:broker"]
     volumes:
       - media_data:/app/media
     depends_on:

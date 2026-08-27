@@ -38,10 +38,11 @@ class RedisSettings(BaseModel):
 
 
 class TtsSettings(BaseModel):
-    voice: str = "vi-VN-HoaiMyNeural"
+    voice: str = "en-US-AriaNeural"
     rate: str = "+0%"
     volume: str = "+0%"
     pitch: str = "+0Hz"
+    max_chars_per_chunk: int = 3000
 
 
 class MediaSettings(BaseModel):

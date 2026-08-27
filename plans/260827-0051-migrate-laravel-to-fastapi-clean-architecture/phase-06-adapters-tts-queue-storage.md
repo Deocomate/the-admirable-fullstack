@@ -1,7 +1,7 @@
 ---
 phase: 6
 title: "Adapter: TTS, Queue, Storage, Security"
-status: pending
+status: completed
 priority: P1
 effort: "2d"
 dependencies: [5]
