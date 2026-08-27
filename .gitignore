@@ -48,3 +48,4 @@ __pycache__/
 .pytest_cache/
 media/
 .coverage
+backups/
