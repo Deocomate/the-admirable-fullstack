@@ -1,0 +1,98 @@
+{# content_blocks ← components/client/shared/content-blocks.blade.php #}
+{% macro content_blocks(blocks) %}
+{% set blocks = blocks or [] %}
+{% if blocks %}
+<article class="prose max-w-none">
+    <div class="space-y-0">
+        {% for block in blocks %}
+            {% set type = block.type or "paragraph" %}
+            {% set prev_type = (blocks[loop.index0 - 1].type or "paragraph") if loop.index0 > 0 else None %}
+            {% set is_first_block = loop.index0 == 0 %}
+            {% set text_en = (block.text_en or "").strip() %}
+
+            {% if text_en %}
+                {% if type == "heading" %}
+                    {# ── Section heading with divider ── #}
+                    {% if not is_first_block %}
+                        <div class="pt-10 pb-2">
+                            <hr class="border-t border-gray-200/80">
+                        </div>
+                    {% endif %}
+                    <h2 class="text-[22px] sm:text-[26px] font-bold text-apple-black tracking-apple-tight pt-2 pb-5 flex items-center gap-3">
+                        <span class="w-1 h-6 sm:h-7 bg-apple-blue rounded-full flex-shrink-0"></span>
+                        {{ text_en }}
+                    </h2>
+
+                {% elif type == "paragraph" %}
+                    {# ── Bilingual paragraph ── #}
+                    {% if not is_first_block and prev_type != "heading" %}
+                        <div class="py-5">
+                            <div class="flex items-center gap-3">
+                                <div class="flex-1 border-t border-gray-100"></div>
+                                <div class="w-1 h-1 rounded-full bg-gray-200"></div>
+                                <div class="flex-1 border-t border-gray-100"></div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="group pb-1">
+                        {% if block.heading_en %}
+                            <h3 class="text-lg sm:text-xl font-bold text-apple-black tracking-apple-tight mb-3">
+                                {{ block.heading_en }}
+                            </h3>
+                        {% endif %}
+                        <p class="text-[17px] sm:text-[19px] leading-[1.85] text-apple-black/90 tracking-apple-tight mb-3">
+                            {{ text_en }}
+                        </p>
+                        {% if (block.text_vi or "").strip() %}
+                            <p class="text-[15px] sm:text-[16px] leading-[1.75] text-apple-gray italic border-l-2 border-apple-blue/20 pl-4 mt-3">
+                                {{ block.text_vi }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                {% elif type == "quote" %}
+                    {# ── Quote block ── #}
+                    <div class="py-6">
+                        <blockquote class="pl-6 border-l-4 border-apple-blue bg-apple-bg rounded-r-2xl py-6 pr-6">
+                            <p class="text-xl sm:text-2xl font-semibold text-apple-black leading-snug mb-3">
+                                "{{ text_en }}"
+                            </p>
+                            {% if (block.author or "").strip() %}
+                                <footer class="text-sm font-medium text-apple-gray uppercase tracking-wider">— {{ block.author }}</footer>
+                            {% endif %}
+                        </blockquote>
+                    </div>
+
+                {% elif type == "bilingual" %}
+                    {# ── Backward compatibility with old format ── #}
+                    {% if not is_first_block and prev_type != "heading" %}
+                        <div class="py-5">
+                            <div class="flex items-center gap-3">
+                                <div class="flex-1 border-t border-gray-100"></div>
+                                <div class="w-1 h-1 rounded-full bg-gray-200"></div>
+                                <div class="flex-1 border-t border-gray-100"></div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="group pb-1">
+                        {% if block.heading %}
+                            <h3 class="text-lg sm:text-xl font-bold text-apple-black tracking-apple-tight mb-3">
+                                {{ block.heading }}
+                            </h3>
+                        {% endif %}
+                        <p class="text-[17px] sm:text-[19px] leading-[1.85] text-apple-black/90 tracking-apple-tight mb-3">
+                            {{ block.en or text_en }}
+                        </p>
+                        {% if (block.vi or "").strip() %}
+                            <p class="text-[15px] sm:text-[16px] leading-[1.75] text-apple-gray italic border-l-2 border-apple-blue/20 pl-4 mt-3">
+                                {{ block.vi }}
+                            </p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+</article>
+{% endif %}
+{% endmacro %}

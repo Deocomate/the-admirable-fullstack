@@ -15,6 +15,7 @@ class AppSettings(BaseModel):
     debug: bool = False
     secret_key: str = Field(min_length=32)
     base_url: str = "http://localhost"
+    locale: str = "en"
 
 
 class DbSettings(BaseModel):

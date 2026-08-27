@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from redis.asyncio import Redis, from_url
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -67,6 +68,17 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         from starlette.staticfiles import StaticFiles
 
         app.mount("/static", StaticFiles(directory=str(_STATIC_DIR)), name="static")
+
+        # nginx has no filesystem access to the app image, so favicon/robots
+        # (expected at the domain root, not under /static/) are served here
+        # and reached through nginx's generic proxy passthrough.
+        @app.get("/favicon.ico", include_in_schema=False)
+        async def favicon() -> FileResponse:
+            return FileResponse(_STATIC_DIR / "favicon.ico")
+
+        @app.get("/robots.txt", include_in_schema=False)
+        async def robots() -> FileResponse:
+            return FileResponse(_STATIC_DIR / "robots.txt")
 
     app.include_router(guest_router)
     app.include_router(auth_router)

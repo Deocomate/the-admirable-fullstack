@@ -1,6 +1,8 @@
 """Jinja2 environment: globals and filters that stand in for what Blade gave
 Laravel for free (`route()`, `@csrf`, `old()`, `$errors`, `session()->flash`)."""
 
+import re
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -13,6 +15,11 @@ from admirable.config import Settings
 from admirable.presentation.web.security.csrf_token import get_or_create_csrf_token
 
 _TEMPLATES_DIR = Path(__file__).parent / "templates"
+
+
+def asset_url(path: str) -> str:
+    """`asset()` equivalent — shared with `seo.py` so both compute the same URL."""
+    return f"/static/{path.lstrip('/')}"
 
 
 @pass_context
@@ -57,6 +64,20 @@ def _current_user(context: dict[str, Any]) -> AuthenticatedUserDTO | None:
     return getattr(request.state, "current_user", None)
 
 
+@pass_context
+def _is_route(context: dict[str, Any], pattern: str) -> bool:
+    """`request()->routeIs('admin.figures.*')` equivalent; `None`-safe for
+    contexts with no matched route (error pages)."""
+    request = context["request"]
+    route = request.scope.get("route")
+    name = getattr(route, "name", None)
+    if name is None:
+        return False
+    if pattern.endswith(".*"):
+        return bool(name.startswith(pattern[:-1]))
+    return bool(name == pattern)
+
+
 def _nl2br(value: str) -> Markup:
     return Markup("<br>\n".join(str(escape(value)).split("\n")))
 
@@ -66,6 +87,40 @@ def _truncate_words(value: str, count: int = 30) -> str:
     if len(words) <= count:
         return value
     return " ".join(words[:count]) + "…"
+
+
+def _str_limit(value: str | None, limit: int = 100, end: str = "...") -> str:
+    """`Str::limit()` equivalent: truncates by character count, not words."""
+    if not value:
+        return ""
+    if len(value) <= limit:
+        return value
+    return value[:limit].rstrip() + end
+
+
+_TAG_RE = re.compile(r"<[^>]*>")
+
+
+def _strip_tags(value: str | None) -> str:
+    if not value:
+        return ""
+    return _TAG_RE.sub("", value)
+
+
+def _number_format(value: float | int, decimals: int = 0) -> str:
+    return f"{value:,.{decimals}f}"
+
+
+_YOUTUBE_RE = re.compile(
+    r"(?:youtu\.be/|youtube\.com/(?:embed/|v/|watch\?v=))([a-zA-Z0-9_-]{11})"
+)
+
+
+def _youtube_embed_id(url: str | None) -> str | None:
+    if not url:
+        return None
+    match = _YOUTUBE_RE.search(url)
+    return match.group(1) if match else None
 
 
 _VI_MONTHS = (
@@ -93,12 +148,18 @@ def build_templates(settings: Settings) -> Jinja2Templates:
     env.globals["errors"] = _errors
     env.globals["flash"] = _flash
     env.globals["current_user"] = _current_user
-    env.globals["asset"] = lambda path: f"/static/{path.lstrip('/')}"
+    env.globals["is_route"] = _is_route
+    env.globals["now"] = datetime.now
+    env.globals["asset"] = asset_url
     env.globals["media_url"] = lambda path: f"{settings.media.url_prefix}{path}" if path else None
     env.globals["config"] = {"app_name": settings.app.name, "base_url": settings.app.base_url}
 
     env.filters["nl2br"] = _nl2br
     env.filters["truncate_words"] = _truncate_words
     env.filters["date_vi"] = _date_vi
+    env.filters["str_limit"] = _str_limit
+    env.filters["strip_tags"] = _strip_tags
+    env.filters["number_format"] = _number_format
+    env.filters["youtube_embed_id"] = _youtube_embed_id
 
     return templates

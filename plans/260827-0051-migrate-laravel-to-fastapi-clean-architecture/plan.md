@@ -99,7 +99,7 @@ src/admirable/
 | 5 | [Lớp Application](./phase-05-application-use-cases.md) | Toàn bộ use case thay 9 Laravel service | Completed |
 | 6 | [Adapter: TTS, Queue, Storage](./phase-06-adapters-tts-queue-storage.md) | edge-tts, Taskiq worker, file storage, bcrypt | Completed |
 | 7 | [Web core & Auth](./phase-07-web-core-auth.md) | App factory, DI, session, CSRF, method-override, auth | Completed |
-| 8 | [Nền tảng Template Jinja2](./phase-08-jinja2-template-foundation.md) | Layout, macro, component dùng chung, helper | Pending |
+| 8 | [Nền tảng Template Jinja2](./phase-08-jinja2-template-foundation.md) | Layout, macro, component dùng chung, helper | Completed |
 | 9 | [Khu vực Client](./phase-09-client-area.md) | 8 route công khai + template | Pending |
 | 10 | [Khu vực Admin](./phase-10-admin-area.md) | Toàn bộ CRUD + audio endpoint + settings | Pending |
 | 11 | [Kiểm thử & Đối chiếu ngang bằng](./phase-11-testing-parity-verification.md) | pytest, route parity, HTML diff, kiểm tra ranh giới lớp | Pending |

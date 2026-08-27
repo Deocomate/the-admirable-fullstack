@@ -11,7 +11,7 @@ import secrets
 from typing import Any
 
 from starlette.requests import Request
-from starlette.responses import HTMLResponse, JSONResponse
+from starlette.responses import HTMLResponse, JSONResponse, Response
 from starlette.types import ASGIApp, Scope, Send
 
 from admirable.presentation.web.middleware._asgi_body import drain_body, header, replay
@@ -54,11 +54,17 @@ class CsrfMiddleware:
 
         await self.app(scope, downstream_receive, send)
 
-    def _failure_response(self, request: Request) -> HTMLResponse | JSONResponse:
+    def _failure_response(self, request: Request) -> Response:
         wants_json = "application/json" in request.headers.get("accept", "")
         message = "Phiên làm việc đã hết hạn. Vui lòng tải lại trang và thử lại."
         if wants_json:
             return JSONResponse({"message": message}, status_code=_CSRF_STATUS)
+        templates = getattr(request.app.state, "templates", None)
+        if templates is not None:
+            response: Response = templates.TemplateResponse(
+                request, "errors/419.html", status_code=_CSRF_STATUS
+            )
+            return response
         return HTMLResponse(
             f"<html><body><h1>419 — {message}</h1></body></html>", status_code=_CSRF_STATUS
         )

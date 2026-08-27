@@ -1,0 +1,68 @@
+{#
+  Ported from components/client/layout/app.blade.php. Pages extend this and
+  fill `content`; pass `seo` (a SeoMeta) plus the rest of
+  seo.build_seo_context()'s dict as template context (merged in by the route
+  handler), and `categories`/`contacts` for the footer.
+#}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{{ seo.title }}{% endblock %}</title>
+    {% include "partials/client/seo-head.html" %}
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        apple: {
+                            black: '#1D1D1F',
+                            gray: '#86868B',
+                            'gray-light': '#D2D2D7',
+                            bg: '#F5F5F7',
+                            white: '#FBFBFD',
+                            blue: '#0071E3',
+                            'blue-hover': '#0077ED',
+                        },
+                    },
+                    letterSpacing: {
+                        'apple-tight': '-0.003em',
+                        'apple-headline': '-.015em',
+                        'apple-display': '-0.04em',
+                    },
+                },
+            },
+        };
+    </script>
+
+    {% include "partials/client/styles.html" %}
+    {% block head_extra %}{% endblock %}
+</head>
+<body class="bg-apple-white font-sans text-apple-black antialiased">
+
+    {% include "partials/client/navbar.html" %}
+
+    <!-- Spacer for fixed navbar -->
+    <div class="h-12"></div>
+
+    {% block content %}{% endblock %}
+
+    {% include "partials/client/footer.html" %}
+    {% include "partials/client/back-to-top.html" %}
+
+    {% include "partials/client/scripts.html" %}
+    {% block scripts_extra %}{% endblock %}
+</body>
+</html>

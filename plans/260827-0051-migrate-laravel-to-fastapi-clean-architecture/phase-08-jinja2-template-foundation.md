@@ -1,7 +1,7 @@
 ---
 phase: 8
 title: "Nền tảng Template Jinja2"
-status: pending
+status: completed
 priority: P1
 effort: "2d"
 dependencies: [7]
@@ -146,16 +146,24 @@ Template chỉ nhận kết quả đã tính và render. Mỗi khối JSON-LD re
 
 ## Success Criteria
 
-- [ ] `docs/template-conversion-map.md` liệt kê đủ 84 file Blade, không thiếu file nào.
-- [ ] 3 template auth của Phase 7 chạy trên `layouts/admin_auth.html` thật, giao diện khớp ảnh chụp bản Laravel.
-- [ ] Mọi macro render được với dữ liệu giả, test pass.
-- [ ] `seo-head.html` render đủ mọi thẻ có trong `app.blade.php:45-90`; test đối chiếu danh sách thẻ pass.
-- [ ] `build_seo_context` có test cho 4 tình huống ảnh OG (mặc định / canonical tuỳ chỉnh / ảnh tương đối / ảnh URL tuyệt đối).
-- [ ] `layouts/admin.html` và `layouts/admin_auth.html` đều có `<meta name="csrf-token">`.
-- [ ] `curl /static/assets/images/logo.svg` trả 200 qua nginx.
-- [ ] Diff CSS: `partials/client/styles.html` so với `styles.blade.php` chỉ khác ở thẻ bọc, phần `<style>` giống hệt (kiểm bằng `diff` sau khi bóc thẻ).
-- [ ] JavaScript trong `partials/client/scripts.html` giống hệt bản Blade sau khi thay các điểm nội suy (danh sách điểm nội suy được liệt kê trong PR).
-- [ ] `grep -r "| safe" templates/` chỉ trả về đúng 1 kết quả: khối JSON-LD trong `seo-head.html`. Bất kỳ `| safe` nào khác phải được giải trình trong PR.
+- [x] `docs/template-conversion-map.md` liệt kê đủ 84 file Blade, không thiếu file nào.
+- [x] 3 template auth của Phase 7 chạy trên `layouts/admin_auth.html` thật, giao diện khớp ảnh chụp bản Laravel.
+- [x] Mọi macro render được với dữ liệu giả, test pass (52 test mới trong `tests/presentation/`).
+- [x] `seo-head.html` render đủ mọi thẻ có trong `app.blade.php:45-90`; test đối chiếu danh sách thẻ pass.
+- [x] `build_seo_context` có test cho 4 tình huống ảnh OG (mặc định / canonical tuỳ chỉnh / ảnh tương đối / ảnh URL tuyệt đối). Phát hiện và sửa 1 bug thật: ảnh mặc định bị bọc `asset()` hai lần (xem NOTES).
+- [x] `layouts/admin.html` và `layouts/admin_auth.html` đều có `<meta name="csrf-token">`.
+- [x] `curl /static/assets/images/logo.svg` trả 200 qua nginx (xác minh qua Docker Compose thật, không chỉ unit test).
+- [x] Diff CSS: `partials/client/styles.html` so với `styles.blade.php` — nội dung `<style>` giống hệt byte-for-byte (test `test_css_parity.py`).
+- [x] JavaScript trong `partials/client/scripts.html` giống hệt bản Blade — 0 điểm nội suy Blade tồn tại trong file gốc (`diff` xác nhận chỉ khác dòng trống cuối file), nên không cần `| tojson` nào ở đây.
+- [x] `grep -r "| safe" templates/` chỉ trả về đúng 1 kết quả: khối JSON-LD trong `seo-head.html` (test `test_exactly_one_safe_filter_usage_in_template_tree`). `story_card`'s SVG icon được viết lại thành nhánh `{% if/elif %}` với markup literal thay vì biến `| safe`, để giữ đúng số lượng này.
+
+### NOTES (Phase 8 — bằng chứng xác minh thật)
+
+- **Bug thật tìm thấy qua test, không phải qua đọc code:** `build_seo_context` bọc `asset_url()` hai lần lên ảnh OG mặc định, sinh `/static/static/assets/images/logo.png`. Nguyên nhân: Blade's `asset()` trả URL tuyệt đối (nên nhánh `FILTER_VALIDATE_URL` không bọc lại), còn `asset_url()` của bản port trả đường dẫn tương đối gốc — không bao giờ "tuyệt đối", nên logic port-1:1 ban đầu luôn bọc lại. Sửa bằng cách tách rõ 3 nhánh (`None` / URL tuyệt đối / tương đối) thay vì "hoặc rồi kiểm tra tuyệt đối".
+- **Xác minh qua Docker Compose thật** (không chỉ pytest): rebuild `web`+`worker`, restart `nginx`, curl qua nginx cho `/healthz`, `/static/assets/images/logo.svg`, `/favicon.ico`, `/robots.txt`, đăng nhập admin thật (`admin@gmail.com`), xác nhận CSRF 419 trả về trang lỗi có style thay vì HTML nội tuyến.
+- **Khoảng trống đã biết, sẽ tự đóng ở Phase 9/10:** `partials/admin/sidebar.html` (layout thật) gọi `route()` cho 7 route admin CRUD (`admin.users.index`, `admin.categories.index`, v.v.) chưa tồn tại cho tới khi Phase 10 dựng router thật — nên `/admin/dashboard` trả 500 (`NoMatchFound`) khi đăng nhập thật cho tới khi Phase 9/10 hoàn tất. Đây là hệ quả tất yếu của việc nối `dashboard.html` vào layout thật (đúng như bước 10 của phase này yêu cầu) trước khi các route đó tồn tại — không phải lỗi phát sinh từ code Phase 8. Không thêm route giả để né tránh vì sẽ là code vứt đi.
+- **Bổ sung ngoài danh sách bước 3 gốc:** thêm filter `str_limit` và `strip_tags` (không chỉ `number_format`/`youtube_embed_id`) vì `macros/cards.html`'s `story_card` (một deliverable của chính phase này) cần chúng để khớp `Str::limit(strip_tags(...))` của Blade.
+- **Sửa kèm ngoài phạm vi template thuần tuý nhưng bắt buộc để đạt criterion "curl qua nginx trả 200":** `deploy/nginx/default.conf` trước đó alias `/static/` tới `/app/static/` — một đường dẫn không tồn tại trong container nginx (không có volume nào mount vào đó). Sửa bằng cách bỏ alias hỏng, để `/static/`, `/favicon.ico`, `/robots.txt` rơi qua `proxy_pass` tới `web` — FastAPI tự phục vụ (đã có `StaticFiles` mount sẵn từ Phase 7; thêm 2 route mới cho favicon/robots ở gốc).
 
 ## Risk Assessment
 

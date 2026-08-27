@@ -1,0 +1,73 @@
+{# figure_card ← components/client/shared/figure-card.blade.php
+   story_card  ← components/client/shared/story-card.blade.php
+   `featured` and `icon_index` are resolved by the caller (use case/route),
+   not computed here — the ORM relation-loaded check the Blade version did
+   inline is exactly the kind of hidden business logic templates must not do. #}
+
+{% macro figure_card(figure, featured=False) %}
+<a href="{{ route('client.figures.show', slug=figure.slug) }}"
+   class="group block bg-white rounded-2xl overflow-hidden card-hover cursor-pointer h-full flex flex-col">
+    <div class="relative aspect-[3/2] overflow-hidden flex-shrink-0">
+        <img src="{{ media_url(figure.avatar_path) if figure.avatar_path else 'https://images.unsplash.com/photo-1589998059171-988d887df646?w=600&h=400&fit=crop' }}"
+             alt="{{ figure.name }}"
+             class="img-zoom w-full h-full object-cover" loading="lazy" />
+    </div>
+    <div class="p-5 flex flex-col flex-1">
+        <div class="flex items-center gap-2 mb-1.5">
+            {% if figure.categories %}
+                <p class="text-apple-gray text-[11px] font-semibold uppercase tracking-wider">
+                    {{ figure.categories[0].name }}
+                </p>
+            {% endif %}
+            {% if featured %}
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-apple-blue/10 text-apple-blue">
+                    Nổi bật
+                </span>
+            {% endif %}
+        </div>
+        <h3 class="text-[17px] font-semibold text-apple-black tracking-apple-tight leading-snug mb-2 line-clamp-2">
+            {{ figure.name }}
+        </h3>
+        <p class="text-apple-gray text-sm leading-relaxed line-clamp-2 mb-3 flex-1">
+            {{ figure.short_description }}
+        </p>
+        <span class="text-apple-blue text-xs font-normal inline-flex items-center group-hover:underline mt-auto">
+            Đọc thêm
+            <svg class="w-3 h-3 ml-0.5 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+            </svg>
+        </span>
+    </div>
+</a>
+{% endmacro %}
+
+{# The 4 SVG icons are literal markup per branch, not an unescaped variable —
+   Jinja never escapes literal template text, only interpolated values, so no
+   safe-filter bypass is needed for this hardcoded, non-DB data. This keeps
+   the JSON-LD block in seo-head.html the template tree's only such usage. #}
+{% macro story_card(story) %}
+{% set icon_index = story.id % 4 %}
+<a href="{{ route('client.stories.show', id=story.id) }}" class="group block bg-white rounded-[24px] p-6 card-hover h-full flex flex-col">
+    <div class="w-10 h-10 rounded-full bg-apple-bg flex items-center justify-center mb-4 flex-shrink-0">
+        <svg class="w-5 h-5 text-apple-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {% if icon_index == 0 %}
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            {% elif icon_index == 1 %}
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            {% elif icon_index == 2 %}
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            {% else %}
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            {% endif %}
+        </svg>
+    </div>
+    <h3 class="text-[17px] font-semibold text-apple-black mb-2 leading-snug">{{ story.title }}</h3>
+    <p class="text-sm text-apple-gray leading-relaxed mb-4 line-clamp-2 flex-1">{{ story.subtitle or (story.content | strip_tags | str_limit(100)) }}</p>
+    <span class="text-apple-blue text-xs font-medium inline-flex items-center group-hover:underline mt-auto">
+        Đọc mẩu chuyện
+        <svg class="w-3.5 h-3.5 ml-1 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+        </svg>
+    </span>
+</a>
+{% endmacro %}
